@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,22 +7,22 @@ public class Projectile : MonoBehaviour
     //Bullet prefab
     public GameObject Bullet;
 
-    //’eŠÛ”­Ë“_
+    //å¼¾ä¸¸ç™ºå°„ç‚¹
     public Transform Muzzle;
 
-    //’e‘¬
+    //å¼¾é€Ÿ
     public float Speed = 1000;
 
 
     public void Fire()
     {
-        //ƒ{ƒ^ƒ“‚ğƒNƒŠƒbƒN‚ÅBullet‚ğ¶¬
+        //ãƒœã‚¿ãƒ³ã‚’ã‚¯ãƒªãƒƒã‚¯ã§Bulletã‚’ç”Ÿæˆ
         GameObject Bullets = Instantiate(Bullet) as GameObject;
 
         Vector3 force;
         force = this.gameObject.transform.forward * Speed;
 
-        ////Rigidbody‚É—Í‚ğ‰Á‚¦‚Ä”­Ë
+        ////Rigidbodyã«åŠ›ã‚’åŠ ãˆã¦ç™ºå°„
         Bullets.GetComponent<Rigidbody>().AddForce(force);
 
         Bullets.transform.position = Muzzle.position;

@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ public class BulletMovement : MonoBehaviour
 {
 	void OnCollisionEnter(Collision collision)
 	{
-		// Õ“Ë‚µ‚½‘Šè‚ÉWallƒ^ƒO‚ª•t‚¢‚Ä‚¢‚é‚Æ‚«
+		// è¡çªã—ãŸç›¸æ‰‹ã«Wallã‚¿ã‚°ãŒä»˜ã„ã¦ã„ã‚‹ã¨ã
 		if (collision.gameObject.tag == "Wall")
 		{
 			Destroy(gameObject);
