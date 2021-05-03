@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShotLineDrawer : MonoBehaviour
+public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 {
     [SerializeField, Header("射線オブジェクト")]
     private GameObject linePrefab;
@@ -12,10 +12,10 @@ public class ShotLineDrawer : MonoBehaviour
     [SerializeField, Header("射線の細かさ"), Range(.1f, 1)]
     private float lineFineness = .1f;
 
-    private        Camera        _camera;
-    private        GameObject    _shotLine;
-    private        List<Vector3> _fingerPositions;
-    private static LineRenderer  _lineRenderer;
+    private Camera        _camera;
+    private GameObject    _shotLine;
+    private List<Vector3> _fingerPositions;
+    private LineRenderer  _lineRenderer;
 
     private void Start()
     {
@@ -25,9 +25,9 @@ public class ShotLineDrawer : MonoBehaviour
         // 射線オブジェクト生成
         if (!_shotLine)
         {
-            _shotLine                   = Instantiate(linePrefab, Vector3.zero, Quaternion.identity);
-            _lineRenderer               = _shotLine.GetComponent<LineRenderer>();
-            _lineRenderer.positionCount = 0; // 初回時非表示
+            _shotLine             = Instantiate(linePrefab, Vector3.zero, Quaternion.identity);
+            _lineRenderer         = _shotLine.GetComponent<LineRenderer>();
+            _lineRenderer.enabled = false; // 初回時非表示
         }
     }
 
@@ -101,6 +101,7 @@ public class ShotLineDrawer : MonoBehaviour
         _fingerPositions.Add(worldTouchPos);
         _lineRenderer.SetPosition(0, _fingerPositions[0]);
         _lineRenderer.SetPosition(1, _fingerPositions[1]);
+        _lineRenderer.enabled = true;
     }
 
     /// <summary>
@@ -119,5 +120,9 @@ public class ShotLineDrawer : MonoBehaviour
     /// <summary>
     /// 射線の描画をクリアする
     /// </summary>
-    public static void ClearLine() => _lineRenderer.positionCount = 2;
+    public static void ClearLine()
+    {
+        Instance._lineRenderer.positionCount = 2;
+        Instance._lineRenderer.enabled       = false;
+    }
 }
