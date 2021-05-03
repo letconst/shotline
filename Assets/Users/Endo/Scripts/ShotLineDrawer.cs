@@ -13,8 +13,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private float lineFineness = .1f;
 
     private Camera        _camera;
-    private GameObject    _shotLine;
-    private List<Vector3> _fingerPositions;
+    private GameObject    _shotLine;        // 射線オブジェクト
+    private List<Vector3> _fingerPositions; // 描画された射線の通過位置
     private LineRenderer  _lineRenderer;
 
     private void Start()
@@ -33,6 +33,10 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
     private void Update()
     {
+        // TODO: 開始地点をプレイヤー（画面中央）からに限定する
+
+        #region 射線描画操作
+
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
@@ -76,6 +80,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             }
         }
 #endif
+
+        #endregion
     }
 
     /// <summary>
@@ -124,5 +130,17 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     {
         Instance._lineRenderer.positionCount = 2;
         Instance._lineRenderer.enabled       = false;
+    }
+
+    /// <summary>
+    /// 射線の通過座標を取得する
+    /// </summary>
+    /// <returns>射線の通過座標</returns>
+    public static Vector3[] GetFingerPositions()
+    {
+        Vector3[] fingerPositions = new Vector3[Instance._lineRenderer.positionCount];
+        Instance._lineRenderer.GetPositions(fingerPositions);
+
+        return fingerPositions;
     }
 }
