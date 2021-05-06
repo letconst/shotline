@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Users/Togasaki/Scenes/Title.unity
+    guid: 9fa75a9ce25629d4590518dd979193e5
+  - enabled: 1
+    path: Assets/Users/Togasaki/Scenes/MainGameScene.unity
+    guid: a8aeeee9d14a67b4c85a42f2ee0ffa51
   m_configObjects: {}
