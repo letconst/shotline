@@ -2,12 +2,10 @@ using UnityEngine;
 
 public abstract class ItemBase : MonoBehaviour
 {
-    // TODO: Scriptableでデータベース管理するかも
-
     [SerializeField]
-    private string itemName;
+    private ItemData data;
 
-    public string ItemName { get => itemName; private set => itemName = value; }
+    public ItemData Data => data;
 
     /// <summary>
     /// アイテムを取得・使用した際の動作
