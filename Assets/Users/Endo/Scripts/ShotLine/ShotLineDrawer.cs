@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 {
@@ -12,6 +13,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     [SerializeField, Header("射線の細かさ"), Range(.1f, 1)]
     private float lineFineness = .1f;
 
+    private bool          _isHoldClicking; // 射線を描いている最中か
     private Camera        _camera;
     private GameObject    _shotLine;        // 射線オブジェクト
     private List<Vector3> _fingerPositions; // 描画された射線の通過位置
@@ -40,9 +42,13 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
+            // UIをクリックした際は反応させない
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+
+            _isHoldClicking = true;
             CreateLine();
         }
-        else if (Input.GetMouseButton(0))
+        else if (Input.GetMouseButton(0) && _isHoldClicking)
         {
             Vector3 mousePos = Input.mousePosition;
             mousePos.z += lineZPos;
@@ -54,6 +60,10 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                 UpdateLine(tmpFingerPos);
             }
         }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            _isHoldClicking = false;
+        }
 #elif UNITY_IOS
         if (Input.touchCount > 0)
         {
@@ -62,11 +72,14 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             switch (t.phase)
             {
                 case TouchPhase.Began:
+                    if (EventSystem.current.IsPointerOverGameObject()) return;
+
+                    _isHoldClicking = true;
                     CreateLine();
 
                     break;
 
-                case TouchPhase.Moved:
+                case TouchPhase.Moved when _isHoldClicking:
                     Vector3 touchPos = t.position;
                     touchPos.z += lineZPos;
                     Vector3 tmpFingerPos = _camera.ScreenToWorldPoint(touchPos);
@@ -75,6 +88,11 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                     {
                         UpdateLine(tmpFingerPos);
                     }
+
+                    break;
+                
+                case TouchPhase.Ended:
+                    _isHoldClicking = false;
 
                     break;
             }
