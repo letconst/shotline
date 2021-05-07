@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6704456931689570602}
   - component: {fileID: 7984370008081032549}
   - component: {fileID: 3043061239792109288}
+  - component: {fileID: 498713340}
   m_Layer: 0
   m_Name: Item
   m_TagString: Item
@@ -110,6 +111,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"declarations":{"collection":{"$content":[{"name":"Text","value":{"$content":0,"$type":"UnityEngine.Object"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
+    _json: '{"declarations":{"collection":{"$content":[{"name":"Text","value":{"$content":0,"$type":"UnityEngine.Object"},"$version":"A"},{"name":"Texture","value":{"$content":1,"$type":"UnityEngine.Object"},"$version":"A"},{"name":"Texture2","value":{"$content":2,"$type":"UnityEngine.Object"},"$version":"A"},{"name":"Texture3","value":{"$content":3,"$type":"UnityEngine.Object"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
     _objectReferences:
     - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+--- !u!114 &498713340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354437983419511547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -57143145, guid: a040fb66244a7f54289914d98ea4ef7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _json: '{"nest":{"source":"Macro","macro":0,"embed":null}}'
+    _objectReferences:
+    - {fileID: 11400000, guid: d637872cba4f7224489d1239f1c93520, type: 2}
