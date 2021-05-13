@@ -9,16 +9,12 @@ public class Projectile : MonoBehaviour
     "Projectile"クラスの概要
      
     もしボタンが押されたらShotLineDrawerクラスの座標を取得し、その座標をなぞるように弾丸を発射する。
-    変数"Muzzle"に弾丸の発射点となる場所を指定できる。
     変数"Speed"に弾丸の速さを指定できる。
      
      */
 
     //弾丸のprefab
     public GameObject Bullet;
-
-    //弾丸発射点
-    public Transform Muzzle;
 
     //弾丸の速さ、1から下は弾速Max、値が増えると弾速は遅くなる
     public int SavedSpeed = 1;
@@ -37,10 +33,14 @@ public class Projectile : MonoBehaviour
     //ボタンが押された用のflag
     bool flag;
 
-    private void Start()
-    {
-        CalSpeed = SavedSpeed;
-    }
+    //弾の進行具合(Lerpの第三引数)
+    float time = 0;
+
+
+    //private void Start()
+    //{
+    //    CalSpeed = SavedSpeed;
+    //}
 
     void Update()
     {
@@ -57,11 +57,25 @@ public class Projectile : MonoBehaviour
             //配列に射線の全座標をいれる
             FingerPositions = ShotLineDrawer.GetFingerPositions();
 
-            //弾が進んだ長さがindexの数値より小さかったら
+            //indexの数値よがラインの全長より小さかったら
             if (index < FingerPositions.Length)
             {
-                //FingerPositionの場所に出現
-                Bullet.transform.position = FingerPositions[index];
+
+                time += Time.deltaTime;
+
+                if (index == FingerPositions.Length - 1)
+                {
+                    var vec = Vector3.Lerp(FingerPositions[FingerPositions.Length - 2], FingerPositions[FingerPositions.Length - 1], time);
+                    //弾の位置を代入
+                    Bullet.transform.position = vec;
+                }
+                else
+                {
+                    //現在の点から次の点
+                    var vec = Vector3.Lerp(FingerPositions[index], FingerPositions[index + 1], time);
+                    //弾の位置を代入
+                    Bullet.transform.position = vec;
+                }
 
                 //CalSpeedの値を1減らす
                 CalSpeed--;
@@ -75,14 +89,13 @@ public class Projectile : MonoBehaviour
                     index++;
                 }
             }
-            //弾が進んだ長さがindexになったら
+            //index=ラインの全長になったら
             else
             {
                 ShotLineDrawer.ClearLine();
                 index = 0;
                 flag = false;
             }
-
         }
     }
 
