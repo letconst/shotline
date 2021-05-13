@@ -13,15 +13,23 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     [SerializeField, Header("射線の細かさ"), Range(.1f, 1)]
     private float lineFineness = .1f;
 
+    [SerializeField, Header("射線のカメラ")]
+    private Camera lineCamera;
+
     private bool          _isHoldClicking; // 射線を描いている最中か
+    private bool          _isFixed;        // 射線が固定されているか
     private Camera        _camera;
     private GameObject    _shotLine;        // 射線オブジェクト
+    private Vector3       _shotLineCamPos;  // タップ開始時の射線カメラの位置
+    private Vector3       _prevLineCamPos;  // 1フレーム前の射線カメラの位置
     private List<Vector3> _fingerPositions; // 描画された射線の通過位置
     private LineRenderer  _lineRenderer;
 
     private void Start()
     {
         _camera          = Camera.main;
+        _shotLineCamPos  = Vector3.zero;
+        _prevLineCamPos  = Vector3.zero;
         _fingerPositions = new List<Vector3>();
 
         // 射線オブジェクト生成
@@ -37,8 +45,15 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     {
         // TODO: 開始地点をプレイヤー（画面中央）からに限定する
 
-        #region 射線描画操作
+        DrawLine();
+        FollowLineToCamera();
+    }
 
+    /// <summary>
+    /// 入力によって射線を描画する
+    /// </summary>
+    private void DrawLine()
+    {
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
@@ -46,6 +61,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             if (EventSystem.current.IsPointerOverGameObject()) return;
 
             _isHoldClicking = true;
+            _shotLineCamPos = lineCamera.transform.position;
+
             CreateLine();
         }
         else if (Input.GetMouseButton(0) && _isHoldClicking)
@@ -75,6 +92,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                     if (EventSystem.current.IsPointerOverGameObject()) return;
 
                     _isHoldClicking = true;
+                    _shotLineCamPos = lineCamera.transform.position;
+
                     CreateLine();
 
                     break;
@@ -90,7 +109,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                     }
 
                     break;
-                
+
                 case TouchPhase.Ended:
                     _isHoldClicking = false;
 
@@ -98,8 +117,37 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             }
         }
 #endif
+    }
 
-        #endregion
+    /// <summary>
+    /// 描画されている射線の位置をカメラに追従させる
+    /// </summary>
+    private void FollowLineToCamera()
+    {
+        // 射線が描画状態であり、かつ固定されていないときのみ処理
+        if (!_lineRenderer.enabled || _isFixed) return;
+
+        Vector3 curLineCamPos = lineCamera.transform.position;
+
+        // カメラの位置が1フレーム前と同じなら処理しない
+        if (curLineCamPos == _prevLineCamPos) return;
+
+        // 射線のドロー開始時と現在の射線カメラの差分座標
+        Vector3 deltaPosToCam = new Vector3(curLineCamPos.x - _shotLineCamPos.x,
+                                            curLineCamPos.y - _shotLineCamPos.y,
+                                            curLineCamPos.z - _shotLineCamPos.z);
+
+        // 射線の全ポイントの座標を更新
+        for (int i = 0; i < _fingerPositions.Count; i++)
+        {
+            Vector3 newPos = new Vector3(_fingerPositions[i].x + deltaPosToCam.x,
+                                         _fingerPositions[i].y + deltaPosToCam.y,
+                                         _fingerPositions[i].z + deltaPosToCam.z);
+
+            _lineRenderer.SetPosition(i, newPos);
+        }
+
+        _prevLineCamPos = curLineCamPos;
     }
 
     /// <summary>
@@ -126,6 +174,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _lineRenderer.SetPosition(0, _fingerPositions[0]);
         _lineRenderer.SetPosition(1, _fingerPositions[1]);
         _lineRenderer.enabled = true;
+        _isFixed              = false;
     }
 
     /// <summary>
@@ -139,6 +188,14 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _fingerPositions.Add(newFingerPos);
         _lineRenderer.positionCount++;
         _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, newFingerPos);
+    }
+
+    /// <summary>
+    /// 射線の位置を固定する
+    /// </summary>
+    public static void FixLine()
+    {
+        Instance._isFixed = true;
     }
 
     /// <summary>
