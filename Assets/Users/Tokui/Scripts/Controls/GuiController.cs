@@ -111,7 +111,7 @@ public class GuiController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
             }
         }
     }
-    public bool GetPosition(out Vector3 result)
+    /*public bool GetPosition(out Vector3 result)
     {
         // カメラはメインカメラを使う
         var camera = Camera.main;
@@ -133,5 +133,5 @@ public class GuiController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
             result = Vector3.zero;
             return false;
         }
-    }
+    }*/
 }

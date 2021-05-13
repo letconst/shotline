@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -429,6 +429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   JOYSTICK_BACK: {fileID: 1185036765}
   JOYSTICK_CENTER: {fileID: 145420417}
+  Mouse: 0
 --- !u!1 &503607629
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,20 +794,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
   m_PrefabInstance: {fileID: 20906069}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2048804884
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2048804883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2b9131991abba44cacf02fc00a3fb92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  JOYSTICK_BACK: {fileID: 1185036765}
-  JOYSTICK_CENTER: {fileID: 145420417}
 --- !u!54 &2048804886
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -836,6 +823,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.4, y: 1.5, z: 0.4}
   m_Center: {x: 0, y: 0.8, z: 0}
+--- !u!114 &2048804888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2048804883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb4ecdbe31f37ab4ba6d1a9cc6e1e382, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
 --- !u!1001 &1832695293243283360
 PrefabInstance:
   m_ObjectHideFlags: 0
