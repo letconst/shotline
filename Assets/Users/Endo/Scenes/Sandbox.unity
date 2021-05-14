@@ -213,7 +213,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 416381719}
   m_LocalRotation: {x: 0.34048033, y: -0.23984572, z: 0.30279705, w: 0.85724044}
-  m_LocalPosition: {x: -0.28, y: -2.11, z: -10.71}
+  m_LocalPosition: {x: -0.28, y: -8, z: -10.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -508,6 +508,10 @@ PrefabInstance:
       propertyPath: lineCamera
       value: 
       objectReference: {fileID: 1547536180}
+    - target: {fileID: 276637055302969569, guid: a3520b68dd5439646857b7561b2a8249, type: 3}
+      propertyPath: drawableAreaRadius
+      value: 250
+      objectReference: {fileID: 0}
     - target: {fileID: 276637055302969570, guid: a3520b68dd5439646857b7561b2a8249, type: 3}
       propertyPath: m_RootOrder
       value: 3

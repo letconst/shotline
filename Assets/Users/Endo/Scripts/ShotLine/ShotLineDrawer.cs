@@ -10,8 +10,11 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     [SerializeField, Header("射線のZ位置")]
     private float lineZPos = 9.8f;
 
-    [SerializeField, Header("射線の細かさ"), Range(.1f, 1)]
+    [SerializeField, Header("射線の太さ"), Range(.1f, 1)]
     private float lineFineness = .1f;
+
+    [SerializeField, Header("射線を引ける領域の半径")]
+    private float drawableAreaRadius;
 
     [SerializeField, Header("射線のカメラ")]
     private Camera lineCamera;
@@ -22,6 +25,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private GameObject    _shotLine;        // 射線オブジェクト
     private Vector3       _shotLineCamPos;  // タップ開始時の射線カメラの位置
     private Vector3       _prevLineCamPos;  // 1フレーム前の射線カメラの位置
+    private Vector2       _screenCenterPos; // 画面の中心位置
     private List<Vector3> _fingerPositions; // 描画された射線の通過位置
     private LineRenderer  _lineRenderer;
 
@@ -30,6 +34,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _camera          = Camera.main;
         _shotLineCamPos  = Vector3.zero;
         _prevLineCamPos  = Vector3.zero;
+        _screenCenterPos = new Vector2(Screen.width / 2f, Screen.height / 2f);
         _fingerPositions = new List<Vector3>();
 
         // 射線オブジェクト生成
@@ -55,10 +60,17 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private void DrawLine()
     {
 #if UNITY_EDITOR
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z += lineZPos;
+        Vector3 tmpMousePos = _camera.ScreenToWorldPoint(mousePos);
+
         if (Input.GetMouseButtonDown(0))
         {
             // UIをクリックした際は反応させない
             if (EventSystem.current.IsPointerOverGameObject()) return;
+
+            // 画面中央からのドローのみ受け付ける
+            if (Vector2.Distance(_screenCenterPos, mousePos) > drawableAreaRadius) return;
 
             _isHoldClicking = true;
             _shotLineCamPos = lineCamera.transform.position;
@@ -67,14 +79,10 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         }
         else if (Input.GetMouseButton(0) && _isHoldClicking)
         {
-            Vector3 mousePos = Input.mousePosition;
-            mousePos.z += lineZPos;
-            Vector3 tmpFingerPos = _camera.ScreenToWorldPoint(mousePos);
-
             // 1つ前の射線位置から指定距離離れていたら伸ばす
-            if (Vector2.Distance(tmpFingerPos, _fingerPositions[_fingerPositions.Count - 1]) > lineFineness)
+            if (Vector2.Distance(tmpMousePos, _fingerPositions[_fingerPositions.Count - 1]) > lineFineness)
             {
-                UpdateLine(tmpFingerPos);
+                UpdateLine(tmpMousePos);
             }
         }
         else if (Input.GetMouseButtonUp(0))
@@ -84,12 +92,17 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 #elif UNITY_IOS
         if (Input.touchCount > 0)
         {
-            Touch t = Input.GetTouch(0);
+            Touch   t        = Input.GetTouch(0);
+            Vector3 touchPos = t.position;
+            touchPos.z += lineZPos;
+            Vector3 tmpFingerPos = _camera.ScreenToWorldPoint(touchPos);
 
             switch (t.phase)
             {
                 case TouchPhase.Began:
                     if (EventSystem.current.IsPointerOverGameObject()) return;
+
+                    if (Vector2.Distance(_screenCenterPos, touchPos) > drawableAreaRadius) return;
 
                     _isHoldClicking = true;
                     _shotLineCamPos = lineCamera.transform.position;
@@ -99,10 +112,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                     break;
 
                 case TouchPhase.Moved when _isHoldClicking:
-                    Vector3 touchPos = t.position;
-                    touchPos.z += lineZPos;
-                    Vector3 tmpFingerPos = _camera.ScreenToWorldPoint(touchPos);
-
                     if (Vector2.Distance(tmpFingerPos, _fingerPositions[_fingerPositions.Count - 1]) > lineFineness)
                     {
                         UpdateLine(tmpFingerPos);
