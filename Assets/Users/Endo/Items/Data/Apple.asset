@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Apple
   m_EditorClassIdentifier: 
   itemName: "\u30EA\u30F3\u30B4"
-  itemSprite: {fileID: 0}
+  itemSprite: {fileID: 21300000, guid: 97502f7d9d451af4cb37435cc861ed68, type: 3}
   itemObject: {fileID: 6513354682285806121, guid: 9c70ade97c398cf40a6b072120529596, type: 3}
