@@ -1,57 +1,51 @@
-using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;   // uGUI‚ğƒXƒNƒŠƒvƒg‚Å“®‚©‚µ‚½‚¢‚Æ‚«‚É•K—v
-using UnityEngine.EventSystems; // uGUI‚ÌƒCƒxƒ“ƒgŒnƒCƒ“ƒ^[ƒtƒF[ƒX‚ğg‚¢‚½‚¢‚Æ‚«‚É•K—v
-using System;
+ï»¿using UnityEngine;
+using UnityEngine.UI;   // uGUIã‚’ã‚¹ã‚¯ãƒªãƒ—ãƒˆã§å‹•ã‹ã—ãŸã„ã¨ãã«å¿…è¦
+using UnityEngine.EventSystems; // uGUIã®ã‚¤ãƒ™ãƒ³ãƒˆç³»ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã‚’ä½¿ã„ãŸã„ã¨ãã«å¿…è¦
 
-public class GuiController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler    // g—p‚·‚éƒCƒxƒ“ƒgŒnƒCƒ“ƒ^[ƒtƒF[ƒX(IDragHandler‚È‚Ç)‚ğ‚±‚±‚É’Ç‰Á‚·‚é
+public class GuiController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler    // ä½¿ç”¨ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆç³»ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹(IDragHandlerãªã©)ã‚’ã“ã“ã«è¿½åŠ ã™ã‚‹
 {
-    [SerializeField] Image JOYSTICK_BACK;   // JoyStick_BackƒeƒNƒXƒ`ƒƒ‚ğŠ„‚è“–‚Ä‚éB
-    [SerializeField] Image JOYSTICK_CENTER; // JoyStick_CenterƒeƒNƒXƒ`ƒƒ‚ğŠ„‚è“–‚Ä‚éB
+    [SerializeField] Image JOYSTICK_BACK;   // JoyStick_Backãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’å‰²ã‚Šå½“ã¦ã‚‹ã€‚
+    [SerializeField] Image JOYSTICK_CENTER; // JoyStick_Centerãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’å‰²ã‚Šå½“ã¦ã‚‹ã€‚
 
-    private Vector2 m_StartPosition = Vector2.zero; // ƒ}ƒEƒXƒ_ƒEƒ“À•W
-    private float m_Radius = 0.0f;  // JOYSTICK_BACK‚Ì”¼Œa
-
-    public static Vector3 mousePosition;
-
-    public bool Mouse = false;
+    private Vector2 m_StartPosition = Vector2.zero; // ãƒã‚¦ã‚¹ãƒ€ã‚¦ãƒ³åº§æ¨™
+    private float m_Radius = 0.0f;  // JOYSTICK_BACKã®åŠå¾„
 
     // Use this for initialization
     void Start()
     {
-        // ‹N“®’¼Œã‚Í”ñ•\¦‚É‚·‚é
+        // èµ·å‹•ç›´å¾Œã¯éè¡¨ç¤ºã«ã™ã‚‹
         JOYSTICK_BACK.enabled = false;
         JOYSTICK_CENTER.enabled = false;
 
-        // JOYSTICK_BACK‚Ì”¼Œa‚ğæ“¾‚·‚é
+        // JOYSTICK_BACKã®åŠå¾„ã‚’å–å¾—ã™ã‚‹
         m_Radius = JOYSTICK_BACK.GetComponent<RectTransform>().sizeDelta.x / 2;
     }
     void Update()
     {
-        PlayerMove();
+        
     }
 
 
-    #region ƒ}ƒEƒX‘€ì‚É‰‚¶‚½ƒWƒ‡ƒCƒXƒeƒBƒbƒN‚Ì“®ì
-    // ƒ}ƒEƒXƒ_ƒEƒ“
+    #region ãƒã‚¦ã‚¹æ“ä½œã«å¿œã˜ãŸã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å‹•ä½œ
+    // ãƒã‚¦ã‚¹ãƒ€ã‚¦ãƒ³
     public void OnPointerDown(PointerEventData data)
     {
-        // ƒJ[ƒ\ƒ‹ˆÊ’u‚ÉJOYSTICK_BACK‚ğ•\¦‚·‚é
+        // ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã«JOYSTICK_BACKã‚’è¡¨ç¤ºã™ã‚‹
         Vector2 pos = GetLocalPosition(data.position);
         JOYSTICK_BACK.rectTransform.localPosition = pos;
         m_StartPosition = pos;
         JOYSTICK_BACK.enabled = true;
     }
 
-    // ƒ}ƒEƒXƒAƒbƒv
+    // ãƒã‚¦ã‚¹ã‚¢ãƒƒãƒ—
     public void OnPointerUp(PointerEventData data)
     {
-        // ƒWƒ‡ƒCƒXƒeƒBƒbƒN‚ğ”ñ•\¦‚É‚·‚é
+        // ã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã‚’éè¡¨ç¤ºã«ã™ã‚‹
         JOYSTICK_BACK.enabled = false;
         JOYSTICK_CENTER.enabled = false;
     }
 
-    // ƒhƒ‰ƒbƒO
+    // ãƒ‰ãƒ©ãƒƒã‚°
     public void OnDrag(PointerEventData data)
     {
         Vector2 pos = GetLocalPosition(data.position);
@@ -60,12 +54,12 @@ public class GuiController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         float rad = Mathf.Atan2(dy, dx);
         rad = rad * Mathf.Rad2Deg;
 
-        // JOYSTICK_BACK‚Ì“à‘¤‚È‚ç‚ÎA‘f’¼‚Éƒ}ƒEƒXƒJ[ƒ\ƒ‹ˆÊ’u‚ÉJOYSTICK_CENTER‚ğ’u‚­
+        // JOYSTICK_BACKã®å†…å´ãªã‚‰ã°ã€ç´ ç›´ã«ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®ã«JOYSTICK_CENTERã‚’ç½®ã
         if (Vector2.Distance(pos, JOYSTICK_BACK.rectTransform.localPosition) <= m_Radius)
         {
             JOYSTICK_CENTER.rectTransform.localPosition = GetLocalPosition(data.position);
         }
-        // JOYSTICK_BACK‚ÌŠO‘¤‚È‚ç‚ÎAJOYSTICK_BACK‚Ì‰~üã‚ÉJOYSTICK_CENTER‚ğ’u‚­
+        // JOYSTICK_BACKã®å¤–å´ãªã‚‰ã°ã€JOYSTICK_BACKã®å††å‘¨ä¸Šã«JOYSTICK_CENTERã‚’ç½®ã
         else
         {
             JOYSTICK_CENTER.rectTransform.localPosition = new Vector2(m_StartPosition.x + m_Radius * Mathf.Cos(rad * Mathf.Deg2Rad),
@@ -75,63 +69,11 @@ public class GuiController : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     }
     #endregion
 
-    // Canvasã‚ÌÀ•W‚ğZo‚·‚é("ScreenSpace-Camera"—p)
+    // Canvasä¸Šã®åº§æ¨™ã‚’ç®—å‡ºã™ã‚‹("ScreenSpace-Camera"ç”¨)
     private Vector2 GetLocalPosition(Vector2 screenPosition)
     {
         Vector2 result = Vector2.zero;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(this.GetComponent<RectTransform>(), screenPosition, Camera.main, out result);
         return result;
     }
-
-    public void PlayerMove()
-    {
-        //ƒ}ƒEƒX‚ª‰Ÿ‚³‚ê‚Ä‚¢‚éŠÔ‚Í“®‚­
-        if (Input.GetMouseButton(0))
-        {
-            Mouse = true;
-            while (Mouse == true)
-            {
-                if (1 > 0)
-                {
-                    transform.Translate(0f, 0f, 0.25f);
-                }
-                if (-1 < 0)
-                {
-                    transform.Translate(0f, 0f, -0.25f);
-                }
-                if (-1 < 0)
-                {
-                    transform.Translate(-0.25f, 0f, 0f);
-                }
-                if (1 > 0)
-                {
-                    transform.Translate(0.25f, 0f, 0f);
-                }
-                Mouse = false;
-            }
-        }
-    }
-    /*public bool GetPosition(out Vector3 result)
-    {
-        // ƒJƒƒ‰‚ÍƒƒCƒ“ƒJƒƒ‰‚ğg‚¤
-        var camera = Camera.main;
-        // ƒNƒŠƒbƒNˆÊ’u‚ğæ“¾
-        var touchPosition = Input.mousePosition;
-        // XY•½–Ê‚ğì‚é
-        var plane = new Plane(Vector3.forward, 0);
-        // ƒJƒƒ‰‚©‚ç‚ÌRay‚ğì¬
-        var ray = camera.ScreenPointToRay(touchPosition);
-        // ray‚Æ•½–Ê‚ÌŒğ“_‚ğ‹‚ß‚éiŒğ·‚µ‚È‚¢‰Â”\«‚à‚ ‚éj
-        if (plane.Raycast(ray, out float enter))
-        {
-            result = ray.GetPoint(enter);
-            return true;
-        }
-        else
-        {
-            // ray‚Æ•½–Ê‚ªŒğ·‚µ‚È‚©‚Á‚½‚Ì‚ÅÀ•W‚ªæ“¾‚Å‚«‚È‚©‚Á‚½
-            result = Vector3.zero;
-            return false;
-        }
-    }*/
 }

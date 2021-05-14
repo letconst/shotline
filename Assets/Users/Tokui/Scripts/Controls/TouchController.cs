@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class TouchController : MonoBehaviour
 {
@@ -18,6 +16,8 @@ public class TouchController : MonoBehaviour
     [SerializeField]
     float PlayerMinSpeed = 0.25f;
 
+    RoundManager roundManager;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -27,7 +27,13 @@ public class TouchController : MonoBehaviour
 
     void Update()
     {
+        if(RoundManager.MoveStop == true)
+        {
+            Debug.Log("Hit");
+            return;
+        }
         MovementControll();
+        RoundMoves();
     }
 
     void FixedUpdate()
@@ -37,53 +43,53 @@ public class TouchController : MonoBehaviour
 
     void MovementControll()
     {
-        #region ƒGƒfƒBƒ^[ã‚Å‚Ì“®ì
+        #region ã‚¨ãƒ‡ã‚£ã‚¿ãƒ¼ä¸Šã§ã®å‹•ä½œ
 #if UNITY_EDITOR
-        //ˆÚ“®
+        //ç§»å‹•
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            //ƒ}ƒEƒX¶ƒNƒŠƒbƒN‚Én“_À•W‚ğ‘ã“ü
+            //ãƒã‚¦ã‚¹å·¦ã‚¯ãƒªãƒƒã‚¯æ™‚ã«å§‹ç‚¹åº§æ¨™ã‚’ä»£å…¥
             startPos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         }
 
         if (Input.GetKey(KeyCode.Mouse0))
         {
 
-            //‰Ÿ‚µ‚Ä‚¢‚éÅ’†‚É¡‚ÌÀ•W‚ğ‘ã“ü
+            //æŠ¼ã—ã¦ã„ã‚‹æœ€ä¸­ã«ä»Šã®åº§æ¨™ã‚’ä»£å…¥
             currentPos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
             differenceDisVector2 = currentPos - startPos;
 
-            //ƒXƒƒCƒv—Ê‚É‚æ‚Á‚ÄSpeed‚ğ•Ï‰»‚³‚¹‚é.‚±‚ÌAâ‘Î’l‚É‚·‚éB
+            //ã‚¹ãƒ¯ã‚¤ãƒ—é‡ã«ã‚ˆã£ã¦Speedã‚’å¤‰åŒ–ã•ã›ã‚‹.ã“ã®æ™‚ã€çµ¶å¯¾å€¤ã«ã™ã‚‹ã€‚
             differenceDisFloat = differenceDisVector2.x * differenceDisVector2.y;
             differenceDisFloat /= 100;
             differenceDisFloat = Mathf.Abs(differenceDisFloat);
 
-            //ƒ^ƒbƒv‚µ‚½‚¾‚¯‚Å“®‚¢‚Ä‚µ‚Ü‚¤‚Ì‚ÅA‹——£‚ª’Z‚¯‚ê‚Î“®‚©‚È‚¢‚æ‚¤‚É‚·‚éB
+            //ã‚¿ãƒƒãƒ—ã—ãŸã ã‘ã§å‹•ã„ã¦ã—ã¾ã†ã®ã§ã€è·é›¢ãŒçŸ­ã‘ã‚Œã°å‹•ã‹ãªã„ã‚ˆã†ã«ã™ã‚‹ã€‚
             if (differenceDisFloat > 1)
             {
                 move = true;
 
 
-                //Å‚‘¬“x
+                //æœ€é«˜é€Ÿåº¦
                 if (differenceDisFloat > PlayerSpeed)
                 {
                     differenceDisFloat = PlayerSpeed;
                 }
 
-                //Å’á‘¬“x
+                //æœ€ä½é€Ÿåº¦
                 if (differenceDisFloat < PlayerMinSpeed)
                 {
                     differenceDisFloat = PlayerMinSpeed;
                 }
 
                 speed = differenceDisFloat;
-                //‚à‚µspeed‚ª0ˆÈã‚Å‚ ‚ê‚ÎAƒAƒjƒ[ƒVƒ‡ƒ“‚³‚¹‚é
+                //ã‚‚ã—speedãŒ0ä»¥ä¸Šã§ã‚ã‚Œã°ã€ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã•ã›ã‚‹
                 if (speed > 0)
                 {
                     //anim.SetBool("is_walking", true);
                 }
 
-                //‰ñ“]‚·‚éŠp“xŒvZ
+                //å›è»¢ã™ã‚‹è§’åº¦è¨ˆç®—
                 radian = Mathf.Atan2(differenceDisVector2.x, differenceDisVector2.y) * Mathf.Rad2Deg;
             }
         }
@@ -103,55 +109,55 @@ public class TouchController : MonoBehaviour
 #endif
         #endregion
         
-        #region IOSã‚Å‚Ì“®ì
+        #region IOSä¸Šã§ã®å‹•ä½œ
 
 #if UNITY_IOS
-        //ˆÚ“®
+        //ç§»å‹•
         if (Input.touchCount > 0)
         {
             Touch t = Input.GetTouch(0);
-            //ƒ}ƒEƒX¶ƒNƒŠƒbƒN‚Én“_À•W‚ğ‘ã“ü
+            //ãƒã‚¦ã‚¹å·¦ã‚¯ãƒªãƒƒã‚¯æ™‚ã«å§‹ç‚¹åº§æ¨™ã‚’ä»£å…¥
             startPos = new Vector2(t.position.x, t.position.y);
         }
 
         if (Input.touchCount > 0)
         {
             Touch t = Input.GetTouch(0);
-            //‰Ÿ‚µ‚Ä‚¢‚éÅ’†‚É¡‚ÌÀ•W‚ğ‘ã“ü
+            //æŠ¼ã—ã¦ã„ã‚‹æœ€ä¸­ã«ä»Šã®åº§æ¨™ã‚’ä»£å…¥
             currentPos = new Vector2(t.position.x, t.position.y);
             differenceDisVector2 = currentPos - startPos;
 
-            //ƒXƒƒCƒv—Ê‚É‚æ‚Á‚ÄSpeed‚ğ•Ï‰»‚³‚¹‚é.‚±‚ÌAâ‘Î’l‚É‚·‚éB
+            //ã‚¹ãƒ¯ã‚¤ãƒ—é‡ã«ã‚ˆã£ã¦Speedã‚’å¤‰åŒ–ã•ã›ã‚‹.ã“ã®æ™‚ã€çµ¶å¯¾å€¤ã«ã™ã‚‹ã€‚
             differenceDisFloat = differenceDisVector2.x * differenceDisVector2.y;
             differenceDisFloat /= 100;
             differenceDisFloat = Mathf.Abs(differenceDisFloat);
 
-            //ƒ^ƒbƒv‚µ‚½‚¾‚¯‚Å“®‚¢‚Ä‚µ‚Ü‚¤‚Ì‚ÅA‹——£‚ª’Z‚¯‚ê‚Î“®‚©‚È‚¢‚æ‚¤‚É‚·‚éB
+            //ã‚¿ãƒƒãƒ—ã—ãŸã ã‘ã§å‹•ã„ã¦ã—ã¾ã†ã®ã§ã€è·é›¢ãŒçŸ­ã‘ã‚Œã°å‹•ã‹ãªã„ã‚ˆã†ã«ã™ã‚‹ã€‚
             if (differenceDisFloat > 1)
             {
                 move = true;
 
 
-                //Å‚‘¬“x
+                //æœ€é«˜é€Ÿåº¦
                 if (differenceDisFloat > PlayerSpeed)
                 {
                     differenceDisFloat = PlayerSpeed;
                 }
 
-                //Å’á‘¬“x
+                //æœ€ä½é€Ÿåº¦
                 if (differenceDisFloat < PlayerMinSpeed)
                 {
                     differenceDisFloat = PlayerMinSpeed;
                 }
 
                 speed = differenceDisFloat;
-                //‚à‚µspeed‚ª0ˆÈã‚Å‚ ‚ê‚ÎAƒAƒjƒ[ƒVƒ‡ƒ“‚³‚¹‚é
+                //ã‚‚ã—speedãŒ0ä»¥ä¸Šã§ã‚ã‚Œã°ã€ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã•ã›ã‚‹
                 if (speed > 0)
                 {
                     //anim.SetBool("is_walking", true);
                 }
 
-                //‰ñ“]‚·‚éŠp“xŒvZ
+                //å›è»¢ã™ã‚‹è§’åº¦è¨ˆç®—
                 radian = Mathf.Atan2(differenceDisVector2.x, differenceDisVector2.y) * Mathf.Rad2Deg;
             }
         }
@@ -182,4 +188,38 @@ public class TouchController : MonoBehaviour
         }
     }
 
+
+    public void RoundMoves()
+    {
+        // ãƒ©ã‚¦ãƒ³ãƒ‰åˆ‡ã‚Šæ›¿ãˆ
+        if (roundManager.RoundMove == true)
+        {
+            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒã‚¸ã‚·ãƒ§ãƒ³ã®ãƒªã‚»ãƒƒãƒˆ
+            this.transform.position = new Vector3(0, 0, 0);
+
+            roundManager.RoundMove = false;
+        }
+    }
+
+    // è¦å¤‰æ›´
+    public void OnCollisionEnter(Collision collision)
+    {
+        // å¼¾ãŒå½“ãŸã£ãŸã‚‰æ“ä½œä¸èƒ½ã«ã—ã€ãƒ©ã‚¤ãƒ•ã‚’1æ¸›ã‚‰ã™
+        if (collision.gameObject.tag == "Wall")
+        {
+            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ©ã‚¤ãƒ•ã‚’1æ¸›ã‚‰ã™
+            roundManager.PlayerLife--;
+            // æ“ä½œã‚’ä¸èƒ½ã«ã™ã‚‹
+            RoundManager.MoveStop = true;
+            // ãƒ©ã‚¦ãƒ³ãƒ‰ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+            roundManager.RoundMove = true;
+
+            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ©ã‚¤ãƒ•ãŒ0ã«ãªã£ãŸã‚‰ãƒªã‚¶ãƒ«ãƒˆã¸
+            if (roundManager.PlayerLife == 0)
+            {
+                //ãƒªã‚¶ãƒ«ãƒˆã¸
+                Debug.Log("Result");
+            }
+        }
+    }
 }
