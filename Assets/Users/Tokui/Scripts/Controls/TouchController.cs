@@ -11,11 +11,17 @@ public class TouchController : MonoBehaviour
     private Animator anim;
     private bool move, rotation;
     private Vector2 startPos, currentPos, differenceDisVector2;
-    [SerializeField] private float radian, differenceDisFloat;
+    [SerializeField]
+    float radian, differenceDisFloat;
+    [SerializeField]
+    float PlayerSpeed = 5f;
+    [SerializeField]
+    float PlayerMinSpeed = 0.25f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        speed = 0;
+        speed = 10;
         anim = GetComponent<Animator>();
     }
 
@@ -31,6 +37,8 @@ public class TouchController : MonoBehaviour
 
     void MovementControll()
     {
+        #region エディター上での動作
+#if UNITY_EDITOR
         //移動
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -57,22 +65,22 @@ public class TouchController : MonoBehaviour
 
 
                 //最高速度
-                if (differenceDisFloat > 1.25f)
+                if (differenceDisFloat > PlayerSpeed)
                 {
-                    differenceDisFloat = 1.25f;
+                    differenceDisFloat = PlayerSpeed;
                 }
 
                 //最低速度
-                if (differenceDisFloat < 0.25f)
+                if (differenceDisFloat < PlayerMinSpeed)
                 {
-                    differenceDisFloat = 0.25f;
+                    differenceDisFloat = PlayerMinSpeed;
                 }
 
                 speed = differenceDisFloat;
                 //もしspeedが0以上であれば、アニメーションさせる
                 if (speed > 0)
                 {
-                    anim.SetBool("is_walking", true);
+                    //anim.SetBool("is_walking", true);
                 }
 
                 //回転する角度計算
@@ -90,8 +98,79 @@ public class TouchController : MonoBehaviour
             move = false;
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
-            anim.SetBool("is_walking", false);
+            //anim.SetBool("is_walking", false);
         }
+#endif
+        #endregion
+
+        #region IOS上での動作
+
+#if UNITY_IOS
+        //移動
+        if (Input.touchCount > 0)
+        {
+            Touch t = Input.GetTouch(0);
+            //マウス左クリック時に始点座標を代入
+            startPos = new Vector2(t.position.x, t.position.y);
+        }
+
+        if (Input.touchCount > 0)
+        {
+            Touch t = Input.GetTouch(0);
+            //押している最中に今の座標を代入
+            currentPos = new Vector2(t.position.x, t.position.y);
+            differenceDisVector2 = currentPos - startPos;
+
+            //スワイプ量によってSpeedを変化させる.この時、絶対値にする。
+            differenceDisFloat = differenceDisVector2.x * differenceDisVector2.y;
+            differenceDisFloat /= 100;
+            differenceDisFloat = Mathf.Abs(differenceDisFloat);
+
+            //タップしただけで動いてしまうので、距離が短ければ動かないようにする。
+            if (differenceDisFloat > 1)
+            {
+                move = true;
+
+
+                //最高速度
+                if (differenceDisFloat > PlayerSpeed)
+                {
+                    differenceDisFloat = PlayerSpeed;
+                }
+
+                //最低速度
+                if (differenceDisFloat < PlayerMinSpeed)
+                {
+                    differenceDisFloat = PlayerMinSpeed;
+                }
+
+                speed = differenceDisFloat;
+                //もしspeedが0以上であれば、アニメーションさせる
+                if (speed > 0)
+                {
+                    //anim.SetBool("is_walking", true);
+                }
+
+                //回転する角度計算
+                radian = Mathf.Atan2(differenceDisVector2.x, differenceDisVector2.y) * Mathf.Rad2Deg;
+            }
+        }
+        else
+        {
+            rotation = false;
+        }
+
+        if (Input.touchCount >0)
+        {
+            speed = 0;
+            move = false;
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            //anim.SetBool("is_walking", false);
+        }
+
+#endif
+        #endregion
     }
 
     void Movement()
