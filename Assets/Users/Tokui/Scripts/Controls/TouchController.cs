@@ -102,7 +102,7 @@ public class TouchController : MonoBehaviour
         }
 #endif
         #endregion
-
+        
         #region IOSè„Ç≈ÇÃìÆçÏ
 
 #if UNITY_IOS
@@ -172,7 +172,7 @@ public class TouchController : MonoBehaviour
 #endif
         #endregion
     }
-
+    
     void Movement()
     {
         if (move == true)
