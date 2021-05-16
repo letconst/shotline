@@ -13,13 +13,14 @@ public class Projectile : MonoBehaviour
      
      */
 
-    //弾丸のprefab
-    public GameObject Bullet;
+    //弾丸の普段いる場所（マップ外）
+    [SerializeField] private Transform OriginBulletLocation;
 
-    //弾丸の速さ、1から下は弾速Max、値が増えると弾速は遅くなる
-    public int SavedSpeed = 1;
-    //Speed計算用の変数
-    int CalSpeed;
+    //弾丸のprefab
+    [SerializeField] private GameObject Bullet;
+  
+    //はやさ
+    [SerializeField] private float Speed = 10;
 
     //射線の座標をいれる配列
     Vector3[] FingerPositions;
@@ -27,20 +28,11 @@ public class Projectile : MonoBehaviour
     //射線の変数
     LineRenderer Line;
 
-    //Updateで使う用のint
-    int index = 0;
+    ////Updateで使う用のint
+    int i;
 
     //ボタンが押された用のflag
     bool flag;
-
-    //弾の進行具合(Lerpの第三引数)
-    float time = 0;
-
-
-    //private void Start()
-    //{
-    //    CalSpeed = SavedSpeed;
-    //}
 
     void Update()
     {
@@ -51,56 +43,57 @@ public class Projectile : MonoBehaviour
             Line = GameObject.FindGameObjectWithTag("ShotLine").GetComponent<LineRenderer>();
         }
 
-        //もし射線があってflagがtrueだったら
-        if (Line != null && Line.enabled && flag)
+        //ラインが引かれていたら
+        if (Line != null && Line.enabled)
         {
             //配列に射線の全座標をいれる
             FingerPositions = ShotLineDrawer.GetFingerPositions();
 
-            //indexの数値よがラインの全長より小さかったら
-            if (index < FingerPositions.Length)
+        }
+
+        //もしラインがあってボタンが押されたら
+        if (Line != null && Line.enabled && flag)
+        {
+
+            //弾を実際に動かす部分
+            if (i == FingerPositions.Length - 1)
             {
-
-                time += Time.deltaTime;
-
-                if (index == FingerPositions.Length - 1)
+                Bullet.transform.position = Vector3.MoveTowards(FingerPositions[FingerPositions.Length - 2], FingerPositions[FingerPositions.Length - 1], Speed * Time.deltaTime);
+            }
+            else
+            {
+                if (i == 0)
                 {
-                    var vec = Vector3.Lerp(FingerPositions[FingerPositions.Length - 2], FingerPositions[FingerPositions.Length - 1], time);
-                    //弾の位置を代入
-                    Bullet.transform.position = vec;
+                    Bullet.transform.position = FingerPositions[0];
                 }
                 else
                 {
-                    //現在の点から次の点
-                    var vec = Vector3.Lerp(FingerPositions[index], FingerPositions[index + 1], time);
-                    //弾の位置を代入
-                    Bullet.transform.position = vec;
-                }
-
-                //CalSpeedの値を1減らす
-                CalSpeed--;
-
-                //もしCalSpeedの値が0以下だったら
-                if (CalSpeed <= 0)
-                {
-                    //CalSpeedを戻す
-                    CalSpeed = SavedSpeed;
-                    //次の座標の配列に移行
-                    index++;
+                    Bullet.transform.position = Vector3.MoveTowards(Bullet.transform.position, FingerPositions[i + 1], Speed * Time.deltaTime);
                 }
             }
-            //index=ラインの全長になったら
-            else
+
+            if (Bullet.transform.position == FingerPositions[i + 1])
+            {
+                i++;
+                Debug.Log(i);
+            }
+
+            //弾が動き終わったら
+            if (i == FingerPositions.Length - 1)
             {
                 ShotLineDrawer.ClearLine();
-                index = 0;
+                i = 0;
+                Bullet.transform.position = OriginBulletLocation.position;
                 flag = false;
             }
+
         }
     }
 
+
     //射撃ボタン、flagをtrueに
-    public void Fire()
+    [SerializeField]
+    private void Fire()
     {
         flag = true;
     }

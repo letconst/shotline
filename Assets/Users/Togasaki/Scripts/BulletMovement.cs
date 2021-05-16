@@ -5,16 +5,8 @@ using UnityEngine;
 public class BulletMovement : MonoBehaviour
 {
 
-    public Transform OriginBulletLocation;
+    [SerializeField] private Transform OriginBulletLocation;
 
-
-    private void Update()
-    {
-        if(true)
-        {
-            transform.position = OriginBulletLocation.position;
-        }
-    }
 
     void OnCollisionEnter(Collision collision)
 	{
@@ -23,8 +15,8 @@ public class BulletMovement : MonoBehaviour
 		// 衝突した相手にWallタグが付いているとき
 		if (collision.gameObject.tag == "Wall")
 		{
-			Destroy(gameObject);
-		}
-	}
+            transform.position = OriginBulletLocation.position;
+        }
+    }
 
 }

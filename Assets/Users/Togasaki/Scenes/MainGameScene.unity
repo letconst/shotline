@@ -296,7 +296,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: OriginBullet
       objectReference: {fileID: 0}
-    - target: {fileID: 6009679887316792313, guid: d7aa22edc7d1e624492c056df89ab94f, type: 3}
+    - target: {fileID: 0}
       propertyPath: OriginBulletLocation
       value: 
       objectReference: {fileID: 2111153398}
@@ -306,7 +306,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8240023773710551049, guid: d7aa22edc7d1e624492c056df89ab94f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -26.21
+      value: -24.42
       objectReference: {fileID: 0}
     - target: {fileID: 8240023773710551049, guid: d7aa22edc7d1e624492c056df89ab94f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -314,7 +314,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8240023773710551049, guid: d7aa22edc7d1e624492c056df89ab94f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.743907
+      value: -10.53
       objectReference: {fileID: 0}
     - target: {fileID: 8240023773710551049, guid: d7aa22edc7d1e624492c056df89ab94f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -458,8 +458,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93c8b02ec8728a248ba9720b429c3af1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OriginBulletLocation: {fileID: 2111153398}
   Bullet: {fileID: 1340948900}
-  SavedSpeed: 10
+  Speed: 10
 --- !u!114 &730796519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -738,6 +739,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 809079969102882050, guid: d7aa22edc7d1e624492c056df89ab94f, type: 3}
   m_PrefabInstance: {fileID: 173593629}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1340948901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1340948900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e916f3747ded5e4b88d71ac3142f6bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OriginBulletLocation: {fileID: 2111153398}
 --- !u!1 &1852606318
 GameObject:
   m_ObjectHideFlags: 0
@@ -921,7 +935,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2111153397}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -26.42, y: -2.2655964, z: 3.2736943}
+  m_LocalPosition: {x: -26.42, y: -2.2655964, z: -4.066305}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
