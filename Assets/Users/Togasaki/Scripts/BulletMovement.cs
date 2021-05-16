@@ -8,14 +8,6 @@ public class BulletMovement : MonoBehaviour
     [SerializeField] private Transform OriginBulletLocation;
 
 
-    private void Update()
-    {
-        if(true)
-        {
-            transform.position = OriginBulletLocation.position;
-        }
-    }
-
     void OnCollisionEnter(Collision collision)
 	{
 
