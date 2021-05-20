@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Test
   m_EditorClassIdentifier: 
   itemName: "\u30C6\u30B9\u30C81"
-  itemSprite: {fileID: 0}
+  itemSprite: {fileID: 21300000, guid: 83eeba6b709a37545a6cbb8769e05451, type: 3}
   itemObject: {fileID: 7405496809677333291, guid: a492f9d7368e9b74087a0a91ddd3b741, type: 3}

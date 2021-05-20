@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Wall
+  - Item
+  - ItemIcon
+  - ItemGetText
   - ShotLine
   layers:
   - Default
