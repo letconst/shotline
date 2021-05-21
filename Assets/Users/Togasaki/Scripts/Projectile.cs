@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
@@ -17,10 +15,12 @@ public class Projectile : MonoBehaviour
     [SerializeField] private Transform OriginBulletLocation;
 
     //弾丸のprefab
-    [SerializeField] private GameObject Bullet;
-  
+    public GameObject Bullet;
+    public static Vector3 OriginBulletScale;
+
     //はやさ
-    [SerializeField] private float Speed = 10;
+    public static float Speed = 10;
+    public static float OriginSpeed = 10;
 
     //射線の座標をいれる配列
     Vector3[] FingerPositions;
@@ -37,6 +37,14 @@ public class Projectile : MonoBehaviour
     //一回だけ射線の座標を取得
     bool One = true;
 
+    //BB用のint
+    public static int BBnum = 2;
+
+
+    private void Start()
+    {
+        OriginBulletScale = Bullet.transform.localScale;
+    }
 
     void Update()
     {
@@ -45,6 +53,7 @@ public class Projectile : MonoBehaviour
     }
 
 
+    //射線に沿って弾丸を移動させる処理
     private void LineAppear()
     {
         //もし射線が空だったら
@@ -106,7 +115,22 @@ public class Projectile : MonoBehaviour
     //射撃ボタン、flagをtrueに
     public void Fire()
     {
-        flag = true;
+        //一回だけ座標を取得用
         One = true;
+
+        //BigBullet用
+        if (Line != null && Line.enabled && BigBullet.BBOn && flag == false)
+        {
+            BBnum--;
+
+            if (BBnum < 0)
+            {
+                BigBullet.BBOn = false;
+            }
+        }
+
+        //球が動いているとき用
+        flag = true;
+
     }
 }
