@@ -21,4 +21,17 @@ public class ItemDatabase : MonoBehaviour
     {
         return ItemList[Random.Range(0, ItemList.Count)];
     }
+
+    /// <summary>
+    /// アイテムデータからアイテムオブジェクトを生成する
+    /// </summary>
+    /// <param name="itemData">アイテムデータ</param>
+    /// <param name="position">生成する位置</param>
+    /// <returns>生成したオブジェクト</returns>
+    public static GameObject InstantiateItem(ItemData itemData, Vector3 position)
+    {
+        GameObject item = Instantiate(itemData.ItemObject, position, Quaternion.identity);
+
+        return item;
+    }
 }
