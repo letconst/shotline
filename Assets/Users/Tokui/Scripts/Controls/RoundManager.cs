@@ -9,9 +9,7 @@ public class RoundManager : MonoBehaviour
     public float PlayerLife = 3;
 
     // 現在ラウンドが切り替わっている最中かどうか判別
-    public bool RoundMove = false;
-    // ラウンドが切り替わっている最中は操作が出来なくなるようにする
-    public static bool MoveStop = true;
+    public static bool RoundMove = false;
 
     // Start is called before the first frame update
     void Start()
@@ -22,10 +20,30 @@ public class RoundManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // ラウンドが切り替わっている最中でなければ処理を行う
-        if (RoundMove == false)
+        HitVerification();
+    }
+
+    public void HitVerification()
+    {
+        // 弾が当たったら操作不能にし、ライフを1減らす
+        if (RoundMove == true)
         {
-            MoveStop = false;
+            Debug.Log("Hit");
+
+            // プレイヤーのライフを1減らす
+            PlayerLife--;
+
+            if (PlayerLife >0)
+            {
+                // ラウンド切り替え
+                RoundMove = false;
+            }
+            // プレイヤーのライフが0になったらリザルトへ
+            if (PlayerLife == 0)
+            {
+                //リザルトへ
+                Debug.Log("Result");
+            }
         }
     }
 }

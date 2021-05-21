@@ -5,19 +5,26 @@ public class TouchController : MonoBehaviour
 
     // Start is called before the first frame update
     public Rigidbody rb;
+
     public float speed;
+
     private Animator anim;
+
     private bool move, rotation;
+
     private Vector2 startPos, currentPos, differenceDisVector2;
+
+    public static bool Hit = false;
+
     [SerializeField]
     float radian, differenceDisFloat;
+
     [SerializeField]
     float PlayerSpeed = 5f;
+
     [SerializeField]
     float PlayerMinSpeed = 0.25f;
 
-    RoundManager roundManager;
-    
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -27,13 +34,7 @@ public class TouchController : MonoBehaviour
 
     void Update()
     {
-        if(RoundManager.MoveStop == true)
-        {
-            Debug.Log("Hit");
-            return;
-        }
         MovementControll();
-        RoundMoves();
     }
 
     void FixedUpdate()
@@ -43,6 +44,11 @@ public class TouchController : MonoBehaviour
 
     void MovementControll()
     {
+        if (RoundManager.RoundMove == true)
+        {
+            return;
+        }
+
         #region エディター上での動作
 #if UNITY_EDITOR
         //移動
@@ -181,6 +187,11 @@ public class TouchController : MonoBehaviour
     
     void Movement()
     {
+        if (RoundManager.RoundMove == true)
+        {
+            return;
+        }
+
         if (move == true)
         {
             rb.velocity = transform.forward * speed;
@@ -188,38 +199,15 @@ public class TouchController : MonoBehaviour
         }
     }
 
-
-    public void RoundMoves()
-    {
-        // ラウンド切り替え
-        if (roundManager.RoundMove == true)
-        {
-            // プレイヤーポジションのリセット
-            this.transform.position = new Vector3(0, 0, 0);
-
-            roundManager.RoundMove = false;
-        }
-    }
-
     // 要変更
     public void OnCollisionEnter(Collision collision)
     {
-        // 弾が当たったら操作不能にし、ライフを1減らす
         if (collision.gameObject.tag == "Wall")
         {
-            // プレイヤーのライフを1減らす
-            roundManager.PlayerLife--;
-            // 操作を不能にする
-            RoundManager.MoveStop = true;
-            // ラウンドを切り替える
-            roundManager.RoundMove = true;
+            RoundManager.RoundMove = true;
 
-            // プレイヤーのライフが0になったらリザルトへ
-            if (roundManager.PlayerLife == 0)
-            {
-                //リザルトへ
-                Debug.Log("Result");
-            }
+            // プレイヤーポジションのリセット
+            this.transform.position = new Vector3(0, 0, 0);
         }
     }
 }
