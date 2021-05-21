@@ -34,21 +34,32 @@ public class Projectile : MonoBehaviour
     //ボタンが押された用のflag
     bool flag;
 
+    //一回だけ射線の座標を取得
+    bool One = true;
+
+
     void Update()
     {
+        LineAppear();
 
+    }
+
+
+    private void LineAppear()
+    {
         //もし射線が空だったら
         if (Line == null)
         {
             Line = GameObject.FindGameObjectWithTag("ShotLine").GetComponent<LineRenderer>();
         }
 
+
         //ラインが引かれていたら
-        if (Line != null && Line.enabled)
+        if (Line != null && Line.enabled && One)
         {
             //配列に射線の全座標をいれる
             FingerPositions = ShotLineDrawer.GetFingerPositions();
-
+            One = false;
         }
 
         //もしラインがあってボタンが押されたら
@@ -75,7 +86,6 @@ public class Projectile : MonoBehaviour
             if (Bullet.transform.position == FingerPositions[i + 1])
             {
                 i++;
-                Debug.Log(i);
             }
 
             //弾が動き終わったら
@@ -88,13 +98,15 @@ public class Projectile : MonoBehaviour
             }
 
         }
+
+
     }
 
 
     //射撃ボタン、flagをtrueに
-    [SerializeField]
-    private void Fire()
+    public void Fire()
     {
         flag = true;
+        One = true;
     }
 }
