@@ -9,6 +9,7 @@ TagManager:
   - ItemIcon
   - ItemGetText
   - ShotLine
+  - ItemSpawn
   layers:
   - Default
   - TransparentFX
