@@ -508,10 +508,6 @@ PrefabInstance:
       propertyPath: lineCamera
       value: 
       objectReference: {fileID: 1547536180}
-    - target: {fileID: 276637055302969569, guid: a3520b68dd5439646857b7561b2a8249, type: 3}
-      propertyPath: drawableAreaRadius
-      value: 250
-      objectReference: {fileID: 0}
     - target: {fileID: 276637055302969570, guid: a3520b68dd5439646857b7561b2a8249, type: 3}
       propertyPath: m_RootOrder
       value: 3
