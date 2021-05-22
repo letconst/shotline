@@ -9,6 +9,7 @@ TagManager:
   - ItemIcon
   - ItemGetText
   - ShotLine
+  - JoyStyckCamera
   layers:
   - Default
   - TransparentFX
