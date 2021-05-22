@@ -21,6 +21,8 @@ public class ItemPositionData : MonoBehaviour
     /// </summary>
     public float elapsedTimeFromSpawned;
 
+    private GameObject SpawnedItem;
+
     private void Update()
     {
         if (elapsedTimeFromSpawned > 0)
@@ -31,5 +33,19 @@ public class ItemPositionData : MonoBehaviour
         {
             elapsedTimeFromSpawned = 0;
         }
+        if (SpawnedItem == null)
+        {
+            isSpawned = false;
+        }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Item"))
+        {
+            isSpawned = true;
+            SpawnedItem = other.gameObject;
+        }
+    }
+
+   
 }

@@ -10,6 +10,7 @@ TagManager:
   - ItemGetText
   - ShotLine
   - JoyStyckCamera
+  - ItemSpawn
   layers:
   - Default
   - TransparentFX
