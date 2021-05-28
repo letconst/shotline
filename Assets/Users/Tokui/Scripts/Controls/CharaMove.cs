@@ -1,13 +1,13 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
 public class CharaMove : MonoBehaviour
 {
-    //ì¬‚µ‚½Joystick
+    //ä½œæˆã—ãŸJoystick
     [SerializeField]
     private Joystick _joystick = null;
 
-    //ˆÚ“®‘¬“x
+    //ç§»å‹•é€Ÿåº¦
     [SerializeField]
     public float speed = 10.0f;
 
@@ -42,18 +42,14 @@ public class CharaMove : MonoBehaviour
         {
             Debug.Log("Hit");
             RoundManager.RoundMove = true;
-
-            // ƒvƒŒƒCƒ„[ƒ|ƒWƒVƒ‡ƒ“‚ÌƒŠƒZƒbƒg
-            //Debug.Log(this.transform.position);
-            //this.transform.position = new Vector3(0, 0, 0);
-            //Debug.Log(this.transform.position);
-
-            // controller.Move(Vector3.zero);
-
             StartCoroutine(Move());
         }
     }
 
+    /// <summary>
+    /// CharacterControllerä¸€æ™‚çš„ã«ç„¡åŠ¹ã«ã—ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹ã‚³ãƒ«ãƒ¼ãƒãƒ³
+    /// </summary>
+    /// <returns></returns>
     IEnumerator Move()
     {
         yield return new WaitForFixedUpdate();

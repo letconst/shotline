@@ -25,8 +25,6 @@ public class RoundManager : MonoBehaviour
         // 弾が当たったら操作不能にし、ライフを1減らす
         if (RoundMove == true)
         {
-            //Debug.Log("Hit");
-
             // プレイヤーのライフを1減らす
             PlayerLife--;
 
