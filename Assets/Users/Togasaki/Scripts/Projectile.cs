@@ -97,6 +97,16 @@ public class Projectile : MonoBehaviour
                 i++;
             }
 
+            if (BulletMovement.BulletBreak)
+            {
+                ShotLineDrawer.ClearLine();
+                i = 0;
+                Bullet.transform.position = OriginBulletLocation.position;
+                flag = false;
+                BulletMovement.BulletBreak = false;
+
+            }
+
             //弾が動き終わったら
             if (i == FingerPositions.Length - 1)
             {

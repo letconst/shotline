@@ -12,6 +12,7 @@ TagManager:
   - JoyStyckCamera
   - ItemSpawn
   - Bullet
+  - Shield
   layers:
   - Default
   - TransparentFX

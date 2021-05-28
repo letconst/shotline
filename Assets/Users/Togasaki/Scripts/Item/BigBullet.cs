@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BigBullet : ItemBase
+public class BigBullet : PassiveItem
 {
     //ゲーム内のBulletを取得
     GameObject Bullet;
@@ -14,7 +14,7 @@ public class BigBullet : ItemBase
 
 
     //最初に実行される
-    public override void Init()
+    protected override void Init()
     {
         //いる
         base.Init();
@@ -26,7 +26,7 @@ public class BigBullet : ItemBase
         Projectile.BBnum = 2;
 
         //OriginBulletをさがしてその中のProjectileを変数化
-        Bullet = GameObject.Find("OriginBullet");
+        Bullet = GameObject.FindGameObjectWithTag("Bullet");
         GetProjectile = Bullet.GetComponent<Projectile>();
 
         //弾のスケールを変える
@@ -43,7 +43,6 @@ public class BigBullet : ItemBase
     //最後に実行される
     protected override void Terminate()
     {
-        base.Terminate();
 
         //弾の大きさを戻す
         Bullet.transform.localScale = Projectile.OriginBulletScale;
@@ -51,13 +50,10 @@ public class BigBullet : ItemBase
         //スピードを戻す
         Projectile.Speed = Projectile.OriginSpeed;
 
+        base.Terminate();
+
     }
 
-
-    private void OnTriggerEnter(Collider other)
-    {
-        Init();
-    }
 
     protected override void UpdateFunction()
     {

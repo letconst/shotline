@@ -3,6 +3,8 @@
 public class BulletMovement : MonoBehaviour
 {
 
+    public static bool BulletBreak = false;
+
     [SerializeField] private Transform OriginBulletLocation;
 
 
@@ -13,8 +15,9 @@ public class BulletMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Wall")
+        if (other.gameObject.tag == "Wall" || other.gameObject.tag == "Shield")
         {
+            BulletBreak = true;
             transform.position = OriginBulletLocation.position;
         }
 

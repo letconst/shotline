@@ -1,19 +1,24 @@
 using UnityEngine;
 
-public class Shield : ItemBase
+public class Shield : ActiveItem
 {
 
     //Shieldが有効の時用のbool、使い果たすとfalse
     public static bool ShiOn = false;
 
+    GameObject ShieldObj;
+
+    GameObject Player;
+
     //OriginShieldLocationを定義
     [SerializeField] private Transform OriginShieldLocation;
 
 
+
     //最初に実行される
-    public override void Init()
+    protected override void Init()
     {
-        //いる
+        //とったらはじめにされる処理
         base.Init();
 
         ShiOn = true;
@@ -26,19 +31,32 @@ public class Shield : ItemBase
     //最後に実行される
     protected override void Terminate()
     {
+        ShieldObj = GameObject.FindGameObjectWithTag("Shield");
+
+        ShieldObj.transform.position = OriginShieldLocation.position;
+
         base.Terminate();
-
-        GameObject Shield;
-        Shield = GameObject.Find("OriginShield");
-
-        Shield.transform.position = OriginShieldLocation.position;
 
     }
 
 
-    private void OnTriggerEnter(Collider other)
+    protected override void OnClickButton()
     {
-        Init();
+        if (ShiOn)
+        {
+
+            Player = GameObject.FindGameObjectWithTag("Player");
+            Vector3 vec;
+            vec = Player.transform.forward;
+            vec.z += 2f;
+
+            Vector3 pos;
+            pos = Player.transform.position;
+
+            ShieldObj = GameObject.FindGameObjectWithTag("Shield");
+
+            ShieldObj.transform.position = pos + vec;
+        }
     }
 
     protected override void UpdateFunction()
@@ -49,4 +67,5 @@ public class Shield : ItemBase
         }
 
     }
+
 }
