@@ -9,6 +9,8 @@ TagManager:
   - ItemIcon
   - ItemGetText
   - ShotLine
+  - JoyStyckCamera
+  - ItemSpawn
   - Bullet
   layers:
   - Default

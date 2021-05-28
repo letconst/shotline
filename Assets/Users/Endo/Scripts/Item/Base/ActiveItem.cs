@@ -1,12 +1,17 @@
-﻿using UnityEngine;
-
-public abstract class ActiveItem : ItemBase
+﻿public abstract class ActiveItem : ItemBase
 {
-    /// <summary>
-    /// このアイテム情報を所持アイテムUIに反映する
-    /// Boltから呼び出し予定のためpublic
-    /// </summary>
-    public void DrawItemButton()
+    protected override void Start()
     {
+        base.Start();
+
+        ItemManager.Instance.ItemBtn.onClick.AddListener(OnClickButton);
+    }
+
+    /// <summary>
+    /// アイテムボタンをタップした際に動作させる処理
+    /// </summary>
+    protected virtual void OnClickButton()
+    {
+        Init();
     }
 }

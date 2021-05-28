@@ -46,4 +46,5 @@ MonoBehaviour:
   linePrefab: {fileID: 1641711191684671778, guid: 50d68100bc0ac6d43a3b94135ca6acad, type: 3}
   lineZPos: 9.8
   lineFineness: 0.1
+  drawableAreaRadius: 250
   lineCamera: {fileID: 0}

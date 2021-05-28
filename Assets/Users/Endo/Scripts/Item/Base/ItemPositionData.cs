@@ -15,21 +15,16 @@ public class ItemPositionData : MonoBehaviour
     /// </summary>
     public bool isSpawned;
 
-    /// <summary>
-    /// アイテムが生成されてからの経過時間。
-    /// この変数に秒数を代入すると、自動的に時間が減少していき、ゼロ以下になるとゼロに固定されます。
-    /// </summary>
-    public float elapsedTimeFromSpawned;
+    private GameObject SpawnedItem;
 
-    private void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        if (elapsedTimeFromSpawned > 0)
+        if (other.CompareTag("Item"))
         {
-            elapsedTimeFromSpawned -= Time.deltaTime;
-        }
-        else
-        {
-            elapsedTimeFromSpawned = 0;
+            isSpawned = true;
+            SpawnedItem = other.gameObject;
         }
     }
+
+
 }
