@@ -51,6 +51,10 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         // TODO: 開始地点をプレイヤー（画面中央）からに限定する
 
         DrawLine();
+    }
+
+    private void LateUpdate()
+    {
         FollowLineToCamera();
     }
 

@@ -2,11 +2,25 @@
 
 public abstract class ActiveItem : ItemBase
 {
-    /// <summary>
-    /// このアイテム情報を所持アイテムUIに反映する
-    /// Boltから呼び出し予定のためpublic
-    /// </summary>
-    public void DrawItemButton()
+    protected override void Start()
     {
+        base.Start();
+
+        ItemManager.Instance.ItemBtn.onClick.AddListener(() => OnClickButton());
     }
+    
+    protected override void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
+
+        if (other.CompareTag("Player"))
+        {
+            Init();
+        }
+    }
+
+    /// <summary>
+    /// アイテムボタンをタップした際に動作させる処理
+    /// </summary>
+    protected abstract void OnClickButton();
 }

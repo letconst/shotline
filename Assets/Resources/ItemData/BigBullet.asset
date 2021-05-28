@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c08405136353a43b0b4a916968b32b, type: 3}
+  m_Name: BigBullet
+  m_EditorClassIdentifier: 
+  itemName: "\u30D3\u30C3\u30B0\u30D0\u30EC\u30C3\u30C8"
+  itemSprite: {fileID: 0}
+  itemObject: {fileID: 1044047011938289357, guid: a74b05106e52c2e4facc01218d0ff4f7, type: 3}

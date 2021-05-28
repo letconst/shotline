@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BulletMovement : MonoBehaviour
 {
@@ -8,15 +6,18 @@ public class BulletMovement : MonoBehaviour
     [SerializeField] private Transform OriginBulletLocation;
 
 
-    void OnCollisionEnter(Collision collision)
-	{
+    private void Start()
+    {
+        gameObject.transform.position = OriginBulletLocation.position;
+    }
 
-
-		// 衝突した相手にWallタグが付いているとき
-		if (collision.gameObject.tag == "Wall")
-		{
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Wall")
+        {
             transform.position = OriginBulletLocation.position;
         }
+
     }
 
 }

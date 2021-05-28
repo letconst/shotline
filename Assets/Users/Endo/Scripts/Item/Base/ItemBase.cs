@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class ItemBase : MonoBehaviour
 {
@@ -7,8 +8,14 @@ public abstract class ItemBase : MonoBehaviour
 
     public ItemData Data => data;
 
-    private bool _isEnabled;
-    private bool _isInitialized;
+    private bool  _isEnabled;
+    private bool  _isInitialized;
+    private Image _itemIcon;
+
+    protected virtual void Start()
+    {
+        _itemIcon = ItemManager.Instance.ItemIcon;
+    }
 
     private void Update()
     {
@@ -17,18 +24,33 @@ public abstract class ItemBase : MonoBehaviour
         if (!_isInitialized)
         {
             Init();
-            _isInitialized = true;
         }
 
         UpdateFunction();
     }
 
-    /// <summary>
-    /// アイテムを使用開始した際の動作
-    /// </summary>
-    public virtual void Init()
+    protected virtual void OnTriggerEnter(Collider other)
     {
-        _isEnabled = true;
+        if (other.CompareTag("Player"))
+        {
+            // UIへの反映
+            _itemIcon.sprite = Data.ItemSprite;
+            _itemIcon.color  = Color.white;
+
+            // 画面外への移動
+            transform.position = ItemManager.Instance.HoldPos;
+        }
+    }
+
+    /// <summary>
+    /// アイテムを取得した際の動作
+    /// </summary>
+    protected virtual void Init()
+    {
+        if (_isInitialized) return;
+
+        _isEnabled     = true;
+        _isInitialized = true;
     }
 
     /// <summary>
@@ -41,7 +63,17 @@ public abstract class ItemBase : MonoBehaviour
     /// </summary>
     protected virtual void Terminate()
     {
-        _isEnabled     = false;
-        _isInitialized = false;
+        _isEnabled = false;
+        ClearItemIcon();
+        Destroy(this);
+    }
+
+    /// <summary>
+    /// UIに描画されたアイテムアイコンをクリアする
+    /// </summary>
+    protected void ClearItemIcon()
+    {
+        _itemIcon.sprite = null;
+        _itemIcon.color  = Color.clear;
     }
 }
