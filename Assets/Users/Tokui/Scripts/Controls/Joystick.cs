@@ -94,9 +94,9 @@ public class Joystick : Graphic, IPointerDownHandler, IPointerUpHandler, IEndDra
         }
 
         //スティックが子にあるか検索、あれば取得し終了
-        if (transform.FindChild(STICK_NAME) != null)
+        if (transform.Find(STICK_NAME) != null)
         {
-            _stick = transform.FindChild(STICK_NAME).gameObject;
+            _stick = transform.Find(STICK_NAME).gameObject;
             return;
         }
 

@@ -11,7 +11,7 @@ public class Shield : ItemBase
 
 
     //Å‰‚ÉÀs‚³‚ê‚é
-    public override void Init()
+    protected override void Init()
     {
         //‚¢‚é
         base.Init();
