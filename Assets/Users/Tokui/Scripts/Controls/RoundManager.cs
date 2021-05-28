@@ -3,9 +3,6 @@
 public class RoundManager : MonoBehaviour
 {
     [SerializeField]
-    public Object Player;
-
-    [SerializeField]
     public float PlayerLife = 3;
 
     // 現在ラウンドが切り替わっている最中かどうか判別
