@@ -11,6 +11,7 @@ TagManager:
   - ShotLine
   - JoyStyckCamera
   - ItemSpawn
+  - Bullet
   layers:
   - Default
   - TransparentFX
