@@ -25,11 +25,15 @@ public class ShieldMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Enter");
+
         if (other.gameObject.tag == "Bullet")
         {
+            //当たり判定に入ったのがBulletだった場合ShieldLimitをマイナス１
             ShieldLimit--;
             if (ShieldLimit < 0)
             {
+                ShieldLimit = 4;
                 Shield.ShiOn = false;
             }
         }
