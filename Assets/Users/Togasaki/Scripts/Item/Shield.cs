@@ -33,8 +33,6 @@ public class Shield : ActiveItem
     {
         ShieldObj = GameObject.FindGameObjectWithTag("Shield");
 
-        ShieldObj.transform.position = OriginShieldLocation.position;
-
         base.Terminate();
 
     }
@@ -42,26 +40,23 @@ public class Shield : ActiveItem
 
     protected override void OnClickButton()
     {
-        if (ShiOn)
-        {
 
-            Player = GameObject.FindGameObjectWithTag("Player");
-            Vector3 vec;
-            vec = Player.transform.forward;
-            vec.z += 2f;
+        Player = GameObject.FindGameObjectWithTag("Player");
+        Vector3 vec;
+        vec = Player.transform.forward;
+        vec.z += 2f;
 
-            Vector3 pos;
-            pos = Player.transform.position;
+        Vector3 pos;
+        pos = Player.transform.position;
 
-            ShieldObj = GameObject.FindGameObjectWithTag("Shield");
+        ShieldObj = GameObject.FindGameObjectWithTag("Shield");
 
-            ShieldObj.transform.position = pos + vec;
-        }
+        ShieldObj.transform.position = pos + vec;
     }
 
     protected override void UpdateFunction()
     {
-        if (ShiOn == false)
+        if (ShiOn == true)
         {
             Terminate();
         }

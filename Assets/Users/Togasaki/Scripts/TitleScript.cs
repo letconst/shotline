@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class TitleScript : MonoBehaviour
 {
     //マッチ用bool
-    bool MatchSuccess = false;
+    bool MatchSuccess = true;
     
     //タップしたときの処理
     public void ChangeSceneToGame()
