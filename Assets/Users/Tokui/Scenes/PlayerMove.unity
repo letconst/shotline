@@ -144,15 +144,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_LocalScale.x
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_LocalScale.y
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_LocalScale.z
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_LocalPosition.x
@@ -402,8 +402,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 87450990}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 470, y: 5, z: 500}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalPosition: {x: 495, y: 0.5, z: 500}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1631715871}
   m_RootOrder: 0
@@ -547,7 +547,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 503607629}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 110, z: 0}
+  m_LocalPosition: {x: 0, y: 10.72, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -640,8 +640,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 892539153}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 530, y: 5, z: 500}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalPosition: {x: 505, y: 0.5, z: 500}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1631715871}
   m_RootOrder: 1
@@ -735,8 +735,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1070047423}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 500, y: 5, z: 470}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalPosition: {x: 500, y: 0.5, z: 495}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1631715871}
   m_RootOrder: 3
@@ -1070,7 +1070,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1742688531}
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1103,8 +1103,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1781240316}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 500, y: 5, z: 530}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalPosition: {x: 500, y: 0.5, z: 505}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1631715871}
   m_RootOrder: 2
@@ -1190,7 +1190,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!143 &2048804886
 CharacterController:
@@ -1223,7 +1223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _joystick: {fileID: 569231372}
-  speed: 20
+  speed: 5
 --- !u!136 &2048804889
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1245,6 +1245,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1310622212}
     m_Modifications:
+    - target: {fileID: 6146658073659733867, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+      propertyPath: _radius
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6146658073659733867, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+      propertyPath: _position.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6146658073659733867, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+      propertyPath: _position.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6146658073659733868, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1332,6 +1344,10 @@ PrefabInstance:
     - target: {fileID: 6146658073659733869, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
       propertyPath: m_Name
       value: JoyStick
+      objectReference: {fileID: 0}
+    - target: {fileID: 6146658073659733869, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c462d8f020a3020479238adb1c173d0b, type: 3}

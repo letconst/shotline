@@ -9,11 +9,12 @@ public class CharaMove : MonoBehaviour
 
     //移動速度
     [SerializeField]
-    public float speed = 10.0f;
+    public float speed = 5.0f;
 
     float moveX = 0f;
     float moveZ = 0f;
 
+    private Vector3 latestPos;  //前回のPosition
 
     CharacterController controller;
 
@@ -34,6 +35,16 @@ public class CharaMove : MonoBehaviour
         Vector3 direction = new Vector3(moveX, 0, moveZ);
 
         controller.SimpleMove(direction);
+
+        // 移動方向にキャラクターが向くようにする
+        Vector3 diff = transform.position - latestPos;   //前回からどこに進んだかをベクトルで取得
+        latestPos = transform.position;  //前回のPositionの更新
+
+        //ベクトルの大きさが0.01以上の時に向きを変える処理をする
+        if (diff.magnitude > 0.01f)
+        {
+            transform.rotation = Quaternion.LookRotation(diff); //向きを変更する
+        }
     }
 
     public void OnCollisionEnter(Collision collision)

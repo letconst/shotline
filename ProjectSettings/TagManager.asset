@@ -6,7 +6,6 @@ TagManager:
   tags:
   - Wall
   - ShotLine
-  - JoyStyckCamera
   layers:
   - Default
   - TransparentFX
