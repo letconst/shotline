@@ -43,7 +43,7 @@ public abstract class ItemBase : MonoBehaviour
     }
 
     /// <summary>
-    /// アイテムを使用開始した際の動作
+    /// アイテムを取得した際の動作
     /// </summary>
     protected virtual void Init()
     {
