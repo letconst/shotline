@@ -4,4 +4,9 @@ public class Apple : ActiveItem
     {
         throw new System.NotImplementedException();
     }
+
+    protected override void OnClickButton()
+    {
+        throw new System.NotImplementedException();
+    }
 }
