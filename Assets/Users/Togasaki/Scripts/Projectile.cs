@@ -37,8 +37,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private GameObject BulletPrefab;
 
     //リストに弾の情報を
-    //最終地点に到達したらリストから消す
-    private List<BulletInfo> BulletList = new List<BulletInfo>();
+    public static List<BulletInfo> BulletList = new List<BulletInfo>();
 
     public static Vector3 OriginBulletScale;
 
@@ -53,17 +52,20 @@ public class Projectile : MonoBehaviour
     bool One = false;
 
     //BB用のint
-    public static int BBnum = 2;
+    public static int BBnum = 4;
 
-    //private void Start()
-    //{
+    //for用
+    private int i = 0;
 
-    //    OriginBulletScale = Bullet.transform.localScale;
-    //}
+    //射線用
+    private bool flag = true;
 
     void Update()
     {
         LineAppear();
+
+        Debug.Log(flag);
+
     }
 
 
@@ -85,8 +87,28 @@ public class Projectile : MonoBehaviour
 
             GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
 
+            if(BigBullet.BBOn)
+            {
+
+                //弾のスケールを変える
+                BI.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+
+                if (BBnum == 0)
+                {
+                    //弾の大きさを戻す
+                    BBnum = 4;
+                    BI.transform.localScale = new Vector3(1f, 1f, 1f);
+                    BigBullet.BBOn = false;
+                }
+
+            }
             //配列に射線の全座標とそれに対応する弾丸をいれる
             BulletList.Add(new BulletInfo(BI, ShotLineDrawer.GetFingerPositions(), 0));
+
+            if(BulletList.Count>1)
+            {
+                flag = false;
+            }
 
             One = false;
 
@@ -97,7 +119,7 @@ public class Projectile : MonoBehaviour
         if (BulletList.Count > 0)
         {
 
-            for (int i = 0; i < BulletList.Count; i++)
+            for (i = 0; i < BulletList.Count; i++)
             {
 
                 //現在の座標を変更できるように変数化
@@ -132,12 +154,19 @@ public class Projectile : MonoBehaviour
                 }
 
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
-                if (BulletList[i].index == BulletList[i].FP.Length - 1)
+                if (BulletList[i].index == BulletList[i].FP.Length - 1||BulletMovement.BBOn)
                 {
-
+                    if (BulletList.Count == 1)
+                    {
+                        flag = true;
+                    }
+                    if (flag && BulletList.Count == 1)
+                    {
+                        ShotLineDrawer.ClearLine();
+                    }
+                    BulletMovement.BBOn = false;
                     Destroy(BulletList[i].Bullet);
                     BulletList.RemoveAt(i);
-
                 }
 
             }
@@ -157,15 +186,9 @@ public class Projectile : MonoBehaviour
         //一回だけ座標を取得用
         One = true;
 
-        //BigBullet用
-        if (Line != null && Line.enabled && BigBullet.BBOn)
+        if (BigBullet.BBOn && Line != null && Line.enabled)
         {
             BBnum--;
-
-            if (BBnum < 0)
-            {
-                BigBullet.BBOn = false;
-            }
         }
 
     }

@@ -16,12 +16,12 @@ public class ShieldMovement : MonoBehaviour
 
             if (ShieldLimit < 0)
             {
+                ShieldLimit = 4;
                 Destroy(gameObject);
             }
         }
 
+
     }
-
-
 
 }
