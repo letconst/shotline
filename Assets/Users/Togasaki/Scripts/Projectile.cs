@@ -125,6 +125,8 @@ public class Projectile : MonoBehaviour
     //射撃ボタン、flagをtrueに
     public void Fire()
     {
+        ShotLineDrawer.FixLine();
+        
         //一回だけ座標を取得用
         One = true;
 

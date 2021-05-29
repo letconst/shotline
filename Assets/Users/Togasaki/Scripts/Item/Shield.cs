@@ -3,32 +3,28 @@ using UnityEngine;
 public class Shield : ActiveItem
 {
 
-    //Shield‚ª—LŒø‚Ì—p‚ÌboolAg‚¢‰Ê‚½‚·‚Æfalse
+    //Shieldï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½Ìï¿½ï¿½pï¿½ï¿½boolï¿½Aï¿½gï¿½ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½ï¿½ï¿½false
     public static bool ShiOn = false;
 
     GameObject ShieldObj;
 
     GameObject Player;
 
-    //OriginShieldLocation‚ğ’è‹`
+    //OriginShieldLocationï¿½ï¿½ï¿½`
     [SerializeField] private Transform OriginShieldLocation;
 
 
 
-    //Å‰‚ÉÀs‚³‚ê‚é
+    //ï¿½Åï¿½ï¿½Éï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½
     protected override void Init()
     {
-        //‚Æ‚Á‚½‚ç‚Í‚¶‚ß‚É‚³‚ê‚éˆ—
+        //ï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½ß‚É‚ï¿½ï¿½ï¿½éˆï¿½ï¿½
         base.Init();
 
         ShiOn = true;
-
-        gameObject.transform.position = OriginShieldLocation.position;
-
-
     }
 
-    //ÅŒã‚ÉÀs‚³‚ê‚é
+    //ï¿½ÅŒï¿½Éï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½
     protected override void Terminate()
     {
         ShieldObj = GameObject.FindGameObjectWithTag("Shield");

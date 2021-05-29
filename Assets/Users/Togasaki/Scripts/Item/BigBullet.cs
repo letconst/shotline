@@ -2,52 +2,48 @@ using UnityEngine;
 
 public class BigBullet : PassiveItem
 {
-    //ƒQ[ƒ€“à‚ÌBullet‚ğæ“¾
+    //ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Bulletï¿½ï¿½ï¿½æ“¾
     GameObject Bullet;
     Projectile GetProjectile;
 
-    //BigBullet‚ª—LŒø‚Ì—p‚ÌboolAg‚¢‰Ê‚½‚·‚Æfalse
+    //BigBulletï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½Ìï¿½ï¿½pï¿½ï¿½boolï¿½Aï¿½gï¿½ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½ï¿½ï¿½false
     public static bool BBOn = false;
 
     [SerializeField] private Transform OriginBulletLocation;
 
 
 
-    //Å‰‚ÉÀs‚³‚ê‚é
+    //ï¿½Åï¿½ï¿½Éï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½
     protected override void Init()
     {
-        //‚¢‚é
+        //ï¿½ï¿½ï¿½ï¿½
         base.Init();
 
-        //BBOn‚ğ‚Â‚¯‚é
+        //BBOnï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½
         BBOn = true;
 
-        //c‚è‰ñ”
+        //ï¿½cï¿½ï¿½ï¿½
         Projectile.BBnum = 2;
 
-        //OriginBullet‚ğ‚³‚ª‚µ‚Ä‚»‚Ì’†‚ÌProjectile‚ğ•Ï”‰»
+        //OriginBulletï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ì’ï¿½ï¿½ï¿½Projectileï¿½ï¿½Ïï¿½ï¿½ï¿½
         Bullet = GameObject.FindGameObjectWithTag("Bullet");
         GetProjectile = Bullet.GetComponent<Projectile>();
 
-        //’e‚ÌƒXƒP[ƒ‹‚ğ•Ï‚¦‚é
+        //ï¿½eï¿½ÌƒXï¿½Pï¿½[ï¿½ï¿½ï¿½ï¿½Ï‚ï¿½ï¿½ï¿½
         Bullet.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
 
-        //ƒXƒs[ƒh‚ğ•Ï‚¦‚é
+        //ï¿½Xï¿½sï¿½[ï¿½hï¿½ï¿½Ï‚ï¿½ï¿½ï¿½
         Projectile.Speed *= 0.8f;
-
-        gameObject.transform.position = OriginBulletLocation.position;
-
-
     }
 
-    //ÅŒã‚ÉÀs‚³‚ê‚é
+    //ï¿½ÅŒï¿½Éï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½
     protected override void Terminate()
     {
 
-        //’e‚Ì‘å‚«‚³‚ğ–ß‚·
+        //ï¿½eï¿½Ì‘å‚«ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
         Bullet.transform.localScale = Projectile.OriginBulletScale;
         
-        //ƒXƒs[ƒh‚ğ–ß‚·
+        //ï¿½Xï¿½sï¿½[ï¿½hï¿½ï¿½ß‚ï¿½
         Projectile.Speed = Projectile.OriginSpeed;
 
         base.Terminate();

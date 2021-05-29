@@ -41,7 +41,7 @@ public class CharaMove : MonoBehaviour
         latestPos = transform.position;  //前回のPositionの更新
 
         //ベクトルの大きさが0.01以上の時に向きを変える処理をする
-        if (diff.magnitude > 0.01f)
+        if (diff.magnitude > 0.01f && diff.y == 0)
         {
             transform.rotation = Quaternion.LookRotation(diff); //向きを変更する
         }
