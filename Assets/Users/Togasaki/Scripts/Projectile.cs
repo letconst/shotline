@@ -25,6 +25,7 @@ public class Projectile : MonoBehaviour
         //射線の現在座標用int
         public int index;
 
+
         public BulletInfo(GameObject bullet, Vector3[] fp ,int ind)
         {
             Bullet = bullet;
@@ -48,18 +49,11 @@ public class Projectile : MonoBehaviour
     //射線の変数
     LineRenderer Line;
 
-    //ボタンが押された用のflag
-    bool flag;
-
     //一回だけ射線の座標を取得
     bool One = false;
 
-    //ラインの本数
-    int linenum = 0;
-
     //BB用のint
     public static int BBnum = 2;
-
 
     //private void Start()
     //{
@@ -83,9 +77,8 @@ public class Projectile : MonoBehaviour
 
         }
 
-
         //ラインが引かれていたら
-        if (Line != null && Line.enabled && One )
+        if (Line != null && Line.enabled && One)
         {
 
             Vector3[] FingerPositions = ShotLineDrawer.GetFingerPositions();
@@ -93,11 +86,10 @@ public class Projectile : MonoBehaviour
             GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
 
             //配列に射線の全座標とそれに対応する弾丸をいれる
-            BulletList.Add(new BulletInfo(BI, ShotLineDrawer.GetFingerPositions(),0));
+            BulletList.Add(new BulletInfo(BI, ShotLineDrawer.GetFingerPositions(), 0));
 
             One = false;
 
-            linenum++;
         }
 
 
@@ -107,6 +99,7 @@ public class Projectile : MonoBehaviour
 
             for (int i = 0; i < BulletList.Count; i++)
             {
+
                 //現在の座標を変更できるように変数化
                 BulletInfo currentP = BulletList[i];
 
@@ -141,21 +134,15 @@ public class Projectile : MonoBehaviour
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
                 if (BulletList[i].index == BulletList[i].FP.Length - 1)
                 {
-                    if (BulletList.Count == 1 || i == BulletList.Count)
-                    {
-                        ShotLineDrawer.ClearLine();
-                    }
 
                     Destroy(BulletList[i].Bullet);
                     BulletList.RemoveAt(i);
-                    flag = false;
-                    One = false;
+
                 }
 
             }
 
         }
-
 
     }
 
@@ -163,6 +150,7 @@ public class Projectile : MonoBehaviour
     //射撃ボタン、flagをtrueに
     public void Fire()
     {
+
         //射線の固定
         ShotLineDrawer.FixLine();
 
@@ -170,7 +158,7 @@ public class Projectile : MonoBehaviour
         One = true;
 
         //BigBullet用
-        if (Line != null && Line.enabled && BigBullet.BBOn && flag == false)
+        if (Line != null && Line.enabled && BigBullet.BBOn)
         {
             BBnum--;
 
@@ -179,9 +167,6 @@ public class Projectile : MonoBehaviour
                 BigBullet.BBOn = false;
             }
         }
-
-        //球が動いているとき用
-        flag = true;
 
     }
 }
