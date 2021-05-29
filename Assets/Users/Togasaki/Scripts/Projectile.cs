@@ -22,10 +22,14 @@ public class Projectile : MonoBehaviour
         //射線の座標をいれる配列
         public Vector3[] FP;
 
-        public BulletInfo(GameObject bullet, Vector3[] fp)
+        //射線の現在座標用int
+        public int index;
+
+        public BulletInfo(GameObject bullet, Vector3[] fp ,int ind)
         {
             Bullet = bullet;
             FP = fp;
+            index = ind;
         }
     }
 
@@ -34,9 +38,6 @@ public class Projectile : MonoBehaviour
     //リストに弾の情報を
     //最終地点に到達したらリストから消す
     private List<BulletInfo> BulletList = new List<BulletInfo>();
-
-    //弾丸の普段いる場所（マップ外）
-    [SerializeField] private Transform OriginBulletLocation;
 
     public static Vector3 OriginBulletScale;
 
@@ -47,14 +48,14 @@ public class Projectile : MonoBehaviour
     //射線の変数
     LineRenderer Line;
 
-    ////Updateで使う用のint
-    int index;
-
     //ボタンが押された用のflag
     bool flag;
 
     //一回だけ射線の座標を取得
     bool One = false;
+
+    //ラインの本数
+    int linenum = 0;
 
     //BB用のint
     public static int BBnum = 2;
@@ -69,7 +70,6 @@ public class Projectile : MonoBehaviour
     void Update()
     {
         LineAppear();
-
     }
 
 
@@ -92,52 +92,62 @@ public class Projectile : MonoBehaviour
 
             GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
 
-            //配列に射線の全座標をいれる
-            BulletList.Add(new BulletInfo(BI, ShotLineDrawer.GetFingerPositions()));
+            //配列に射線の全座標とそれに対応する弾丸をいれる
+            BulletList.Add(new BulletInfo(BI, ShotLineDrawer.GetFingerPositions(),0));
 
             One = false;
 
+            linenum++;
         }
 
+
         //もしラインがあってボタンが押されたら
-        if (BulletList.Count>0)
+        if (BulletList.Count > 0)
         {
+
             for (int i = 0; i < BulletList.Count; i++)
             {
-
-                Debug.Log(BulletList[i].FP.Length);
+                //現在の座標を変更できるように変数化
+                BulletInfo currentP = BulletList[i];
 
                 //弾を実際に動かす部分
+
                 //もし射線の長さが最後だったら
-                if (index == BulletList[i].FP.Length - 1)
+                if (BulletList[i].index == BulletList[i].FP.Length - 1)
                 {
-                    BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].FP[BulletList[i].FP.Length-2], BulletList[i].FP[BulletList[i].FP.Length - 1], Speed * Time.deltaTime);
+                    BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].FP[BulletList[i].FP.Length - 2], BulletList[i].FP[BulletList[i].FP.Length - 1], Speed * Time.deltaTime);
                 }
                 else
                 {
                     //射線の最初
-                    if (index == 0)
+                    if (BulletList[i].index == 0)
                     {
                         BulletList[i].Bullet.transform.position = BulletList[i].FP[0];
                     }
                     else
                     {
                         //現在の射線の位置から次の射線の位置まで移動
-                        BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[index + 1], Speed * Time.deltaTime);
+                        BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], Speed * Time.deltaTime);
                     }
                 }
 
                 //もし弾が次の位置まで到達したら、その次の位置を読み込む
-                if (BulletList[i].Bullet.transform.position == BulletList[i].FP[index + 1])
+                if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
                 {
-                    index++;
+                    currentP.index++;
+                    BulletList[i] = currentP;
                 }
 
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
-                if (index == BulletList[i].FP.Length - 1)
+                if (BulletList[i].index == BulletList[i].FP.Length - 1)
                 {
-                    ShotLineDrawer.ClearLine();
-                    i = 0;
+                    if (BulletList.Count == 1 || i == BulletList.Count)
+                    {
+                        ShotLineDrawer.ClearLine();
+                    }
+
+                    Destroy(BulletList[i].Bullet);
+                    BulletList.RemoveAt(i);
                     flag = false;
                     One = false;
                 }
@@ -145,6 +155,7 @@ public class Projectile : MonoBehaviour
             }
 
         }
+
 
     }
 

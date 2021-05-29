@@ -519,7 +519,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BulletPrefab: {fileID: 809079969102882050, guid: d7aa22edc7d1e624492c056df89ab94f, type: 3}
-  OriginBulletLocation: {fileID: 948659959}
 --- !u!114 &922408204
 MonoBehaviour:
   m_ObjectHideFlags: 0
