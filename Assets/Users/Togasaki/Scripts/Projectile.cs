@@ -23,7 +23,7 @@ public struct BulletInfo
 }
 
 
-public class Projectile : ItemManager
+public class Projectile : MonoBehaviour
 {
     /*
      
