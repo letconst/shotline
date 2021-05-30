@@ -132,7 +132,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3116990043628027671, guid: ff4ff2809285f864ba7d2255c4ec9114, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3116990043628027671, guid: ff4ff2809285f864ba7d2255c4ec9114, type: 3}
       propertyPath: m_LocalPosition.x
@@ -682,7 +682,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"declarations":{"collection":{"$content":[{"name":"GetItem","value":null,"$version":"A"},{"name":"ItemPop","value":{"$content":[{"$content":0,"$type":"UnityEngine.Object"},{"$content":1,"$type":"UnityEngine.Object"},{"$content":2,"$type":"UnityEngine.Object"},{"$content":3,"$type":"UnityEngine.Object"},{"$content":4,"$type":"UnityEngine.Object"}],"$type":"Ludiq.AotList"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
+    _json: '{"declarations":{"collection":{"$content":[{"name":"GetItem","value":null,"$version":"A"},{"name":"ItemPop","value":{"$content":[{"$content":0,"$type":"UnityEngine.Object"},{"$content":1,"$type":"UnityEngine.Object"},{"$content":2,"$type":"UnityEngine.Object"},{"$content":3,"$type":"UnityEngine.Object"},{"$content":4,"$type":"UnityEngine.Object"}],"$type":"Ludiq.AotList"},"$version":"A"},{"name":"ItemCount","value":{"$content":0,"$type":"System.Int32"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
     _objectReferences:
     - {fileID: 2025405727}
     - {fileID: 980910404}
@@ -724,7 +724,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 276637055302969570, guid: a3520b68dd5439646857b7561b2a8249, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 276637055302969570, guid: a3520b68dd5439646857b7561b2a8249, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1064,7 +1064,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &890451193 stripped
 Camera:
@@ -1139,6 +1139,22 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4538016533155091006, guid: 5e99d9621445d2d47af7330fb5452f28, type: 3}
   m_PrefabInstance: {fileID: 4538016533463111570}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &912524725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912524716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -57143145, guid: a040fb66244a7f54289914d98ea4ef7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _json: '{"nest":{"source":"Macro","macro":0,"embed":null}}'
+    _objectReferences:
+    - {fileID: 11400000, guid: 20e0809c603c0a64a9f1585e081c3514, type: 2}
 --- !u!1 &980910404
 GameObject:
   m_ObjectHideFlags: 0
@@ -1905,7 +1921,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 75, y: 0, z: 0}
 --- !u!114 &2139484239
 MonoBehaviour:
