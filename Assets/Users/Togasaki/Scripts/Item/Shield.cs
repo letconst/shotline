@@ -39,7 +39,7 @@ public class Shield : ActiveItem
         pos = Player.transform.position;
 
 
-        GameObject ShieldObj = Instantiate(ShieldPrefab, pos + vec * 2, Player.transform.rotation);
+        GameObject ShieldObj = Instantiate(ShieldPrefab, pos + vec * 1, Player.transform.rotation);
 
         Terminate();
 
