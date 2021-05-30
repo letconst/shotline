@@ -19,7 +19,6 @@ public class ItemDatabase : MonoBehaviour
     /// <returns>アイテムデータ</returns>
     public static ItemData GetRandomItem()
     {
-        Debug.Log(ItemList);
         return ItemList[Random.Range(0, ItemList.Count)];
     }
 

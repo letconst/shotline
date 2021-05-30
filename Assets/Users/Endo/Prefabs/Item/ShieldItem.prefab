@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: e51c921f8ed0d444b89270e80d4580a2, type: 2}
-  OriginShieldLocation: {fileID: 0}
+  ShieldPrefab: {fileID: 8215925660581510710, guid: 670f10c7344050a4eb5377582c25e739, type: 3}
 --- !u!65 &7963426035571532232
 BoxCollider:
   m_ObjectHideFlags: 0
