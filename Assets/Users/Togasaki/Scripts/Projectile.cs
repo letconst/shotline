@@ -23,7 +23,7 @@ public struct BulletInfo
 }
 
 
-public class Projectile : BulletManager
+public class Projectile : ItemManager
 {
     /*
      
@@ -67,10 +67,16 @@ public class Projectile : BulletManager
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected override void Start()
+    //protected override void Start()
+    //{
+    //    base.Start();
+    //    BulletManager.Instance.ShotBtn.onClick.AddListener(() => Fire());
+    //}
+
+    private void Start()
     {
-        base.Start();
-        BulletManager.Instance.ShotBtn.onClick.AddListener(() => Fire());
+        ItemManager.Instance.ShotBtn.onClick.AddListener(() => Fire());
+        BulletList = new List<BulletInfo>();
     }
 
     void Update()
@@ -169,11 +175,11 @@ public class Projectile : BulletManager
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
                 if (BulletList[i].index == BulletList[i].FP.Length - 1||BM.BBOn)
                 {
-                    if (BulletList.Count == 1)
+                    if (BulletList.Count == i+1)
                     {
                         flag = true;
                     }
-                    if (flag && BulletList.Count == 1)
+                    if (flag && BulletList.Count == i+1)
                     {
                         ShotLineDrawer.ClearLine();
                     }
