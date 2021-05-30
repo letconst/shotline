@@ -60,11 +60,11 @@ public class Projectile : MonoBehaviour
     //射線用
     private bool flag = true;
 
+    BulletMovement BM;
+
     void Update()
     {
         LineAppear();
-
-        Debug.Log(flag);
 
     }
 
@@ -122,6 +122,8 @@ public class Projectile : MonoBehaviour
             for (i = 0; i < BulletList.Count; i++)
             {
 
+                BM = BulletList[i].Bullet.GetComponent<BulletMovement>();
+
                 //現在の座標を変更できるように変数化
                 BulletInfo currentP = BulletList[i];
 
@@ -154,7 +156,7 @@ public class Projectile : MonoBehaviour
                 }
 
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
-                if (BulletList[i].index == BulletList[i].FP.Length - 1||BulletMovement.BBOn)
+                if (BulletList[i].index == BulletList[i].FP.Length - 1||BM.BBOn)
                 {
                     if (BulletList.Count == 1)
                     {
@@ -164,7 +166,7 @@ public class Projectile : MonoBehaviour
                     {
                         ShotLineDrawer.ClearLine();
                     }
-                    BulletMovement.BBOn = false;
+                    BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
                     BulletList.RemoveAt(i);
                 }

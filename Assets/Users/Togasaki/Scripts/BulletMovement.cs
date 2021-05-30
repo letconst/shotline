@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BulletMovement : MonoBehaviour
 {
-    public static bool BBOn = false;
+    public bool BBOn = false;
 
     private void OnTriggerEnter(Collider other)
     {

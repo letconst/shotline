@@ -13,7 +13,6 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
     private Transform holdPos;
 
     public Image   ItemIcon { get; private set; }
-    public Image   ShotIcon { get; private set; }
     public Button  ItemBtn  => itemBtn;
     public Button  ShotBtn  => shotBtn;
     public Vector3 HoldPos  => holdPos.position;
@@ -23,7 +22,6 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
         base.Awake();
 
         ItemIcon = ItemBtn.GetComponentsInChildren<Image>()[1];
-        ShotIcon = ShotBtn.GetComponentsInChildren<Image>()[1];
 
         ItemIcon.sprite = null;
         ItemIcon.color  = Color.clear;
