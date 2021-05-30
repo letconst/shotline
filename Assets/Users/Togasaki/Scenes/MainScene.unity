@@ -624,6 +624,7 @@ GameObject:
   m_Component:
   - component: {fileID: 384790147}
   - component: {fileID: 384790146}
+  - component: {fileID: 384790148}
   m_Layer: 0
   m_Name: BulletManager
   m_TagString: Untagged
@@ -658,6 +659,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &384790148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 384790145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93c8b02ec8728a248ba9720b429c3af1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shotBtn: {fileID: 271040454}
+  BulletPrefab: {fileID: 809079969102882050, guid: d7aa22edc7d1e624492c056df89ab94f, type: 3}
 --- !u!1 &408764248 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -4620282718447106903, guid: c6872af860ea0a945b533d91154c7650, type: 3}
@@ -1120,7 +1135,6 @@ GameObject:
   - component: {fileID: 912524717}
   - component: {fileID: 912524723}
   - component: {fileID: 912524725}
-  - component: {fileID: 912524724}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1253,20 +1267,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &912524724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 912524716}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93c8b02ec8728a248ba9720b429c3af1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shotBtn: {fileID: 271040454}
-  BulletPrefab: {fileID: 809079969102882050, guid: d7aa22edc7d1e624492c056df89ab94f, type: 3}
 --- !u!114 &912524725
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -194,9 +194,6 @@ public class Projectile : BulletManager
     private void Fire()
     {
 
-
-        Debug.Log("Enter");
-
         if (ShotLineDrawer.IsFixed == false)
         {
             //射線の固定
