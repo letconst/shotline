@@ -65,7 +65,8 @@ public abstract class ItemBase : MonoBehaviour
     {
         _isEnabled = false;
         ClearItemIcon();
-        Destroy(this);
+        ItemManager.Instance.ItemBtn.onClick.RemoveAllListeners();
+        Destroy(gameObject);
     }
 
     /// <summary>
