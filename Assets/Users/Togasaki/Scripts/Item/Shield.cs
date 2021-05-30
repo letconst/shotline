@@ -21,6 +21,8 @@ public class Shield : ActiveItem
     //ç≈å„Ç…é¿çsÇ≥ÇÍÇÈ
     protected override void Terminate()
     {
+
+        base.ClearItemIcon();
         base.Terminate();
 
     }
