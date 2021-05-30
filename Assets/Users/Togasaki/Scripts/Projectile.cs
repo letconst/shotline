@@ -2,8 +2,28 @@
 using System.Collections.Generic;
 
 
+public struct BulletInfo
+{
+    //弾丸のprefab
+    public GameObject Bullet;
 
-public class Projectile : MonoBehaviour
+    //射線の座標をいれる配列
+    public Vector3[] FP;
+
+    //射線の現在座標用int
+    public int index;
+
+
+    public BulletInfo(GameObject bullet, Vector3[] fp, int ind)
+    {
+        Bullet = bullet;
+        FP = fp;
+        index = ind;
+    }
+}
+
+
+public class Projectile : BulletManager
 {
     /*
      
@@ -14,25 +34,8 @@ public class Projectile : MonoBehaviour
      
      */
 
-    public struct BulletInfo
-    {
-        //弾丸のprefab
-        public GameObject Bullet;
+    //変数ゾーン///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //射線の座標をいれる配列
-        public Vector3[] FP;
-
-        //射線の現在座標用int
-        public int index;
-
-
-        public BulletInfo(GameObject bullet, Vector3[] fp ,int ind)
-        {
-            Bullet = bullet;
-            FP = fp;
-            index = ind;
-        }
-    }
 
     [SerializeField] private GameObject BulletPrefab;
 
@@ -61,6 +64,14 @@ public class Projectile : MonoBehaviour
     private bool flag = true;
 
     BulletMovement BM;
+
+    /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected override void Start()
+    {
+        base.Start();
+        BulletManager.Instance.ShotBtn.onClick.AddListener(() => Fire());
+    }
 
     void Update()
     {
@@ -178,20 +189,30 @@ public class Projectile : MonoBehaviour
     }
 
 
-    //射撃ボタン、flagをtrueに
-    public void Fire()
+
+    //射撃ボタンを押したとき
+    private void Fire()
     {
 
-        //射線の固定
-        ShotLineDrawer.FixLine();
 
-        //一回だけ座標を取得用
-        One = true;
+        Debug.Log("Enter");
 
-        if (BigBullet.BBOn && Line != null && Line.enabled)
+        if (ShotLineDrawer.IsFixed == false)
         {
-            BBnum--;
+            //射線の固定
+            ShotLineDrawer.FixLine();
+
+            //一回だけ座標を取得用
+            One = true;
+
+            if (BigBullet.BBOn && Line != null && Line.enabled)
+            {
+                BBnum--;
+            }
         }
 
+
     }
+
+    
 }

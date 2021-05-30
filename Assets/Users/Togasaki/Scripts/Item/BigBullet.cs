@@ -32,7 +32,6 @@ public class BigBullet : PassiveItem
 
     }
 
-
     protected override void UpdateFunction()
     {
         if (BBOn == false)
