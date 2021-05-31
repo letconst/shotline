@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: BigBullet
   m_EditorClassIdentifier: 
   itemName: "\u30D3\u30C3\u30B0\u30D0\u30EC\u30C3\u30C8"
-  itemSprite: {fileID: 0}
+  itemSprite: {fileID: 21300000, guid: f0becf30d2b5305418985049e304f58d, type: 3}
   itemObject: {fileID: 3699249211884422122, guid: dab1be5c42afc3645a86780f5d096739, type: 3}
