@@ -28,6 +28,9 @@ public class BigBullet : PassiveItem
         //スピードを戻す
         Projectile.Speed = Projectile.OriginSpeed;
 
+        //弾の大きさを戻す
+        Projectile.BI.transform.localScale = new Vector3(1f, 1f, 1f);
+
         base.ClearItemIcon();
 
         base.Terminate();
