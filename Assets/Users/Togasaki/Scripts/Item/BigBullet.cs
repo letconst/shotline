@@ -4,6 +4,7 @@ public class BigBullet : PassiveItem
 {
     //BigBulletが有効の時用のbool、使い果たすとfalse
     public static bool BBOn = false;
+    public static bool BBOff = false;
 
     //最初に実行される
     protected override void Init()
@@ -11,22 +12,16 @@ public class BigBullet : PassiveItem
         base.Init();
 
         //BBOnをつける
+        BBOff = false;
         BBOn = true;
-
-        //残り回数
-        Projectile.BBnum = 3;
-
-        //スピードを変える
-        Projectile.Speed *= 0.8f;
 
     }
 
     //最後に実行される
     protected override void Terminate()
     {
-     
-        //スピードを戻す
-        Projectile.Speed = Projectile.OriginSpeed;
+
+        BBOn = false;
 
         base.ClearItemIcon();
 
@@ -36,7 +31,7 @@ public class BigBullet : PassiveItem
 
     protected override void UpdateFunction()
     {
-        if (BBOn == false)
+        if (BBOff)
         {
             Terminate();
         }

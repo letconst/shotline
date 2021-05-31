@@ -13,12 +13,15 @@ public struct BulletInfo
     //射線の現在座標用int
     public int index;
 
+    //個々の弾のスピード
+    public float Speed;
 
-    public BulletInfo(GameObject bullet, Vector3[] fp, int ind)
+    public BulletInfo(GameObject bullet, Vector3[] fp, int ind,float spd)
     {
         Bullet = bullet;
         FP = fp;
         index = ind;
+        Speed = spd;
     }
 }
 
@@ -42,11 +45,11 @@ public class Projectile : MonoBehaviour
     //リストに弾の情報を
     List<BulletInfo> BulletList = new List<BulletInfo>();
 
-    private Vector3 OriginScale = new Vector3(1f, 1f, 1f);
-
     //はやさ
-    public static float Speed = 10;
-    public static float OriginSpeed = 10;
+    private float ActSpeed;
+    private float OriginSpeed = 10;
+    private float BBSpeed = 8;
+
 
     //射線の変数
     LineRenderer Line;
@@ -73,7 +76,7 @@ public class Projectile : MonoBehaviour
         ItemManager.ShotBtn.onClick.AddListener(() => Fire());
         BulletList = new List<BulletInfo>();
         BBnum = 3;
-        Speed = OriginSpeed;
+        ActSpeed = OriginSpeed;
     }
 
     void Update()
@@ -110,15 +113,20 @@ public class Projectile : MonoBehaviour
                 //弾のスケールを変える
                 BI.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
 
+                //スピードを変える
+                ActSpeed = BBSpeed;
+
                 if (BBnum == 0)
                 {
-                    BBnum = 3;
-                    BigBullet.BBOn = false;
+                    BigBullet.BBOff = true;
                 }
 
+
             }
+
+
             //配列に射線の全座標とそれに対応する弾丸をいれる
-            BulletList.Add(new BulletInfo(BI, ShotLineDrawer.GetFingerPositions(), 0));
+            BulletList.Add(new BulletInfo(BI, ShotLineDrawer.GetFingerPositions(), 0, ActSpeed));
 
             if(BulletList.Count>1)
             {
@@ -147,7 +155,7 @@ public class Projectile : MonoBehaviour
                 //もし射線の長さが最後だったら
                 if (BulletList[i].index == BulletList[i].FP.Length - 1)
                 {
-                    BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].FP[BulletList[i].FP.Length - 2], BulletList[i].FP[BulletList[i].FP.Length - 1], Speed * Time.deltaTime);
+                    BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].FP[BulletList[i].FP.Length - 2], BulletList[i].FP[BulletList[i].FP.Length - 1], BulletList[i].Speed * Time.deltaTime);
                 }
                 else
                 {
@@ -159,7 +167,7 @@ public class Projectile : MonoBehaviour
                     else
                     {
                         //現在の射線の位置から次の射線の位置まで移動
-                        BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], Speed * Time.deltaTime);
+                        BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], BulletList[i].Speed * Time.deltaTime);
                     }
                 }
 
@@ -198,6 +206,14 @@ public class Projectile : MonoBehaviour
     private void Fire()
     {
 
+        if (BigBullet.BBOn == false)
+        {
+            BBnum = 3;
+            //スピードを戻す
+            ActSpeed = OriginSpeed;
+        }
+
+
         if (ShotLineDrawer.IsFixed == false)
         {
             //射線の固定
@@ -211,7 +227,6 @@ public class Projectile : MonoBehaviour
                 BBnum--;
             }
         }
-
 
     }
 
