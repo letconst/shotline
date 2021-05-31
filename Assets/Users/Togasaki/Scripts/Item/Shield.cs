@@ -9,17 +9,17 @@ public class Shield : ActiveItem
     GameObject Player;
 
 
-    //Å‰‚ÉÀs‚³‚ê‚é
+    //æœ€åˆã«å®Ÿè¡Œã•ã‚Œã‚‹
     protected override void Init()
     {
-        //‚Æ‚Á‚½‚ç‚Í‚¶‚ß‚É‚³‚ê‚éˆ—
+        //ã¨ã£ãŸã‚‰ã¯ã˜ã‚ã«ã•ã‚Œã‚‹å‡¦ç†
         base.Init();
 
 
     }
 
-    //ÅŒã‚ÉÀs‚³‚ê‚é
-    protected override void Terminate()
+    //æœ€å¾Œã«å®Ÿè¡Œã•ã‚Œã‚‹
+    public override void Terminate()
     {
 
         base.ClearItemIcon();

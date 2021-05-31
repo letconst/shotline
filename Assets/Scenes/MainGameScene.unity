@@ -358,7 +358,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSpawned: 0
-  spawnedItem: {fileID: 0}
 --- !u!65 &137419582
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -819,7 +818,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSpawned: 0
-  spawnedItem: {fileID: 0}
 --- !u!65 &569135078
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1024,7 +1022,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSpawned: 0
-  spawnedItem: {fileID: 0}
 --- !u!65 &764642700
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1123,7 +1120,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSpawned: 0
-  spawnedItem: {fileID: 0}
 --- !u!65 &980910407
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1679,7 +1675,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSpawned: 0
-  spawnedItem: {fileID: 0}
 --- !u!65 &2025405730
 BoxCollider:
   m_ObjectHideFlags: 0

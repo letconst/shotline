@@ -18,7 +18,7 @@ public class BigBullet : PassiveItem
     }
 
     //ç≈å„Ç…é¿çsÇ≥ÇÍÇÈ
-    protected override void Terminate()
+    public override void Terminate()
     {
 
         BBOn = false;

@@ -32,6 +32,8 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
     public static float ItemFloatingAnimScale    => Instance.itemFloatingAnimScale;
     public static float ItemRotationAnimDuration => Instance.itemRotationAnimDuration;
 
+    private static ItemBase _holdItem;
+
     protected override void Awake()
     {
         base.Awake();
@@ -40,5 +42,17 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
 
         ItemIcon.sprite = null;
         ItemIcon.color  = Color.clear;
+    }
+
+    /// <summary>
+    /// プレイヤーの所持アイテムを設定する。
+    /// すでに持っているアイテムがある場合は、そちらのTerminate()を呼んでから上書き。
+    /// </summary>
+    /// <param name="item">持たせるアイテム</param>
+    public static void SetHoldItem(ItemBase item)
+    {
+        if (_holdItem != null) _holdItem.Terminate();
+
+        _holdItem = item;
     }
 }

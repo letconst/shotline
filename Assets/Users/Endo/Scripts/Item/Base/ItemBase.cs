@@ -40,6 +40,9 @@ public abstract class ItemBase : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            // 所持アイテム設定
+            ItemManager.SetHoldItem(this);
+
             // UIへの反映
             _itemIcon.sprite = Data.ItemSprite;
             _itemIcon.color  = Color.white;
@@ -86,7 +89,7 @@ public abstract class ItemBase : MonoBehaviour
     /// <summary>
     /// アイテムの使用が終了した際の動作
     /// </summary>
-    protected virtual void Terminate()
+    public virtual void Terminate()
     {
         _isEnabled = false;
         ClearItemIcon();
