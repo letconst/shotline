@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3164672758208814627}
   - component: {fileID: -2937216874118420656}
   - component: {fileID: 6185899589427411258}
+  - component: {fileID: 4557296430442758361}
   m_Layer: 0
   m_Name: OriginBullet
   m_TagString: Bullet
@@ -75,6 +76,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 180e10ba7111ac44bb44a7c3a8c66f5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BBOn: 0
+--- !u!136 &4557296430442758361
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 809079969102882050}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.25
+  m_Height: 20
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7644335663912060888
 GameObject:
   m_ObjectHideFlags: 0

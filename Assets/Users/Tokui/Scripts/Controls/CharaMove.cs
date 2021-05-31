@@ -47,13 +47,14 @@ public class CharaMove : MonoBehaviour
         }
     }
 
-    public void OnCollisionEnter(Collision collision)
+    public void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.tag == "Wall")
+        if (other.CompareTag("Bullet"))
         {
-            Debug.Log("Hit");
-            RoundManager.RoundMove = true;
-            StartCoroutine(Move());
+            // 一時的に無効化
+            // Debug.Log("Hit");
+            // RoundManager.RoundMove = true;
+            // StartCoroutine(Move());
         }
     }
 
