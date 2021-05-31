@@ -15,16 +15,11 @@ public class ItemPositionData : MonoBehaviour
     /// </summary>
     public bool isSpawned;
 
-    private GameObject SpawnedItem;
-
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Item"))
         {
-            isSpawned = true;
-            SpawnedItem = other.gameObject;
+            isSpawned = false;
         }
     }
-
-
 }
