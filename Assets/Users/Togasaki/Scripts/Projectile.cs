@@ -26,12 +26,12 @@ public struct BulletInfo
 public class Projectile : MonoBehaviour
 {
     /*
-     
+
     "Projectile"クラスの概要
-     
+
     もしボタンが押されたらShotLineDrawerクラスの座標を取得し、その座標をなぞるように弾丸を発射する。
     変数"Speed"に弾丸の速さを指定できる。
-     
+
      */
 
     //変数ゾーン///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ public class Projectile : MonoBehaviour
 
     private void Start()
     {
-        ItemManager.Instance.ShotBtn.onClick.AddListener(() => Fire());
+        ItemManager.ShotBtn.onClick.AddListener(() => Fire());
         BulletList = new List<BulletInfo>();
     }
 
@@ -217,5 +217,5 @@ public class Projectile : MonoBehaviour
 
     }
 
-    
+
 }

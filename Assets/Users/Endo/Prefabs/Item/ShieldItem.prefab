@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7963426035571532278}
   - component: {fileID: 7963426035571532279}
   - component: {fileID: 7963426035571532232}
+  - component: {fileID: 4419641371618765766}
   m_Layer: 0
   m_Name: ShieldItem
   m_TagString: Item
@@ -96,6 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: e51c921f8ed0d444b89270e80d4580a2, type: 2}
+  isAnimate: 0
   ShieldPrefab: {fileID: 8215925660581510710, guid: 670f10c7344050a4eb5377582c25e739, type: 3}
 --- !u!65 &7963426035571532232
 BoxCollider:
@@ -110,3 +112,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.9419663, y: 0.9071893, z: 0.9427779}
   m_Center: {x: -0.006531447, y: 0.004890591, z: 0.0025732368}
+--- !u!54 &4419641371618765766
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7963426035571532233}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

@@ -16,8 +16,8 @@ public abstract class ActiveItem : ItemBase
     {
         base.Init();
 
-        ItemManager.Instance.ItemBtn.onClick.RemoveAllListeners();
-        ItemManager.Instance.ItemBtn.onClick.AddListener(() => OnClickButton());
+        ItemManager.ItemBtn.onClick.RemoveAllListeners();
+        ItemManager.ItemBtn.onClick.AddListener(() => OnClickButton());
     }
 
     /// <summary>

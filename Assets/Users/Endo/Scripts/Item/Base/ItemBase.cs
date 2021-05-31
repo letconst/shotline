@@ -8,17 +8,24 @@ public abstract class ItemBase : MonoBehaviour
 
     public ItemData Data => data;
 
-    private bool  _isEnabled;
-    private bool  _isInitialized;
-    private Image _itemIcon;
+    private bool    _isEnabled;
+    private bool    _isInitialized;
+    private Image   _itemIcon;
+    private Vector3 _basePos;
+
+    public bool isAnimate; // アニメーションをするか
 
     protected virtual void Start()
     {
-        _itemIcon = ItemManager.Instance.ItemIcon;
+        _itemIcon = ItemManager.ItemIcon;
+        _basePos  = transform.position;
+        isAnimate = true;
     }
 
     private void Update()
     {
+        if (isAnimate) IdleAnimation();
+
         if (!_isEnabled) return;
 
         if (!_isInitialized)
@@ -38,8 +45,26 @@ public abstract class ItemBase : MonoBehaviour
             _itemIcon.color  = Color.white;
 
             // 画面外への移動
-            transform.position = ItemManager.Instance.HoldPos;
+            transform.position = ItemManager.HoldPos;
+
+            // アニメーション停止
+            isAnimate = false;
         }
+    }
+
+    private void IdleAnimation()
+    {
+        // 上下移動
+        float freq      = 1 / ItemManager.ItemFloatingAnimDuration;
+        float sin       = Mathf.Sin(2 * Mathf.PI * freq * Time.time);
+        float deltaPosY = sin * ItemManager.ItemFloatingAnimScale;
+
+        Vector3 curPos = transform.position;
+        float   newY   = float.IsNaN(_basePos.y + deltaPosY) ? _basePos.y : _basePos.y + deltaPosY;
+        transform.position = new Vector3(curPos.x, newY, curPos.z);
+
+        // 回転
+        transform.Rotate(new Vector3(0, ItemManager.ItemRotationAnimDuration * Time.deltaTime, 0));
     }
 
     /// <summary>
@@ -65,7 +90,7 @@ public abstract class ItemBase : MonoBehaviour
     {
         _isEnabled = false;
         ClearItemIcon();
-        ItemManager.Instance.ItemBtn.onClick.RemoveAllListeners();
+        ItemManager.ItemBtn.onClick.RemoveAllListeners();
         Destroy(gameObject);
     }
 
