@@ -14,7 +14,7 @@ public class BigBullet : PassiveItem
         BBOn = true;
 
         //残り回数
-        Projectile.BBnum = 4;
+        Projectile.BBnum = 3;
 
         //スピードを変える
         Projectile.Speed *= 0.8f;
@@ -27,9 +27,6 @@ public class BigBullet : PassiveItem
      
         //スピードを戻す
         Projectile.Speed = Projectile.OriginSpeed;
-
-        //弾の大きさを戻す
-        Projectile.BI.transform.localScale = new Vector3(1f, 1f, 1f);
 
         base.ClearItemIcon();
 
