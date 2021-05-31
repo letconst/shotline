@@ -42,8 +42,6 @@ public class Projectile : MonoBehaviour
     //リストに弾の情報を
     public static List<BulletInfo> BulletList = new List<BulletInfo>();
 
-    public static Vector3 OriginBulletScale;
-
     //はやさ
     public static float Speed = 10;
     public static float OriginSpeed = 10;
@@ -65,18 +63,18 @@ public class Projectile : MonoBehaviour
 
     BulletMovement BM;
 
+    public static GameObject BI;
+
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //protected override void Start()
-    //{
-    //    base.Start();
-    //    BulletManager.Instance.ShotBtn.onClick.AddListener(() => Fire());
-    //}
 
     private void Start()
     {
         ItemManager.Instance.ShotBtn.onClick.AddListener(() => Fire());
         BulletList = new List<BulletInfo>();
+        BBnum = 4;
+        BI.transform.localScale = new Vector3(1f, 1f, 1f);
+        Speed = OriginSpeed;
     }
 
     void Update()
@@ -102,7 +100,8 @@ public class Projectile : MonoBehaviour
 
             Vector3[] FingerPositions = ShotLineDrawer.GetFingerPositions();
 
-            GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
+
+            BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
 
             if(BigBullet.BBOn)
             {
@@ -112,9 +111,7 @@ public class Projectile : MonoBehaviour
 
                 if (BBnum == 0)
                 {
-                    //弾の大きさを戻す
                     BBnum = 4;
-                    BI.transform.localScale = new Vector3(1f, 1f, 1f);
                     BigBullet.BBOn = false;
                 }
 
