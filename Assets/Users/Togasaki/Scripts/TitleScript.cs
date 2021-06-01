@@ -4,8 +4,30 @@ using UnityEngine.SceneManagement;
 public class TitleScript : MonoBehaviour
 {
     //マッチ用bool
-    bool MatchSuccess = true;
-    
+    private bool MatchSuccess = true;
+
+    private bool _isNowLoading;
+
+    private void Update()
+    {
+        bool isTouched = false;
+
+        if (Input.touchCount > 0)
+        {
+            if (Input.GetTouch(0).phase == TouchPhase.Began)
+            {
+                isTouched = true;
+            }
+        }
+
+        // タッチ入力でメインシーンへ遷移
+        if (!_isNowLoading && (Input.GetMouseButtonDown(0) || isTouched))
+        {
+            _isNowLoading = true;
+            SceneManager.LoadScene("MainGameScene");
+        }
+    }
+
     //タップしたときの処理
     public void ChangeSceneToGame()
     {
@@ -17,5 +39,4 @@ public class TitleScript : MonoBehaviour
             SceneManager.LoadScene("MainGameScene");
         }
     }
-
 }
