@@ -95,7 +95,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         {
             _isHoldClicking = false;
         }
-#elif UNITY_IOS && UNITY_ANDROID
+#elif UNITY_IOS || UNITY_ANDROID
         if (Input.touchCount > 0)
         {
             Touch   t = Input.GetTouch(0);
@@ -174,7 +174,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
 #if UNITY_EDITOR
         touchPos = Input.mousePosition;
-#elif UNITY_IOS && UNITY_ANDROID
+#elif UNITY_IOS || UNITY_ANDROID
         touchPos = Input.GetTouch(0).position;
 #endif
 
