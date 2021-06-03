@@ -24,10 +24,7 @@ namespace Endo
         private void Update()
         {
             transform.position = _playerTrf.position + _offsetPos;
-        }
-
-        private void LateUpdate()
-        {
+            
             foreach (Camera cam in followCameras)
             {
                 cam.transform.position = transform.position;
