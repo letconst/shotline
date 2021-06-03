@@ -16,12 +16,15 @@ public struct BulletInfo
     //個々の弾のスピード
     public float Speed;
 
-    public BulletInfo(GameObject bullet, Vector3[] fp, int ind,float spd)
+    public readonly LineData LineData;
+
+    public BulletInfo(GameObject bullet, Vector3[] fp, int ind, float spd, LineData lineData)
     {
-        Bullet = bullet;
-        FP = fp;
-        index = ind;
-        Speed = spd;
+        Bullet   = bullet;
+        FP       = fp;
+        index    = ind;
+        Speed    = spd;
+        LineData = lineData;
     }
 }
 
@@ -52,10 +55,10 @@ public class Projectile : MonoBehaviour
 
 
     //射線の変数
-    LineRenderer Line;
+    private LineRenderer Line;
 
     //一回だけ射線の座標を取得
-    bool One = false;
+    private bool One = false;
 
     //BB用のint
     public static int BBnum = 4;
@@ -66,7 +69,7 @@ public class Projectile : MonoBehaviour
     //射線用
     private bool flag = true;
 
-    BulletMovement BM;
+    private BulletMovement BM;
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -75,16 +78,14 @@ public class Projectile : MonoBehaviour
     {
         ItemManager.ShotBtn.onClick.AddListener(() => Fire());
         BulletList = new List<BulletInfo>();
-        BBnum = 3;
-        ActSpeed = OriginSpeed;
+        BBnum      = 3;
+        ActSpeed   = OriginSpeed;
     }
 
     void Update()
     {
         LineAppear();
-
     }
-
 
     //射線に沿って弾丸を移動させる処理
     private void LineAppear()
@@ -99,8 +100,8 @@ public class Projectile : MonoBehaviour
         //ラインが引かれていたら
         if (Line != null && Line.enabled && One)
         {
-
-            Vector3[] FingerPositions = ShotLineDrawer.GetFingerPositions();
+            LineData  currentLineData = ShotLineDrawer.DrawingData;
+            Vector3[] FingerPositions = ShotLineUtil.GetFingerPositions(currentLineData);
 
 
             GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
@@ -126,7 +127,7 @@ public class Projectile : MonoBehaviour
 
 
             //配列に射線の全座標とそれに対応する弾丸をいれる
-            BulletList.Add(new BulletInfo(BI, ShotLineDrawer.GetFingerPositions(), 0, ActSpeed));
+            BulletList.Add(new BulletInfo(BI, ShotLineUtil.GetFingerPositions(currentLineData), 0, ActSpeed, currentLineData));
 
             if(BulletList.Count>1)
             {
@@ -187,7 +188,7 @@ public class Projectile : MonoBehaviour
                     }
                     if (flag && BulletList.Count == i+1)
                     {
-                        ShotLineDrawer.ClearLine();
+                        ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     }
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
@@ -200,8 +201,6 @@ public class Projectile : MonoBehaviour
 
     }
 
-
-
     //射撃ボタンを押したとき
     private void Fire()
     {
@@ -213,11 +212,12 @@ public class Projectile : MonoBehaviour
             ActSpeed = OriginSpeed;
         }
 
+        LineData currentLineData = ShotLineDrawer.DrawingData;
 
-        if (ShotLineDrawer.IsFixed == false)
+        if (currentLineData.IsFixed == false)
         {
             //射線の固定
-            ShotLineDrawer.FixLine();
+            ShotLineUtil.FixLine(currentLineData);
 
             //一回だけ座標を取得用
             One = true;
