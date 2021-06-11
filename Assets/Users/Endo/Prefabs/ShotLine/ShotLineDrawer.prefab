@@ -48,3 +48,4 @@ MonoBehaviour:
   lineFineness: 0.1
   drawableAreaRadius: 250
   lineCamera: {fileID: 0}
+  initPoolingCount: 5

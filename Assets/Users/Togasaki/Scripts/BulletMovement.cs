@@ -1,20 +1,17 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class BulletMovement : MonoBehaviour
 {
+    public bool BBOn = false;
 
-    [SerializeField] private Transform OriginBulletLocation;
+    private void OnTriggerEnter(Collider other)
+    {
 
-
-    void OnCollisionEnter(Collision collision)
-	{
-
-
-		// 衝突した相手にWallタグが付いているとき
-		if (collision.gameObject.tag == "Wall")
-		{
-            transform.position = OriginBulletLocation.position;
+        if (other.gameObject.tag == "Wall" || other.gameObject.tag == "Shield")
+        {
+            BBOn = true;
         }
+
     }
 
 }

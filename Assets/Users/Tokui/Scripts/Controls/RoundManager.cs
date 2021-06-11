@@ -3,9 +3,6 @@
 public class RoundManager : MonoBehaviour
 {
     [SerializeField]
-    public Object Player;
-
-    [SerializeField]
     public float PlayerLife = 3;
 
     // 現在ラウンドが切り替わっている最中かどうか判別
@@ -28,8 +25,6 @@ public class RoundManager : MonoBehaviour
         // 弾が当たったら操作不能にし、ライフを1減らす
         if (RoundMove == true)
         {
-            Debug.Log("Hit");
-
             // プレイヤーのライフを1減らす
             PlayerLife--;
 
