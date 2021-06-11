@@ -56,11 +56,11 @@ public class Joystick : Graphic, IPointerDownHandler, IPointerUpHandler, IEndDra
     }
 
     //スクリプトがロードされた時やインスペクターの値が変更されたときに呼び出される(エディター上のみ)
-    protected override void OnValidate()
-    {
-        base.OnValidate();
-        Init();
-    }
+    // protected override void OnValidate()
+    // {
+    //     base.OnValidate();
+    //     Init();
+    // }
 
     //初期化
     private void Init()
@@ -74,6 +74,7 @@ public class Joystick : Graphic, IPointerDownHandler, IPointerUpHandler, IEndDra
         if (stickImage == null)
         {
             stickImage = _stick.AddComponent<Image>();
+            //stickImage.sprite = Resources.Load<Image>("UI/JoyStick_Center").sprite;
         }
         stickImage.raycastTarget = false;
 

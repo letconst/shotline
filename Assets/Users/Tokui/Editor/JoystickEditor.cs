@@ -1,56 +1,56 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
 /// <summary>
-/// Joystick‚ÌInspector‚ğ•Ï‚¦‚éƒGƒfƒBƒ^[
+/// Joystickã®Inspectorã‚’å¤‰ãˆã‚‹ã‚¨ãƒ‡ã‚£ã‚¿ãƒ¼
 /// </summary>
 [CustomEditor(typeof(Joystick))]
 public class JoystickEditor : Editor
 {
 
-    //ƒvƒƒpƒeƒB[‚ğ•ÒW‚·‚é—p
+    //ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ãƒ¼ã‚’ç·¨é›†ã™ã‚‹ç”¨
     private SerializedProperty _radiusProperty;
     private SerializedProperty _shouldResetPositionProperty;
     private SerializedProperty _positionProperty;
 
     //=================================================================================
-    //‰Šú‰»
+    //åˆæœŸåŒ–
     //=================================================================================
 
     private void OnEnable()
     {
-        //ƒvƒƒpƒeƒB“Ç‚İ‚İ
+        //ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£èª­ã¿è¾¼ã¿
         _radiusProperty = serializedObject.FindProperty("_radius");
         _shouldResetPositionProperty = serializedObject.FindProperty("_shouldResetPosition");
         _positionProperty = serializedObject.FindProperty("_position");
     }
 
     //=================================================================================
-    //XV
+    //æ›´æ–°
     //=================================================================================
 
-    //Inspector‚ğXV‚·‚é
+    //Inspectorã‚’æ›´æ–°ã™ã‚‹
     public override void OnInspectorGUI()
     {
-        //XVŠJn
+        //æ›´æ–°é–‹å§‹
         serializedObject.Update();
 
-        //ƒXƒeƒBƒbƒN‚ª“®‚­”ÍˆÍ‚Ì”¼Œa
-        float radius = EditorGUILayout.FloatField("“®ì”ÍˆÍ‚Ì”¼Œa", _radiusProperty.floatValue);
+        //ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒå‹•ãç¯„å›²ã®åŠå¾„
+        float radius = EditorGUILayout.FloatField("å‹•ä½œç¯„å›²ã®åŠå¾„", _radiusProperty.floatValue);
         if (radius != _radiusProperty.floatValue)
         {
             _radiusProperty.floatValue = radius;
         }
 
-        //w‚ğ—£‚µ‚½‚ÉƒXƒeƒBƒbƒN‚ª’†S‚É–ß‚é‚©
-        bool shouldResetPosition = EditorGUILayout.Toggle("Stick‚ª’†S‚É–ß‚é‚©", _shouldResetPositionProperty.boolValue);
+        //æŒ‡ã‚’é›¢ã—ãŸæ™‚ã«ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒä¸­å¿ƒã«æˆ»ã‚‹ã‹
+        bool shouldResetPosition = EditorGUILayout.Toggle("StickãŒä¸­å¿ƒã«æˆ»ã‚‹ã‹", _shouldResetPositionProperty.boolValue);
         if (shouldResetPosition != _shouldResetPositionProperty.boolValue)
         {
             _shouldResetPositionProperty.boolValue = shouldResetPosition;
         }
 
-        //Œ»İ’n‚ğ•\¦
+        //ç¾åœ¨åœ°ã‚’è¡¨ç¤º
         EditorGUILayout.BeginVertical(GUI.skin.box);
         EditorGUILayout.LabelField(
           "Position(-1~1)   X : " +
@@ -59,7 +59,7 @@ public class JoystickEditor : Editor
         );
         EditorGUILayout.EndVertical();
 
-        //XVI‚í‚è
+        //æ›´æ–°çµ‚ã‚ã‚Š
         serializedObject.ApplyModifiedProperties();
     }
 

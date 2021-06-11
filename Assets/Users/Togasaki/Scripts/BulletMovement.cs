@@ -1,21 +1,15 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class BulletMovement : MonoBehaviour
 {
-
-    [SerializeField] private Transform OriginBulletLocation;
-
-
-    private void Start()
-    {
-        gameObject.transform.position = OriginBulletLocation.position;
-    }
+    public bool BBOn = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Wall")
+
+        if (other.gameObject.tag == "Wall" || other.gameObject.tag == "Shield")
         {
-            transform.position = OriginBulletLocation.position;
+            BBOn = true;
         }
 
     }

@@ -2,13 +2,6 @@
 
 public abstract class ActiveItem : ItemBase
 {
-    protected override void Start()
-    {
-        base.Start();
-
-        ItemManager.Instance.ItemBtn.onClick.AddListener(() => OnClickButton());
-    }
-    
     protected override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
@@ -17,6 +10,14 @@ public abstract class ActiveItem : ItemBase
         {
             Init();
         }
+    }
+
+    protected override void Init()
+    {
+        base.Init();
+
+        ItemManager.ItemBtn.onClick.RemoveAllListeners();
+        ItemManager.ItemBtn.onClick.AddListener(() => OnClickButton());
     }
 
     /// <summary>
