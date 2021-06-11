@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-public struct BulletInfo
+public class BulletInfo
 {
     //弾丸のprefab
     public GameObject Bullet;
@@ -17,6 +17,7 @@ public struct BulletInfo
     public float Speed;
 
     public readonly LineData LineData;
+
 
     public BulletInfo(GameObject bullet, Vector3[] fp, int ind, float spd, LineData lineData)
     {
@@ -53,6 +54,9 @@ public class Projectile : MonoBehaviour
     private float OriginSpeed = 10;
     private float BBSpeed = 8;
 
+    //弾のスケール
+    private float BaseScale = 1f;
+    public static float ScaleRatio = 1f;
 
     //射線の変数
     private LineRenderer Line;
@@ -61,7 +65,7 @@ public class Projectile : MonoBehaviour
     private bool One = false;
 
     //BB用のint
-    public static int BBnum = 4;
+    public static int BBnum = 3;
 
     //for用
     private int i = 0;
@@ -80,6 +84,7 @@ public class Projectile : MonoBehaviour
         BulletList = new List<BulletInfo>();
         BBnum      = 3;
         ActSpeed   = OriginSpeed;
+        ScaleRatio = 1;
     }
 
     void Update()
@@ -106,13 +111,10 @@ public class Projectile : MonoBehaviour
 
             GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
 
-            BI.transform.localScale = new Vector3(1f, 1f, 1f);
+            BI.transform.localScale = new Vector3(BaseScale * ScaleRatio, BaseScale * ScaleRatio, BaseScale * ScaleRatio);
 
             if (BigBullet.BBOn)
             {
-
-                //弾のスケールを変える
-                BI.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
 
                 //スピードを変える
                 ActSpeed = BBSpeed;
@@ -129,7 +131,7 @@ public class Projectile : MonoBehaviour
             //配列に射線の全座標とそれに対応する弾丸をいれる
             BulletList.Add(new BulletInfo(BI, ShotLineUtil.GetFingerPositions(currentLineData), 0, ActSpeed, currentLineData));
 
-            if(BulletList.Count>1)
+            if (BulletList.Count > 1)
             {
                 flag = false;
             }

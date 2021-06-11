@@ -1724,6 +1724,9 @@ MonoBehaviour:
   itemBtn: {fileID: 271040456}
   shotBtn: {fileID: 271040454}
   holdPos: {fileID: 1376773552}
+  itemFloatingAnimDuration: 0
+  itemFloatingAnimScale: 0
+  itemRotationAnimDuration: 100
 --- !u!4 &1376773552
 Transform:
   m_ObjectHideFlags: 0
