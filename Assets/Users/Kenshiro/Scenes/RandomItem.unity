@@ -485,7 +485,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4732371381798629615, guid: 33967ea619219de449c3d0d5cb5f1890, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4732371381798629615, guid: 33967ea619219de449c3d0d5cb5f1890, type: 3}
       propertyPath: m_AnchorMax.x
@@ -692,9 +692,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"declarations":{"collection":{"$content":[{"name":"ItemGet","value":{"$content":0,"$type":"UnityEngine.Object"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
-    _objectReferences:
-    - {fileID: 268805763}
+    _json: '{"declarations":{"collection":{"$content":[],"$version":"A"},"$version":"A"}}'
+    _objectReferences: []
 --- !u!4 &441684845
 Transform:
   m_ObjectHideFlags: 0
@@ -716,6 +715,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1235270391766225614, guid: 85289869b36144a428a03dcc72846ae7, type: 3}
+      propertyPath: CountDown
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1235270391766225614, guid: 85289869b36144a428a03dcc72846ae7, type: 3}
+      propertyPath: FlagCountDown
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1235270391766225614, guid: 85289869b36144a428a03dcc72846ae7, type: 3}
+      propertyPath: MoveCountDown
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6557044911692806388, guid: 85289869b36144a428a03dcc72846ae7, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -763,6 +774,10 @@ PrefabInstance:
     - target: {fileID: 6625466425217524550, guid: 85289869b36144a428a03dcc72846ae7, type: 3}
       propertyPath: m_Name
       value: Thruster
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625466425217524550, guid: 85289869b36144a428a03dcc72846ae7, type: 3}
+      propertyPath: m_TagString
+      value: Item
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85289869b36144a428a03dcc72846ae7, type: 3}
@@ -1001,9 +1016,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"nest":{"source":"Macro","macro":0,"embed":null}}'
-    _objectReferences:
-    - {fileID: 11400000, guid: 20e0809c603c0a64a9f1585e081c3514, type: 2}
+    _json: '{"nest":{"source":"Macro","macro":null,"embed":null}}'
+    _objectReferences: []
 --- !u!114 &684129306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1017,10 +1031,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"declarations":{"collection":{"$content":[{"name":"Text","value":{"$content":0,"$type":"UnityEngine.Object"},"$version":"A"},{"name":"Item","value":{"$content":1,"$type":"UnityEngine.Object"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
-    _objectReferences:
-    - {fileID: 268805763}
-    - {fileID: 0}
+    _json: '{"declarations":{"collection":{"$content":[],"$version":"A"},"$version":"A"}}'
+    _objectReferences: []
 --- !u!54 &684129307
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1113,6 +1125,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _joystick: {fileID: 71055147}
   speed: 10
+  speedRatio: 0
+  Muteki: 0
+  moveX: 0
+  moveZ: 0
 --- !u!143 &684129312
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1163,6 +1179,9 @@ MonoBehaviour:
   itemBtn: {fileID: 363233917}
   shotBtn: {fileID: 363233915}
   holdPos: {fileID: 752605585}
+  itemFloatingAnimDuration: 0
+  itemFloatingAnimScale: 0
+  itemRotationAnimDuration: 100
 --- !u!4 &752605585
 Transform:
   m_ObjectHideFlags: 0
@@ -1288,9 +1307,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"nest":{"source":"Macro","macro":0,"embed":null}}'
-    _objectReferences:
-    - {fileID: 11400000, guid: 9a008285c7e3c2f4d8be401264346c48, type: 2}
+    _json: '{"nest":{"source":"Macro","macro":null,"embed":null}}'
+    _objectReferences: []
 --- !u!114 &798054218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1442,11 +1460,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"declarations":{"collection":{"$content":[{"name":"GetItem","value":null,"$version":"A"},{"name":"ItemPop","value":{"$content":[{"$content":0,"$type":"UnityEngine.Object"},{"$content":1,"$type":"UnityEngine.Object"},{"$content":2,"$type":"UnityEngine.Object"}],"$type":"Ludiq.AotList"},"$version":"A"},{"name":"ItemCount","value":{"$content":0,"$type":"System.Int32"},"$version":"A"},{"name":"Time","value":{"$content":0.0,"$type":"System.Single"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
-    _objectReferences:
-    - {fileID: 381362677}
-    - {fileID: 589412867}
-    - {fileID: 1827269571}
+    _json: '{"declarations":{"collection":{"$content":[],"$version":"A"},"$version":"A"}}'
+    _objectReferences: []
 --- !u!4 &1501246662
 Transform:
   m_ObjectHideFlags: 0

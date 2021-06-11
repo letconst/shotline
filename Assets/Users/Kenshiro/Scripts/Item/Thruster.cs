@@ -5,50 +5,88 @@ using UnityEngine;
 public class Thruster : ActiveItem
 {
     GameObject Player;
-    CharaMove moveSpeed;
+    CharaMove Chara;
+
+    CharaMove BoostSpeed;
+
+    //移動速度カウントダウン用変数
+    public float MoveCountDown;
+    bool ClickButton;
+
+    int seconds;
+
+    //無敵時間カウントダウン用変数
+    public float FlagCountDown;
 
     protected override void Init()
     {
-        //スラスターの所持確認
-     
         base.Init();
+
+        //スラスターの所持確認
+        Player = GameObject.FindGameObjectWithTag("Player");
+        Chara = Player.GetComponent<CharaMove>();
+
     }
 
     protected override void OnClickButton()
     {
-
         //ボタンを押したとき移動速度1.5倍
-        Player = GameObject.Find("Player");
-        moveSpeed = Player.GetComponent<CharaMove>();
-        moveSpeed.speed *= 1.5f;
+        Chara.speedRatio = 1.5f;
 
+        //ボタンを押したら弾のフラグ処理を true にする
+        Chara.Muteki = true;
 
-        //ボタンを押したとき無敵時間のカウントの開始
+        //ボタンを押したときカウント開始
+        ClickButton = true;
+
+        ClearItemIcon();
     }
 
     protected override void UpdateFunction()
     {
 
         //移動速度1.5倍カウント
-
+        if (ClickButton && MoveCountDown > 0)
+        {
+            MoveCountDown -= Time.deltaTime;
+            seconds = (int)MoveCountDown;
+        }
 
         //無敵時間のカウント
+        if (Chara.Muteki == true)
+        {
+            FlagCountDown -= Time.deltaTime;
+            seconds = (int)MoveCountDown;
 
+            //true の時、向いている方向に移動
+            BoostSpeed = Player.GetComponent<CharaMove>();
 
-        //無敵時間が過ぎたら Terminate を呼ぶ
+            BoostSpeed.moveX = BoostSpeed.CurrentSpeed;
+            BoostSpeed.moveZ = BoostSpeed.CurrentSpeed;
+        }
 
-
-    }
-
-    protected override void Terminate()
-    {
         //移動速度を元に戻す
-
-
+        if (MoveCountDown <= 0)
+        {
+            Chara.speedRatio = 1f;
+        }
 
         //無敵解除
+        //フラグを false に戻す
+        if (FlagCountDown <= 0)
+        {
+            Chara.Muteki = false;
+        }
 
+        //両カウントが0になったら Terminate を呼ぶ
+        if (MoveCountDown <= 0 && FlagCountDown <= 0)
+        {
+            Terminate();
+        }
+    }
 
+    public override void Terminate()
+    {
         base.Terminate();
     }
 }
