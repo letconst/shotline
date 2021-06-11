@@ -6,22 +6,28 @@ public class BigBullet : PassiveItem
     public static bool BBOn = false;
     public static bool BBOff = false;
 
+
+
     //ç≈èâÇ…é¿çsÇ≥ÇÍÇÈ
     protected override void Init()
     {
         base.Init();
 
+        Projectile.BBnum = 3;
+
         //BBOnÇÇ¬ÇØÇÈ
         BBOff = false;
         BBOn = true;
+        Projectile.ScaleRatio = 1.5f;
 
     }
 
     //ç≈å„Ç…é¿çsÇ≥ÇÍÇÈ
     public override void Terminate()
     {
-
+        BBOff = false;
         BBOn = false;
+        Projectile.ScaleRatio = 1f;
 
         base.ClearItemIcon();
 
