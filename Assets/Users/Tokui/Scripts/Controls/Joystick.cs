@@ -32,6 +32,8 @@ public class Joystick : Graphic, IPointerDownHandler, IPointerUpHandler, IEndDra
     private Vector2 _position = Vector2.zero;
     public Vector2 Position { get { return _position; } }
 
+    //private float _fingerID = -1;
+
     //スティックの位置(Setter)
     private Vector3 _stickPosition
     {
@@ -48,7 +50,7 @@ public class Joystick : Graphic, IPointerDownHandler, IPointerUpHandler, IEndDra
     //=================================================================================
     //初期化
     //=================================================================================
-
+    
     protected override void Awake()
     {
         base.Awake();
@@ -142,6 +144,46 @@ public class Joystick : Graphic, IPointerDownHandler, IPointerUpHandler, IEndDra
     //ドラッグ中
     public void OnDrag(PointerEventData eventData)
     {
+        Input.multiTouchEnabled = false;
+
+        #region デバッグ用
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("クリックした瞬間");
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            Debug.Log("離した瞬間");
+        }
+
+        if (Input.GetMouseButton(0))
+        {
+            Debug.Log("クリックしっぱなし");
+        }
+
+        if (Input.touchCount > 0)
+        {
+            // タッチ情報の取得
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                Debug.Log("押した瞬間");
+            }
+
+            if (touch.phase == TouchPhase.Ended)
+            {
+                Debug.Log("離した瞬間");
+            }
+
+            if (touch.phase == TouchPhase.Moved)
+            {
+                Debug.Log("押しっぱなし");
+            }
+        }
+        #endregion
+
         //タップ位置を画面内の座標に変換し、スティックを移動
         Vector2 screenPos = Vector2.zero;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<RectTransform>(),
@@ -156,7 +198,6 @@ public class Joystick : Graphic, IPointerDownHandler, IPointerUpHandler, IEndDra
         float currentRadius = Vector3.Distance(Vector3.zero, _stick.transform.localPosition);
         if (currentRadius > _radius)
         {
-
             //角度計算
             float radian = Mathf.Atan2(_stick.transform.localPosition.y, _stick.transform.localPosition.x);
 
@@ -167,7 +208,6 @@ public class Joystick : Graphic, IPointerDownHandler, IPointerUpHandler, IEndDra
 
             _stickPosition = limitedPosition;
         }
-
     }
 
     //=================================================================================
