@@ -44,6 +44,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _prevLineCamPos  = Vector3.zero;
         _screenCenterPos = new Vector2(Screen.width / 2f, Screen.height / 2f);
         _lineDataList    = new List<LineData>();
+        DrawingData      = null;
 
         // 射線データ生成
         for (int i = 0; i < initPoolingCount; i++)
