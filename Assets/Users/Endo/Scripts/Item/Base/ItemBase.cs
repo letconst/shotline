@@ -93,7 +93,6 @@ public abstract class ItemBase : MonoBehaviour
     {
         _isEnabled = false;
         ClearItemIcon();
-        ItemManager.ItemBtn.onClick.RemoveAllListeners();
         Destroy(gameObject);
     }
 
@@ -104,5 +103,6 @@ public abstract class ItemBase : MonoBehaviour
     {
         _itemIcon.sprite = null;
         _itemIcon.color  = Color.clear;
+        ItemManager.ItemBtn.onClick.RemoveAllListeners();
     }
 }
