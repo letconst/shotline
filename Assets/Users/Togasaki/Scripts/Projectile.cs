@@ -75,6 +75,9 @@ public class Projectile : MonoBehaviour
 
     private BulletMovement BM;
 
+    //SE用変数
+    [SerializeField] private GameObject SoundManager;
+
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -108,8 +111,11 @@ public class Projectile : MonoBehaviour
             LineData  currentLineData = ShotLineDrawer.DrawingData;
             Vector3[] FingerPositions = ShotLineUtil.GetFingerPositions(currentLineData);
 
-
+            //弾生成
             GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
+
+            //SE
+            BasicSoundManager.Instance.PlaySE(SELabel.Shot, 0);
 
             BI.transform.localScale = new Vector3(BaseScale * ScaleRatio, BaseScale * ScaleRatio, BaseScale * ScaleRatio);
 
@@ -141,7 +147,7 @@ public class Projectile : MonoBehaviour
         }
 
 
-        //もしラインがあってボタンが押されたら
+        //弾を実際に動かす部分
         if (BulletList.Count > 0)
         {
 
@@ -152,8 +158,6 @@ public class Projectile : MonoBehaviour
 
                 //現在の座標を変更できるように変数化
                 BulletInfo currentP = BulletList[i];
-
-                //弾を実際に動かす部分
 
                 //もし射線の長さが最後だったら
                 if (BulletList[i].index == BulletList[i].FP.Length - 1)
