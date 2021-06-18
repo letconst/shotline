@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainGameScene.unity
     guid: 1e415ecea8131b645b4e5932e36adca6
+  - enabled: 1
+    path: Assets/Users/Kenshiro/Scenes/RandomItem.unity
+    guid: 8c05cc3e45e9f374483e13c9c105bd96
   m_configObjects: {}

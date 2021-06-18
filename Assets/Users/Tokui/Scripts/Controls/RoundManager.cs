@@ -5,6 +5,12 @@ public class RoundManager : MonoBehaviour
     [SerializeField]
     public float PlayerLife = 3;
 
+    //サドンデス設定時間
+    public float SuddenDeath = 360f;
+
+    //壁の移動速度
+    public float WallSpeed = 1f;
+
     // 現在ラウンドが切り替わっている最中かどうか判別
     public static bool RoundMove = false;
 
