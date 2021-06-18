@@ -11,30 +11,46 @@ public class CharaMove : MonoBehaviour
     [SerializeField]
     public float speed = 5.0f;
 
-    float moveX = 0f;
-    float moveZ = 0f;
+    public float speedRatio;
+
+    // 弾が当たったかどうかのフラグ
+    public bool Thruster;
+
+    public float moveX = 0f;
+    public float moveZ = 0f;
 
     private Vector3 latestPos;  //前回のPosition
 
     CharacterController controller;
 
+    public float CurrentSpeed => speed * speedRatio;
+
     void Start()
     {
+        speedRatio = 1;
         controller = GetComponent<CharacterController>();
     }
 
     void Update()
     {
+        //無敵フラグが立っているとき
+        //移動処理を行わない
+        if (Thruster == true)
+        {
+            return;
+        }
+
         if (RoundManager.RoundMove == true)
         {
             return;
         }
 
-        moveX = _joystick.Position.x * speed;
-        moveZ = _joystick.Position.y * speed;
+        moveX = _joystick.Position.x * CurrentSpeed;
+        moveZ = _joystick.Position.y * CurrentSpeed;
         Vector3 direction = new Vector3(moveX, 0, moveZ);
 
         controller.SimpleMove(direction);
+
 
         // 移動方向にキャラクターが向くようにする
         Vector3 diff = transform.position - latestPos;   //前回からどこに進んだかをベクトルで取得
@@ -49,7 +65,9 @@ public class CharaMove : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Bullet"))
+        // 弾が当たった時の処理
+        // フラグが false だった時、処理しない
+        if (other.CompareTag("Bullet") && Thruster == false)
         {
             // 一時的に無効化
             // Debug.Log("Hit");
