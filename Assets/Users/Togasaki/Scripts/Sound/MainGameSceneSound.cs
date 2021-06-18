@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainGameSceneSound : MonoBehaviour
+public class MainGameSceneSound : BasicSoundManager
 {
+    //ïœçXÇÃó]ínÇ†ÇË
     private void Start()
     {
-        SoundManager.PlayBGM(BGMLabel.MainGame);
+        PlayBGM(BGMLabel.MainGame);
     }
 }
