@@ -721,11 +721,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1235270391766225614, guid: 85289869b36144a428a03dcc72846ae7, type: 3}
       propertyPath: FlagCountDown
-      value: 5
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1235270391766225614, guid: 85289869b36144a428a03dcc72846ae7, type: 3}
       propertyPath: MoveCountDown
-      value: 5
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6557044911692806388, guid: 85289869b36144a428a03dcc72846ae7, type: 3}
       propertyPath: m_RootOrder
@@ -1125,8 +1125,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _joystick: {fileID: 71055147}
   speed: 10
-  speedRatio: 0
-  Muteki: 0
+  speedRatio: 1
+  Thruster: 0
   moveX: 0
   moveZ: 0
 --- !u!143 &684129312

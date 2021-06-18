@@ -14,7 +14,7 @@ public class CharaMove : MonoBehaviour
     public float speedRatio;
 
     // 弾が当たったかどうかのフラグ
-    public bool Muteki;
+    public bool Thruster;
 
     public float moveX = 0f;
     public float moveZ = 0f;
@@ -35,7 +35,7 @@ public class CharaMove : MonoBehaviour
     {
         //無敵フラグが立っているとき
         //移動処理を行わない
-        if (Muteki == true)
+        if (Thruster == true)
         {
             return;
         }
@@ -67,7 +67,7 @@ public class CharaMove : MonoBehaviour
     {
         // 弾が当たった時の処理
         // フラグが false だった時、処理しない
-        if (other.CompareTag("Bullet") && Muteki == false)
+        if (other.CompareTag("Bullet") && Thruster == false)
         {
             // 一時的に無効化
             // Debug.Log("Hit");
