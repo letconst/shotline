@@ -27,6 +27,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private Vector3 _shotLineCamPos;  // タップ開始時の射線カメラの位置
     private Vector3 _prevLineCamPos;  // 1フレーム前の射線カメラの位置
     private Vector2 _screenCenterPos; // 画面の中心位置
+    private int     _currentFingerId; // 最後に操作した指
 
     private List<LineData> _lineDataList;
 
@@ -44,6 +45,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _prevLineCamPos  = Vector3.zero;
         _screenCenterPos = new Vector2(Screen.width / 2f, Screen.height / 2f);
         _lineDataList    = new List<LineData>();
+        _currentFingerId = -1;
+        DrawingData      = null;
 
         // 射線データ生成
         for (int i = 0; i < initPoolingCount; i++)
@@ -67,77 +70,102 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// </summary>
     private void DrawLine()
     {
-#if UNITY_EDITOR
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z += lineZPos;
-        Vector3 tmpMousePos = _camera.ScreenToWorldPoint(mousePos);
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            // UIをクリックした際は反応させない
-            if (EventSystem.current.IsPointerOverGameObject()) return;
-
-            // 画面中央からのドローのみ受け付ける
-            if (Vector2.Distance(_screenCenterPos, mousePos) > drawableAreaRadius) return;
-
-            _isHoldClicking = true;
-            _shotLineCamPos = lineCamera.transform.position;
-
-            CreateLine();
-        }
-        else if (Input.GetMouseButton(0) && _isHoldClicking)
-        {
-            // 1つ前の射線位置から指定距離離れていたら伸ばす
-            List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
-
-            if (Vector2.Distance(tmpMousePos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
-            {
-                UpdateLine(tmpMousePos);
-            }
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            _isHoldClicking = false;
-        }
-#elif UNITY_IOS || UNITY_ANDROID
+        // モバイル操作
         if (Input.touchCount > 0)
         {
-            Touch   t = Input.GetTouch(0);
-            Vector3 touchPos = t.position;
-            touchPos.z += lineZPos;
-            Vector3 tmpFingerPos = _camera.ScreenToWorldPoint(touchPos);
-
-            switch (t.phase)
+            foreach (Touch touch in Input.touches)
             {
-                case TouchPhase.Began:
-                    if (EventSystem.current.IsPointerOverGameObject()) return;
+                // 固定中は処理しない（ドロー中に射撃するとそこで終了させる）
+                if (DrawingData is {IsFixed: true})
+                {
+                    _currentFingerId = -1;
 
-                    if (Vector2.Distance(_screenCenterPos, touchPos) > drawableAreaRadius) return;
+                    return;
+                }
 
-                    _isHoldClicking = true;
-                    _shotLineCamPos = lineCamera.transform.position;
+                // 同じ指のみ受け付ける
+                if (touch.phase != TouchPhase.Began && touch.fingerId != _currentFingerId) continue;
 
-                    CreateLine();
+                // 描き始めたときに保持IDを更新
+                if (touch.fingerId != _currentFingerId && _currentFingerId == -1)
+                {
+                    _currentFingerId = touch.fingerId;
+                }
 
-                    break;
+                Vector3 touchPos = touch.position;
+                touchPos.z += lineZPos;
+                Vector3 tmpFingerPos = _camera.ScreenToWorldPoint(touchPos);
 
-                case TouchPhase.Moved when _isHoldClicking:
-                    List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
+                switch (touch.phase)
+                {
+                    case TouchPhase.Began:
+                        // UIをクリックした際は反応させない
+                        if (EventSystem.current.IsPointerOverGameObject()) return;
 
-                    if (Vector2.Distance(tmpFingerPos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
-                    {
-                        UpdateLine(tmpFingerPos);
-                    }
+                        // 画面中央からのドローのみ受け付ける
+                        if (Vector2.Distance(_screenCenterPos, touchPos) > drawableAreaRadius) return;
 
-                    break;
+                        _isHoldClicking = true;
+                        _shotLineCamPos = lineCamera.transform.position;
 
-                case TouchPhase.Ended:
-                    _isHoldClicking = false;
+                        CreateLine();
 
-                    break;
+                        break;
+
+                    case TouchPhase.Moved when _isHoldClicking:
+                        // 1つ前の射線位置から指定距離離れていたら伸ばす
+                        List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
+
+                        if (Vector2.Distance(tmpFingerPos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
+                        {
+                            UpdateLine(tmpFingerPos);
+                        }
+
+                        break;
+
+                    case TouchPhase.Ended:
+                        _isHoldClicking  = false;
+                        _currentFingerId = -1;
+
+                        break;
+                }
             }
         }
-#endif
+        // PC操作 (UnityEditor)
+        else
+        {
+            Vector3 mousePos = Input.mousePosition;
+            mousePos.z += lineZPos;
+            Vector3 tmpMousePos = _camera.ScreenToWorldPoint(mousePos);
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                // UIをクリックした際は反応させない
+                if (EventSystem.current.IsPointerOverGameObject()) return;
+
+                // 画面中央からのドローのみ受け付ける
+                if (Vector2.Distance(_screenCenterPos, mousePos) > drawableAreaRadius) return;
+
+                _isHoldClicking = true;
+                _shotLineCamPos = lineCamera.transform.position;
+
+                CreateLine();
+            }
+            else if (Input.GetMouseButton(0) && _isHoldClicking)
+            {
+                // 1つ前の射線位置から指定距離離れていたら伸ばす
+                List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
+
+                if (Vector2.Distance(tmpMousePos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
+                {
+                    UpdateLine(tmpMousePos);
+                }
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                _isHoldClicking = false;
+            }
+        }
     }
 
     /// <summary>
@@ -156,9 +184,9 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         if (curLineCamPos == _prevLineCamPos) return;
 
         // 射線のドロー開始時と現在の射線カメラの差分座標
-        Vector3 deltaPosToCam = new Vector3(curLineCamPos.x - _shotLineCamPos.x,
-                                            curLineCamPos.y - _shotLineCamPos.y,
-                                            curLineCamPos.z - _shotLineCamPos.z);
+        var deltaPosToCam = new Vector3(curLineCamPos.x - _shotLineCamPos.x,
+                                        curLineCamPos.y - _shotLineCamPos.y,
+                                        curLineCamPos.z - _shotLineCamPos.z);
 
         List<Vector3> drawingFingerPos     = DrawingData.FingerPositions;
         int           fingerPositionsCount = drawingFingerPos.Count;
@@ -166,9 +194,9 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         // 射線の全ポイントの座標を更新
         for (int i = 0; i < fingerPositionsCount; i++)
         {
-            Vector3 newPos = new Vector3(drawingFingerPos[i].x + deltaPosToCam.x,
-                                         drawingFingerPos[i].y + deltaPosToCam.y,
-                                         drawingFingerPos[i].z + deltaPosToCam.z);
+            var newPos = new Vector3(drawingFingerPos[i].x + deltaPosToCam.x,
+                                     drawingFingerPos[i].y + deltaPosToCam.y,
+                                     drawingFingerPos[i].z + deltaPosToCam.z);
 
             DrawingData.Renderer.SetPosition(i, newPos);
         }
@@ -181,13 +209,21 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// </summary>
     private void CreateLine()
     {
-        Vector3 touchPos;
+        Vector3 touchPos = Vector3.zero;
 
-#if UNITY_EDITOR
-        touchPos = Input.mousePosition;
-#elif UNITY_IOS || UNITY_ANDROID
-        touchPos = Input.GetTouch(0).position;
-#endif
+        if (Input.touchCount > 0)
+        {
+            foreach (Touch touch in Input.touches)
+            {
+                if (touch.fingerId != _currentFingerId) continue;
+
+                touchPos = touch.position;
+            }
+        }
+        else
+        {
+            touchPos = Input.mousePosition;
+        }
 
         touchPos.z += lineZPos;
         Vector3 worldTouchPos = _camera.ScreenToWorldPoint(touchPos);
@@ -233,7 +269,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// ドロー中の射線を伸ばす
     /// </summary>
     /// <param name="newFingerPos">追加する位置</param>
-    private void UpdateLine(Vector3 newFingerPos)
+    private static void UpdateLine(Vector3 newFingerPos)
     {
         // TODO: 射線長の上限
 
