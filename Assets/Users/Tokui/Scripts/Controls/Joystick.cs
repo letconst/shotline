@@ -32,7 +32,7 @@ public class Joystick : Graphic, IPointerDownHandler, IPointerUpHandler, IEndDra
     private Vector2 _position = Vector2.zero;
     public Vector2 Position { get { return _position; } }
 
-    //private float _fingerID = -1;
+    private int _fingerID = -1;
 
     //スティックの位置(Setter)
     private Vector3 _stickPosition
@@ -50,7 +50,7 @@ public class Joystick : Graphic, IPointerDownHandler, IPointerUpHandler, IEndDra
     //=================================================================================
     //初期化
     //=================================================================================
-    
+
     protected override void Awake()
     {
         base.Awake();
@@ -144,70 +144,65 @@ public class Joystick : Graphic, IPointerDownHandler, IPointerUpHandler, IEndDra
     //ドラッグ中
     public void OnDrag(PointerEventData eventData)
     {
-        Input.multiTouchEnabled = false;
+        Touch mytouch = Input.GetTouch(0);
 
-        #region デバッグ用
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("クリックした瞬間");
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            Debug.Log("離した瞬間");
-        }
-
-        if (Input.GetMouseButton(0))
-        {
-            Debug.Log("クリックしっぱなし");
-        }
-
-        if (Input.touchCount > 0)
-        {
-            // タッチ情報の取得
-            Touch touch = Input.GetTouch(0);
-
-            if (touch.phase == TouchPhase.Began)
-            {
-                Debug.Log("押した瞬間");
-            }
-
-            if (touch.phase == TouchPhase.Ended)
-            {
-                Debug.Log("離した瞬間");
-            }
-
-            if (touch.phase == TouchPhase.Moved)
-            {
-                Debug.Log("押しっぱなし");
-            }
-        }
-        #endregion
+        //Touch[] myTouches = Input.touches;
 
         //タップ位置を画面内の座標に変換し、スティックを移動
-        Vector2 screenPos = Vector2.zero;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<RectTransform>(),
-          new Vector2(Input.mousePosition.x, Input.mousePosition.y),
-          null,
-          out screenPos
-        );
-
-        _stickPosition = screenPos;
-
-        //移動場所が設定した半径を超えてる場合は制限内に抑える
-        float currentRadius = Vector3.Distance(Vector3.zero, _stick.transform.localPosition);
-        if (currentRadius > _radius)
+        foreach (Touch touch in Input.touches)
         {
-            //角度計算
-            float radian = Mathf.Atan2(_stick.transform.localPosition.y, _stick.transform.localPosition.x);
+            if (mytouch.fingerId != _fingerID && _fingerID == -1)
+            {
+                _fingerID = mytouch.fingerId;
+            }
+            if (mytouch.phase != TouchPhase.Began && mytouch.fingerId != _fingerID)
+            {
+                continue;
+            }
 
-            //円上にXとYを設定
-            Vector3 limitedPosition = Vector3.zero;
-            limitedPosition.x = _radius * Mathf.Cos(radian);
-            limitedPosition.y = _radius * Mathf.Sin(radian);
+            #region デバッグ用
+            switch (mytouch.phase)
+            {
+                case TouchPhase.Began:
+                    Debug.LogFormat("{0}:いまタッチした", _fingerID);
+                    break;
 
-            _stickPosition = limitedPosition;
+                case TouchPhase.Moved:
+                case TouchPhase.Stationary:
+                    Debug.LogFormat("{0}:タッチしている", _fingerID);
+                    break;
+
+                case TouchPhase.Ended:
+                case TouchPhase.Canceled:
+                    Debug.LogFormat("{0}:いま離された", _fingerID);
+                    break;
+            }
+            #endregion
+
+            Vector2 screenPos = Vector2.zero;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<RectTransform>(),
+              new Vector2(mytouch.position.x, mytouch.position.y),
+              null,
+              out screenPos
+            );
+            _stickPosition = screenPos;
+
+            //移動場所が設定した半径を超えてる場合は制限内に抑える
+            float currentRadius = Vector3.Distance(Vector3.zero, _stick.transform.localPosition);
+            if (currentRadius > _radius)
+            {
+                //角度計算
+                float radian = Mathf.Atan2(_stick.transform.localPosition.y, _stick.transform.localPosition.x);
+
+                //円上にXとYを設定
+                Vector3 limitedPosition = Vector3.zero;
+                limitedPosition.x = _radius * Mathf.Cos(radian);
+                limitedPosition.y = _radius * Mathf.Sin(radian);
+
+                _stickPosition = limitedPosition;
+            }
         }
+
     }
 
     //=================================================================================
