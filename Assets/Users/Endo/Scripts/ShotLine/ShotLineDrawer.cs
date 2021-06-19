@@ -157,9 +157,9 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         if (curLineCamPos == _prevLineCamPos) return;
 
         // 射線のドロー開始時と現在の射線カメラの差分座標
-        Vector3 deltaPosToCam = new Vector3(curLineCamPos.x - _shotLineCamPos.x,
-                                            curLineCamPos.y - _shotLineCamPos.y,
-                                            curLineCamPos.z - _shotLineCamPos.z);
+        var deltaPosToCam = new Vector3(curLineCamPos.x - _shotLineCamPos.x,
+                                        curLineCamPos.y - _shotLineCamPos.y,
+                                        curLineCamPos.z - _shotLineCamPos.z);
 
         List<Vector3> drawingFingerPos     = DrawingData.FingerPositions;
         int           fingerPositionsCount = drawingFingerPos.Count;
@@ -167,9 +167,9 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         // 射線の全ポイントの座標を更新
         for (int i = 0; i < fingerPositionsCount; i++)
         {
-            Vector3 newPos = new Vector3(drawingFingerPos[i].x + deltaPosToCam.x,
-                                         drawingFingerPos[i].y + deltaPosToCam.y,
-                                         drawingFingerPos[i].z + deltaPosToCam.z);
+            var newPos = new Vector3(drawingFingerPos[i].x + deltaPosToCam.x,
+                                     drawingFingerPos[i].y + deltaPosToCam.y,
+                                     drawingFingerPos[i].z + deltaPosToCam.z);
 
             DrawingData.Renderer.SetPosition(i, newPos);
         }
@@ -208,9 +208,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         // なければ生成
         if (targetData == null)
         {
-            LineData newData = ShotLineUtil.InstantiateLine(linePrefab);
-            _lineDataList.Add(newData);
-            targetData  = newData;
+            targetData  = InstantiateNewLineData();
             DrawingData = targetData;
         }
         else
@@ -261,6 +259,35 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
             ShotLineUtil.ClearLineData(data);
         }
+    }
+
+    /// <summary>
+    /// 射線データを新たに生成し、管理下に加える
+    /// </summary>
+    /// <returns>生成された射線データ</returns>
+    private static LineData InstantiateNewLineData()
+    {
+        LineData newData = ShotLineUtil.InstantiateLine(Instance.linePrefab);
+        Instance._lineDataList.Add(newData);
+
+        return newData;
+    }
+
+    /// <summary>
+    /// 使用されていない射線データを取得する
+    /// </summary>
+    /// <returns>射線データ</returns>
+    public static LineData GetFreeLine()
+    {
+        foreach (LineData lineData in Instance._lineDataList)
+        {
+            if (lineData.IsFixed) continue;
+
+            return lineData;
+        }
+
+        // すべて使用済みなら新たに生成
+        return InstantiateNewLineData();
     }
 }
 

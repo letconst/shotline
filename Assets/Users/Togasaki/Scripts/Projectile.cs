@@ -59,7 +59,7 @@ public class Projectile : MonoBehaviour
     public static float ScaleRatio = 1f;
 
     //射線の変数
-    public static LineRenderer Line;
+    public LineData currentLineData;
 
     //一回だけ射線の座標を取得
     private bool One = false;
@@ -102,17 +102,12 @@ public class Projectile : MonoBehaviour
     //射線に沿って弾丸を移動させる処理
     private void LineAppear()
     {
-        //もし射線が空だったら
-        if (Line == null)
-        {
-            Line = GameObject.FindGameObjectWithTag("ShotLine").GetComponent<LineRenderer>();
+        currentLineData = ShotLineDrawer.DrawingData;
 
-        }
-
+        // Debug.Log($"{lineData.Renderer.enabled} / {One}");
         //ラインが引かれていたら
-        if (Line != null && Line.enabled && One)
+        if (currentLineData != null && currentLineData.Renderer.enabled && One)
         {
-            LineData  currentLineData = ShotLineDrawer.DrawingData;
             Vector3[] FingerPositions = ShotLineUtil.GetFingerPositions(currentLineData);
 
             //弾生成
@@ -184,10 +179,8 @@ public class Projectile : MonoBehaviour
                     {
                         flag = true;
                     }
-                    if (flag && BulletList.Count == i+1)
-                    {
-                        ShotLineUtil.FreeLineData(BulletList[i].LineData);
-                    }
+                    
+                    ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
                     BulletList.RemoveAt(i);
@@ -196,7 +189,6 @@ public class Projectile : MonoBehaviour
             }
 
         }
-
     }
 
     //射撃ボタンを押したとき

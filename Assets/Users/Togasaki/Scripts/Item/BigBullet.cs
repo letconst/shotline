@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BigBullet : ActiveItem
 {
-    //BigBulletが有効の時用のbool、使い果たすとfalse
+    //BigBullet縺梧怏蜉ｹ縺ｮ譎ら畑縺ｮbool縲∽ｽｿ縺�譫懊◆縺吶→false
     public static bool BBOn = false;
     public static bool BBOff = false;
 
@@ -13,7 +13,7 @@ public class BigBullet : ActiveItem
 
     public GameObject stBtn;
 
-    //最初に実行される
+    //譛蛻昴↓螳溯｡後＆繧後ｋ
     protected override void Init()
     {
         base.Init();
@@ -22,7 +22,7 @@ public class BigBullet : ActiveItem
 
         stBtn = GameObject.Find("Shot");
 
-        //BBOnをつける
+        //BBOn繧偵▽縺代ｋ
         BBOff = false;
         BBOn = true;
         OneBB = true;
@@ -30,7 +30,7 @@ public class BigBullet : ActiveItem
 
     }
 
-    //最後に実行される
+    //譛蠕後↓螳溯｡後＆繧後ｋ
     public override void Terminate()
     {
         BBOff = false;
@@ -45,7 +45,7 @@ public class BigBullet : ActiveItem
     protected override void OnClickButton()
     {
         
-        if (BBOn && Projectile.Line != null && Projectile.Line.enabled && OneBB)
+        if (BBOn && OneBB)
         {
             ClickBB = true;
 
