@@ -27,6 +27,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private Vector3 _shotLineCamPos;  // タップ開始時の射線カメラの位置
     private Vector3 _prevLineCamPos;  // 1フレーム前の射線カメラの位置
     private Vector2 _screenCenterPos; // 画面の中心位置
+    private int     _currentFingerId; // 現在射線を描いている指ID
 
     private List<LineData> _lineDataList;
 
@@ -43,6 +44,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _shotLineCamPos  = Vector3.zero;
         _prevLineCamPos  = Vector3.zero;
         _screenCenterPos = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        _currentFingerId = -1;
         _lineDataList    = new List<LineData>();
         DrawingData      = null;
 
@@ -55,7 +57,14 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
     private void Update()
     {
-        DrawLine();
+        if (Input.touchCount > 0)
+        {
+            MobileInputHandler();
+        }
+        else
+        {
+            PCInputHandler();
+        }
     }
 
     private void LateUpdate()
@@ -64,11 +73,75 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     }
 
     /// <summary>
-    /// 入力によって射線を描画する
+    /// タッチ入力の処理
     /// </summary>
-    private void DrawLine()
+    private void MobileInputHandler()
     {
-#if UNITY_EDITOR
+        Touch[] touches = Input.touches;
+
+        foreach (Touch touch in touches)
+        {
+            // 描いている最中、その指IDでなければ弾く
+            if (_currentFingerId != -1 && touch.fingerId != _currentFingerId) continue;
+
+            Vector3 touchPos = touch.position;
+            touchPos.z += lineZPos;
+
+            switch (touch.phase)
+            {
+                case TouchPhase.Began:
+                    // UIをクリックした際は反応させない
+                    if (EventSystem.current.IsPointerOverGameObject(touch.fingerId)) return;
+                    
+                    // 画面中央からのドローのみ受け付ける
+                    if (Vector2.Distance(_screenCenterPos, touchPos) > drawableAreaRadius) return;
+
+                    if (_currentFingerId == -1)
+                    {
+                        _currentFingerId = touch.fingerId;
+                    }
+
+                    _isHoldClicking = true;
+                    _shotLineCamPos = lineCamera.transform.position;
+
+                    CreateLine();
+
+                    break;
+
+                case TouchPhase.Moved when _isHoldClicking:
+                    // 射線が固定されていたら処理しない（描きながら射撃した際にも止める）
+                    if (DrawingData.IsFixed)
+                    {
+                        _isHoldClicking  = false;
+                        _currentFingerId = -1;
+
+                        break;
+                    }
+                    
+                    Vector3       tmpFingerPos     = _camera.ScreenToWorldPoint(touchPos);
+                    List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
+
+                    if (Vector2.Distance(tmpFingerPos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
+                    {
+                        UpdateLine(tmpFingerPos);
+                    }
+
+                    break;
+
+                case TouchPhase.Ended:
+                    _isHoldClicking  = false;
+                    _currentFingerId = -1;
+
+                    break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// マウス入力の処理
+    /// </summary>
+    private void PCInputHandler()
+    {
         Vector3 mousePos = Input.mousePosition;
         mousePos.z += lineZPos;
         Vector3 tmpMousePos = _camera.ScreenToWorldPoint(mousePos);
@@ -100,45 +173,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         {
             _isHoldClicking = false;
         }
-#elif UNITY_IOS || UNITY_ANDROID
-        if (Input.touchCount > 0)
-        {
-            Touch   t = Input.GetTouch(0);
-            Vector3 touchPos = t.position;
-            touchPos.z += lineZPos;
-            Vector3 tmpFingerPos = _camera.ScreenToWorldPoint(touchPos);
-
-            switch (t.phase)
-            {
-                case TouchPhase.Began:
-                    if (EventSystem.current.IsPointerOverGameObject()) return;
-
-                    if (Vector2.Distance(_screenCenterPos, touchPos) > drawableAreaRadius) return;
-
-                    _isHoldClicking = true;
-                    _shotLineCamPos = lineCamera.transform.position;
-
-                    CreateLine();
-
-                    break;
-
-                case TouchPhase.Moved when _isHoldClicking:
-                    List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
-
-                    if (Vector2.Distance(tmpFingerPos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
-                    {
-                        UpdateLine(tmpFingerPos);
-                    }
-
-                    break;
-
-                case TouchPhase.Ended:
-                    _isHoldClicking = false;
-
-                    break;
-            }
-        }
-#endif
     }
 
     /// <summary>
