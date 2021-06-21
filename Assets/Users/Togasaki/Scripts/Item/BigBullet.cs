@@ -1,37 +1,67 @@
 using UnityEngine;
 
-public class BigBullet : PassiveItem
+public class BigBullet : ActiveItem
 {
-    //BigBulletが有効の時用のbool、使い果たすとfalse
+    //BigBullet縺梧怏蜉ｹ縺ｮ譎ら畑縺ｮbool縲∽ｽｿ縺�譫懊◆縺吶→false
     public static bool BBOn = false;
     public static bool BBOff = false;
 
+    public static bool OneBB = true;
+
+    public static bool ClickBB = false;
 
 
-    //最初に実行される
+    public GameObject stBtn;
+
+    //譛蛻昴↓螳溯｡後＆繧後ｋ
     protected override void Init()
     {
         base.Init();
 
-        Projectile.BBnum = 3;
+        Projectile.BBnum = 0;
 
-        //BBOnをつける
+        stBtn = GameObject.Find("Shot");
+
+        //BBOn繧偵▽縺代ｋ
         BBOff = false;
         BBOn = true;
-        Projectile.ScaleRatio = 1.5f;
+        OneBB = true;
+        ClickBB = false;
 
     }
 
-    //最後に実行される
+    //譛蠕後↓螳溯｡後＆繧後ｋ
     public override void Terminate()
     {
         BBOff = false;
         BBOn = false;
-        Projectile.ScaleRatio = 1f;
 
         base.ClearItemIcon();
 
         base.Terminate();
+
+    }
+
+    protected override void OnClickButton()
+    {
+        
+        if (BBOn && OneBB)
+        {
+            ClickBB = true;
+
+            Projectile.ScaleRatio = 1.5f;
+            Projectile.BBnum++;
+
+            OneBB = false;
+            if (Projectile.BBnum == 3)
+            {
+                OneBB = true;
+                BBOff = true;
+
+            }
+
+            stBtn.GetComponent<Projectile>().Fire();
+        }
 
     }
 

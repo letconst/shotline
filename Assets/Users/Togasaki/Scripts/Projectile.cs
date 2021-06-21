@@ -59,13 +59,13 @@ public class Projectile : MonoBehaviour
     public static float ScaleRatio = 1f;
 
     //射線の変数
-    private LineRenderer Line;
+    public LineData currentLineData;
 
     //一回だけ射線の座標を取得
     private bool One = false;
 
     //BB用のint
-    public static int BBnum = 3;
+    public static int BBnum = 0;
 
     //for用
     private int i = 0;
@@ -78,6 +78,9 @@ public class Projectile : MonoBehaviour
     //SE用変数
     [SerializeField] private GameObject SoundManager;
 
+    //BBの残り回数
+    [SerializeField] private GameObject rad;
+
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -85,7 +88,7 @@ public class Projectile : MonoBehaviour
     {
         ItemManager.ShotBtn.onClick.AddListener(() => Fire());
         BulletList = new List<BulletInfo>();
-        BBnum      = 3;
+        BBnum      = 0;
         ActSpeed   = OriginSpeed;
         ScaleRatio = 1;
     }
@@ -95,43 +98,25 @@ public class Projectile : MonoBehaviour
         LineAppear();
     }
 
+
     //射線に沿って弾丸を移動させる処理
     private void LineAppear()
     {
-        //もし射線が空だったら
-        if (Line == null)
-        {
-            Line = GameObject.FindGameObjectWithTag("ShotLine").GetComponent<LineRenderer>();
+        currentLineData = ShotLineDrawer.DrawingData;
 
-        }
-
+        // Debug.Log($"{lineData.Renderer.enabled} / {One}");
         //ラインが引かれていたら
-        if (Line != null && Line.enabled && One)
+        if (currentLineData != null && currentLineData.Renderer.enabled && One)
         {
-            LineData  currentLineData = ShotLineDrawer.DrawingData;
             Vector3[] FingerPositions = ShotLineUtil.GetFingerPositions(currentLineData);
 
             //弾生成
             GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
 
             //SE
-            BasicSoundManager.Instance.PlaySE(SELabel.Shot, 0);
+            BasicSoundManager.Instance.PlaySE(SELabel.Shot);
 
             BI.transform.localScale = new Vector3(BaseScale * ScaleRatio, BaseScale * ScaleRatio, BaseScale * ScaleRatio);
-
-            if (BigBullet.BBOn)
-            {
-
-                //スピードを変える
-                ActSpeed = BBSpeed;
-
-                if (BBnum == 0)
-                {
-                    BigBullet.BBOff = true;
-                }
-
-
-            }
 
 
             //配列に射線の全座標とそれに対応する弾丸をいれる
@@ -141,8 +126,9 @@ public class Projectile : MonoBehaviour
             {
                 flag = false;
             }
-
+            
             One = false;
+            BigBullet.OneBB = true;
 
         }
 
@@ -188,14 +174,13 @@ public class Projectile : MonoBehaviour
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
                 if (BulletList[i].index == BulletList[i].FP.Length - 1||BM.BBOn)
                 {
+
                     if (BulletList.Count == i+1)
                     {
                         flag = true;
                     }
-                    if (flag && BulletList.Count == i+1)
-                    {
-                        ShotLineUtil.FreeLineData(BulletList[i].LineData);
-                    }
+                    
+                    ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
                     BulletList.RemoveAt(i);
@@ -204,18 +189,25 @@ public class Projectile : MonoBehaviour
             }
 
         }
-
     }
 
     //射撃ボタンを押したとき
-    private void Fire()
+    public void Fire()
     {
 
-        if (BigBullet.BBOn == false)
+        ScaleRatio = 1f;
+        ActSpeed = OriginSpeed;
+
+        if (BigBullet.BBOn && BigBullet.ClickBB)
         {
-            BBnum = 3;
-            //スピードを戻す
-            ActSpeed = OriginSpeed;
+            //radial
+            rad.GetComponent<NumQuantity>().CulNum();
+            //スケール
+            ScaleRatio = 1.5f;
+            //スピードを変える
+            ActSpeed = BBSpeed;
+
+            BigBullet.ClickBB = false;
         }
 
         LineData currentLineData = ShotLineDrawer.DrawingData;
@@ -228,10 +220,6 @@ public class Projectile : MonoBehaviour
             //一回だけ座標を取得用
             One = true;
 
-            if (BigBullet.BBOn && Line != null && Line.enabled)
-            {
-                BBnum--;
-            }
         }
 
     }
