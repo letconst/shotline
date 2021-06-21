@@ -12,7 +12,7 @@ public static class ShotLineUtil
     /// <returns>作成された射線データ</returns>
     public static LineData InstantiateLine(GameObject prefab)
     {
-        LineData newData = new LineData(prefab);
+        var newData = new LineData(prefab);
 
         return newData;
     }

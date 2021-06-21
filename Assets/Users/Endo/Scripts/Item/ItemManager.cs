@@ -54,5 +54,7 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
         if (_holdItem != null) _holdItem.Terminate();
 
         _holdItem = item;
+
     }
+
 }

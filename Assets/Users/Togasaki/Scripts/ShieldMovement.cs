@@ -3,8 +3,12 @@ using UnityEngine;
 public class ShieldMovement : MonoBehaviour
 {
 
-    public static int ShieldLimit = 4;
+    private int ShieldLimit = 10;
 
+    private void Start()
+    {
+        ShieldLimit = 10;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -14,9 +18,8 @@ public class ShieldMovement : MonoBehaviour
             //当たり判定に入ったのがBulletだった場合ShieldLimitをマイナス１
             ShieldLimit--;
 
-            if (ShieldLimit < 0)
+            if (ShieldLimit <= 0)
             {
-                ShieldLimit = 4;
                 Destroy(gameObject);
             }
         }
