@@ -21,10 +21,10 @@ public class TitleScript : MonoBehaviour
         }
 
         // タッチ入力でメインシーンへ遷移
-        if (!_isNowLoading && (Input.GetMouseButtonDown(0) || isTouched))
+        if (!_isNowLoading && (Input.GetMouseButtonDown(0) || isTouched) && !SystemLoader.IsFirstFading)
         {
             _isNowLoading = true;
-            SceneManager.LoadScene("MainGameScene");
+            SystemSceneManager.LoadNextScene("MainGameScene", SceneTransition.Fade);
         }
     }
 

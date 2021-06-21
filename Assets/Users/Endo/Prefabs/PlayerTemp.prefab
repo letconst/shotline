@@ -17,7 +17,6 @@ GameObject:
   - component: {fileID: 4538016533155090977}
   - component: {fileID: 4538016533155090983}
   - component: {fileID: 8973932407242965063}
-  - component: {fileID: 5680461237151787083}
   m_Layer: 0
   m_Name: PlayerTemp
   m_TagString: Player
@@ -134,6 +133,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _joystick: {fileID: 0}
   speed: 5
+  speedRatio: 0
+  Thruster: 0
+  moveX: 0
+  moveZ: 0
 --- !u!54 &4538016533155090977
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -182,15 +185,3 @@ MonoBehaviour:
     _json: '{"nest":{"source":"Macro","macro":0,"embed":null}}'
     _objectReferences:
     - {fileID: 11400000, guid: 20e0809c603c0a64a9f1585e081c3514, type: 2}
---- !u!114 &5680461237151787083
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4538016533155091006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6adbe5c6b8a871141bd928ae84e23d8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
