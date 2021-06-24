@@ -1,12 +1,49 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UniRx;
 
 public class TitleScript : MonoBehaviour
 {
     //マッチ用bool
     private bool MatchSuccess = true;
 
-    private bool _isNowLoading;
+    private bool _isInitConnected;
+    private bool _isMatchingStarted;
+
+    private IDisposable receiver;
+
+    private void Start()
+    {
+        receiver = NetworkManager.OnReceived
+                                 .Where(res => res.Type.Equals("Init") || res.Type.Equals("Join"))
+                                 .Subscribe(res =>
+                                 {
+                                     EventType type = (EventType) Enum.Parse(typeof(EventType), res.Type);
+
+                                     if (type == EventType.Init)
+                                     {
+                                         SelfPlayerData.Uuid = res.Self.Uuid;
+
+                                         SendData data = new SendData(EventType.Join)
+                                         {
+                                             Self = new PlayerData
+                                             {
+                                                 Uuid = SelfPlayerData.Uuid
+                                             }
+                                         };
+
+                                         NetworkManager.Emit(data);
+                                     }
+                                     else if (type == EventType.Join)
+                                     {
+                                         // TODO: 部屋への参加完了UI表示
+
+                                         SystemSceneManager.LoadNextScene("MainGameScene", SceneTransition.Fade);
+                                         receiver.Dispose();
+                                     }
+                                 });
+    }
 
     private void Update()
     {
@@ -20,11 +57,21 @@ public class TitleScript : MonoBehaviour
             }
         }
 
-        // タッチ入力でメインシーンへ遷移
-        if (!_isNowLoading && (Input.GetMouseButtonDown(0) || isTouched) && !SystemLoader.IsFirstFading)
+        if (Input.GetMouseButtonDown(0))
         {
-            _isNowLoading = true;
-            SystemSceneManager.LoadNextScene("MainGameScene", SceneTransition.Fade);
+            isTouched = true;
+        }
+
+        if (isTouched && !_isInitConnected)
+        {
+            NetworkManager.Connect();
+
+            SendData data = new SendData(EventType.Init);
+            NetworkManager.Emit(data);
+
+            _isInitConnected = true;
+
+            // TODO: 通信中UI表示
         }
     }
 
