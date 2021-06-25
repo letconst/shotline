@@ -376,7 +376,7 @@ RectTransform:
   m_Children:
   - {fileID: 730796517}
   - {fileID: 981174624}
-  - {fileID: 512509328}
+  - {fileID: 383190338}
   - {fileID: 271040455}
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -629,6 +629,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -856059019632272089, guid: c6872af860ea0a945b533d91154c7650, type: 3}
+--- !u!224 &383190338 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7786787842734930897, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+  m_PrefabInstance: {fileID: 1627749207}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &383190340 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7786787842790724801, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+  m_PrefabInstance: {fileID: 1627749207}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2b9131991abba44cacf02fc00a3fb92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &408764248 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -4620282718447106903, guid: c6872af860ea0a945b533d91154c7650, type: 3}
@@ -773,22 +789,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3520b68dd5439646857b7561b2a8249, type: 3}
---- !u!224 &512509328 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6146658073659733868, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
-  m_PrefabInstance: {fileID: 1627749207}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &512509330 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6146658073659733867, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
-  m_PrefabInstance: {fileID: 1627749207}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2b9131991abba44cacf02fc00a3fb92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &560983889 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7750397243111347764, guid: c6872af860ea0a945b533d91154c7650, type: 3}
@@ -1388,6 +1388,26 @@ PrefabInstance:
     - target: {fileID: 6146658073659733869, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
       propertyPath: m_Name
       value: JoyStick
+      objectReference: {fileID: 0}
+    - target: {fileID: 7786787842734930897, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7786787842790724801, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7786787842790724801, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7786787842790724801, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7786787842790724801, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+      propertyPath: m_Color.r
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
@@ -2099,7 +2119,7 @@ PrefabInstance:
     - target: {fileID: 4538016533155091007, guid: 5e99d9621445d2d47af7330fb5452f28, type: 3}
       propertyPath: _joystick
       value: 
-      objectReference: {fileID: 512509330}
+      objectReference: {fileID: 383190340}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e99d9621445d2d47af7330fb5452f28, type: 3}
 --- !u!1001 &6636932586277026596

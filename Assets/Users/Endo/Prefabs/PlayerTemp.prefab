@@ -132,11 +132,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _joystick: {fileID: 0}
-  speed: 5
-  speedRatio: 0
+  _speed: 5
+  speedRatio: 1
   Thruster: 0
-  moveX: 0
-  moveZ: 0
 --- !u!54 &4538016533155090977
 Rigidbody:
   m_ObjectHideFlags: 0
