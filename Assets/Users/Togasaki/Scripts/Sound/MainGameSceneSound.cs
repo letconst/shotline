@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainGameSceneSound : BasicSoundManager
+public class MainGameSceneSound : SoundManager
 {
     private void Start()
     {

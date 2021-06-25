@@ -109,7 +109,7 @@ public class Projectile : MonoBehaviour
             GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
 
             //SE
-            BasicSoundManager.Instance.PlaySE(SELabel.Shot);
+            SoundManager.Instance.PlaySE(SELabel.Shot);
 
             BI.transform.localScale = new Vector3(BaseScale * ScaleRatio, BaseScale * ScaleRatio, BaseScale * ScaleRatio);
 
