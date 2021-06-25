@@ -3,16 +3,10 @@
 public class RoundManager : MonoBehaviour
 {
     [SerializeField]
-    public float PlayerLife = 3;
+    public float PlayerLife = 3; //プレイヤーのライフ
 
     // 現在ラウンドが切り替わっている最中かどうか判別
     public static bool RoundMove = false;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
