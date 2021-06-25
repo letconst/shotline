@@ -3,32 +3,33 @@ using System.Collections;
 
 public class CharaMove : MonoBehaviour
 {
-    //作成したJoystick
+    //Joystickプレハブ
     [SerializeField]
     private Joystick _joystick = null;
 
     //移動速度
     [SerializeField]
-    public float speed = 5.0f;
+    private float _speed = 5.0f; //キャラクターの移動速度
 
     public float speedRatio;
 
     // 弾が当たったかどうかのフラグ
     public bool Thruster;
 
-    public float moveX = 0f;
-    public float moveZ = 0f;
 
-    private Vector3 latestPos;  //前回のPosition
+    private float _moveX = 0f; //キャラクターのX方向への移動速度
+    private float _moveZ = 0f; //キャラクターのY方向への移動速度
 
-    CharacterController controller;
+    private Vector3 _latestPos;  //前回のPosition
 
-    public float CurrentSpeed => speed * speedRatio;
+    CharacterController controller; //CharacterControllerの読み込み
+
+    public float CurrentSpeed => _speed * speedRatio;
 
     void Start()
     {
         speedRatio = 1;
-        controller = GetComponent<CharacterController>();
+        controller = GetComponent<CharacterController>(); //CharacterControllerの取得
     }
 
     void Update()
@@ -42,19 +43,19 @@ public class CharaMove : MonoBehaviour
 
         if (RoundManager.RoundMove == true)
         {
-            return;
+            return; //RoundMoveがtrueになると操作不能に
         }
 
-        moveX = _joystick.Position.x * CurrentSpeed;
-        moveZ = _joystick.Position.y * CurrentSpeed;
-        Vector3 direction = new Vector3(moveX, 0, moveZ);
+        _moveX = _joystick.Position.x * CurrentSpeed; //JoystickのPositionに_speedをかけて、_moveXに代入
+        _moveZ = _joystick.Position.y * CurrentSpeed; //JoystickのPositionに_speedをかけて、_moveYに代入
+        Vector3 direction = new Vector3(_moveX, 0, _moveZ);
 
         controller.SimpleMove(direction);
 
 
         // 移動方向にキャラクターが向くようにする
-        Vector3 diff = transform.position - latestPos;   //前回からどこに進んだかをベクトルで取得
-        latestPos = transform.position;  //前回のPositionの更新
+        Vector3 diff = transform.position - _latestPos;     //前回からどこに進んだかをベクトルで取得
+        _latestPos = transform.position;                    //前回のPositionの更新
 
         //ベクトルの大きさが0.01以上の時に向きを変える処理をする
         if (diff.magnitude > 0.01f && diff.y == 0)
@@ -65,9 +66,7 @@ public class CharaMove : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        // 弾が当たった時の処理
-        // フラグが false だった時、処理しない
-        if (other.CompareTag("Bullet") && Thruster == false)
+        if (other.gameObject.tag == "Wall") //特定のTagの付いたオブジェクトを判別
         {
             // 一時的に無効化
             // Debug.Log("Hit");
@@ -83,9 +82,8 @@ public class CharaMove : MonoBehaviour
     IEnumerator Move()
     {
         yield return new WaitForFixedUpdate();
-        controller.enabled = false;
-        this.gameObject.transform.position = Vector3.zero;
-        controller.enabled = true;
-
+        controller.enabled = false; // CharacterControllerを無効に
+        this.gameObject.transform.position = Vector3.zero; //プレイヤーのポジションを(0,0,0)に
+        controller.enabled = true; // CharacterControllerを有効に
     }
 }
