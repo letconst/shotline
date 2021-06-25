@@ -23,15 +23,6 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
     [SerializeField, Header("回転アニメーション時間 (角度/秒)")]
     private float itemRotationAnimDuration = 100;
 
-    [SerializeField, Header("ビックバレットの最大量")]
-    private float maxNumBigBullet = 3;
-
-    [SerializeField, Header("シールドの最大量")]
-    private float maxNumShield = 1;
-
-    [SerializeField, Header("スラスターの最大量")]
-    private float maxNumSluster = 1;
-
     public static float currentNum = 0;
 
     public static Image   ItemIcon { get; private set; }
@@ -42,11 +33,6 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
     public static float ItemFloatingAnimDuration => Instance.itemFloatingAnimDuration;
     public static float ItemFloatingAnimScale    => Instance.itemFloatingAnimScale;
     public static float ItemRotationAnimDuration => Instance.itemRotationAnimDuration;
-
-    public static float MaxNumBigBullet => Instance.maxNumBigBullet;
-    public static float MaxNumShield => Instance.maxNumShield;
-    public static float MaxNumSluster => Instance.maxNumSluster;
-
 
     private static ItemBase _holdItem;
 
@@ -76,15 +62,6 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
         if (_holdItem != null) _holdItem.Terminate();
 
         _holdItem = item;
-
-        if (item.name == "BigBullet")
-        {
-            NumQuantity.maxNum = MaxNumBigBullet;
-        }
-        if (item.name == "ShieldItem")
-        {
-            NumQuantity.maxNum = MaxNumShield;
-        }
 
     }
 

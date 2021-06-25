@@ -10,7 +10,8 @@ public class BigBullet : ActiveItem
 
     public static bool ClickBB = false;
 
-    GameObject NQ;
+    [SerializeField, Header("ビックバレットの最大量")]
+    private float maxNumBigBullet = 3;
 
 
     public GameObject stBtn;
@@ -43,8 +44,8 @@ public class BigBullet : ActiveItem
 
     protected override void OnClickButton()
     {
-        NQ = GameObject.FindGameObjectWithTag("Rad");
-        NQ.GetComponent<NumQuantity>().CulNum();
+
+        NumQuantity.CulNum(maxNumBigBullet);
 
         if (BBOn && Projectile.Line != null && Projectile.Line.enabled && OneBB)
         {
@@ -54,7 +55,7 @@ public class BigBullet : ActiveItem
 
             OneBB = false;
 
-            if (ItemManager.currentNum == ItemManager.MaxNumBigBullet)
+            if (ItemManager.currentNum == maxNumBigBullet)
             {
                 OneBB = true;
                 BBOff = true;

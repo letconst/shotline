@@ -3,30 +3,31 @@ using UnityEngine.UI;
 
 public class NumQuantity : SingletonMonoBehaviour<NumQuantity>
 {
-    private float FA = 0;
-    public static float maxNum;
+    private static float FA = 0;
+    private static Image im;
 
     private void Start()
     {
         FA = 0;
+        im = GetComponent<Image>();
     }
 
-    public void CulNum()
+    public static void CulNum(float Max = 1)
     {
         ItemManager.currentNum++;
 
-        FA = (ItemManager.currentNum / maxNum) * 100;
+        FA = (ItemManager.currentNum / Max) * 100;
 
         FA = Mathf.Floor(FA);
 
         FA = FA / 100;
 
-        if (ItemManager.currentNum == maxNum)
+        if (ItemManager.currentNum == Max)
         {
             FA = 0;
         }
 
-        GetComponent<Image>().fillAmount = FA;
+        im.fillAmount = FA;
     }
 
 }
