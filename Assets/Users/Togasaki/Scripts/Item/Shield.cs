@@ -8,6 +8,7 @@ public class Shield : ActiveItem
 
     GameObject Player;
 
+    GameObject NQ;
 
     //最初に実行される
     protected override void Init()
@@ -15,13 +16,11 @@ public class Shield : ActiveItem
         //とったらはじめにされる処理
         base.Init();
 
-
     }
 
     //最後に実行される
     public override void Terminate()
     {
-
         base.ClearItemIcon();
         base.Terminate();
 
@@ -30,6 +29,9 @@ public class Shield : ActiveItem
 
     protected override void OnClickButton()
     {
+        NQ = GameObject.FindGameObjectWithTag("Rad");
+        NQ.GetComponent<NumQuantity>().CulNum();
+
 
         Player = GameObject.FindGameObjectWithTag("Player");
         Vector3 vec;
@@ -41,8 +43,10 @@ public class Shield : ActiveItem
 
         GameObject ShieldObj = Instantiate(ShieldPrefab, pos + vec * 1, Player.transform.rotation);
 
-        Terminate();
-
+        if (ItemManager.currentNum == ItemManager.MaxNumShield)
+        {
+            Terminate();
+        }
     }
 
     protected override void UpdateFunction()

@@ -13,6 +13,7 @@ TagManager:
   - ItemSpawn
   - Bullet
   - Shield
+  - Rad
   layers:
   - Default
   - TransparentFX

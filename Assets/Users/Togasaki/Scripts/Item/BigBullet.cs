@@ -10,6 +10,8 @@ public class BigBullet : ActiveItem
 
     public static bool ClickBB = false;
 
+    GameObject NQ;
+
 
     public GameObject stBtn;
 
@@ -17,8 +19,6 @@ public class BigBullet : ActiveItem
     protected override void Init()
     {
         base.Init();
-
-        Projectile.BBnum = 0;
 
         stBtn = GameObject.Find("Shot");
 
@@ -35,7 +35,6 @@ public class BigBullet : ActiveItem
     {
         BBOff = false;
         BBOn = false;
-
         base.ClearItemIcon();
 
         base.Terminate();
@@ -44,19 +43,22 @@ public class BigBullet : ActiveItem
 
     protected override void OnClickButton()
     {
-        
+        NQ = GameObject.FindGameObjectWithTag("Rad");
+        NQ.GetComponent<NumQuantity>().CulNum();
+
         if (BBOn && Projectile.Line != null && Projectile.Line.enabled && OneBB)
         {
             ClickBB = true;
 
             Projectile.ScaleRatio = 1.5f;
-            Projectile.BBnum++;
 
             OneBB = false;
-            if (Projectile.BBnum == 3)
+
+            if (ItemManager.currentNum == ItemManager.MaxNumBigBullet)
             {
                 OneBB = true;
                 BBOff = true;
+                Terminate();
 
             }
 
@@ -67,10 +69,6 @@ public class BigBullet : ActiveItem
 
     protected override void UpdateFunction()
     {
-        if (BBOff)
-        {
-            Terminate();
-        }
 
     }
 }

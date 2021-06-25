@@ -600,6 +600,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7813608647114689177, guid: 33967ea619219de449c3d0d5cb5f1890, type: 3}
+      propertyPath: m_TagString
+      value: Rad
+      objectReference: {fileID: 0}
     - target: {fileID: 9147968335121484277, guid: 33967ea619219de449c3d0d5cb5f1890, type: 3}
       propertyPath: m_FillAmount
       value: 0
@@ -1058,8 +1062,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BulletPrefab: {fileID: 0}
-  SoundManager: {fileID: 1851240581}
-  rad: {fileID: 0}
 --- !u!114 &730796519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1460,9 +1462,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77067e3c46d4b6549a56153e03e3f1e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BBMaxNum: 3
-  ShiMaxNum: 1
-  SlasMaxNum: 1
 --- !u!1001 &1627749207
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1609,11 +1608,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dab1be5c42afc3645a86780f5d096739, type: 3}
---- !u!1 &1851240581 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6199373233599151172, guid: 506dac4f93b195a4fb0a300432db35cd, type: 3}
-  m_PrefabInstance: {fileID: 6199373234038262977}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1852606318
 GameObject:
   m_ObjectHideFlags: 0
@@ -1910,8 +1904,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BulletPrefab: {fileID: 809079969102882050, guid: d7aa22edc7d1e624492c056df89ab94f, type: 3}
-  SoundManager: {fileID: 0}
-  rad: {fileID: 1612713713}
 --- !u!1 &2025405727
 GameObject:
   m_ObjectHideFlags: 0
@@ -2266,7 +2258,8 @@ PrefabInstance:
       propertyPath: _joystick
       value: 
       objectReference: {fileID: 512509330}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5680461237151787083, guid: 5e99d9621445d2d47af7330fb5452f28, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 5e99d9621445d2d47af7330fb5452f28, type: 3}
 --- !u!1001 &6199373234038262977
 PrefabInstance:
@@ -2402,6 +2395,10 @@ PrefabInstance:
       value: ItemManager
       objectReference: {fileID: 0}
     - target: {fileID: 8428920788170041741, guid: abf71eb69812af0479ee6d77204056ec, type: 3}
+      propertyPath: rad
+      value: 
+      objectReference: {fileID: 1612713713}
+    - target: {fileID: 8428920788170041741, guid: abf71eb69812af0479ee6d77204056ec, type: 3}
       propertyPath: itemBtn
       value: 
       objectReference: {fileID: 271040456}
@@ -2409,6 +2406,22 @@ PrefabInstance:
       propertyPath: shotBtn
       value: 
       objectReference: {fileID: 271040454}
+    - target: {fileID: 8428920788170041741, guid: abf71eb69812af0479ee6d77204056ec, type: 3}
+      propertyPath: _Quantitiy
+      value: 
+      objectReference: {fileID: 1612713713}
+    - target: {fileID: 8428920788170041741, guid: abf71eb69812af0479ee6d77204056ec, type: 3}
+      propertyPath: maxNumShield
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428920788170041741, guid: abf71eb69812af0479ee6d77204056ec, type: 3}
+      propertyPath: maxNumSluster
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428920788170041741, guid: abf71eb69812af0479ee6d77204056ec, type: 3}
+      propertyPath: maxNumBigBullet
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8428920788170041746, guid: abf71eb69812af0479ee6d77204056ec, type: 3}
       propertyPath: m_RootOrder
       value: 14

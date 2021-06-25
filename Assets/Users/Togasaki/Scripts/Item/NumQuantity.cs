@@ -4,37 +4,29 @@ using UnityEngine.UI;
 public class NumQuantity : SingletonMonoBehaviour<NumQuantity>
 {
     private float FA = 0;
-    private float currentNum = Projectile.BBnum;
-    private float maxNum = 3f;
+    public static float maxNum;
 
     private void Start()
     {
-        FA = 0f;
-        currentNum = 0;
-        maxNum = 3f;
+        FA = 0;
     }
 
     public void CulNum()
     {
+        ItemManager.currentNum++;
 
-        currentNum++;
-
-
-        FA = (currentNum / maxNum) * 100f;
+        FA = (ItemManager.currentNum / maxNum) * 100;
 
         FA = Mathf.Floor(FA);
 
-        FA = FA / 100f;
+        FA = FA / 100;
 
-        if (currentNum == maxNum)
+        if (ItemManager.currentNum == maxNum)
         {
-            FA = 0f;
-            currentNum = 0;
-            maxNum = 3f;
-        }    
+            FA = 0;
+        }
 
         GetComponent<Image>().fillAmount = FA;
-
     }
 
 }
