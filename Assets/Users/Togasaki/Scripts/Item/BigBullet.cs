@@ -13,15 +13,10 @@ public class BigBullet : ActiveItem
     [SerializeField, Header("ビックバレットの最大量")]
     private float maxNumBigBullet = 3;
 
-
-    public GameObject stBtn;
-
     //最初に実行される
     protected override void Init()
     {
         base.Init();
-
-        stBtn = GameObject.Find("Shot");
 
         //BBOnをつける
         BBOff = false;
@@ -45,10 +40,10 @@ public class BigBullet : ActiveItem
     protected override void OnClickButton()
     {
 
-        NumQuantity.CulNum(maxNumBigBullet);
-
         if (BBOn && Projectile.Line != null && Projectile.Line.enabled && OneBB)
         {
+            NumQuantity.CulNum(maxNumBigBullet);
+
             ClickBB = true;
 
             Projectile.ScaleRatio = 1.5f;
@@ -63,7 +58,7 @@ public class BigBullet : ActiveItem
 
             }
 
-            stBtn.GetComponent<Projectile>().Fire();
+            ItemManager.ShotBtn.GetComponentInChildren<Projectile>().Fire();
         }
 
     }
