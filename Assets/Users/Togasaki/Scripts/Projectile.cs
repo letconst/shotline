@@ -62,7 +62,7 @@ public class Projectile : MonoBehaviour
     public static LineRenderer Line;
 
     //一回だけ射線の座標を取得
-    private bool One = false;
+    public static bool One = false;
 
     //for用
     private int i = 0;
@@ -124,7 +124,6 @@ public class Projectile : MonoBehaviour
             }
 
             One = false;
-            BigBullet.OneBB = true;
 
         }
 

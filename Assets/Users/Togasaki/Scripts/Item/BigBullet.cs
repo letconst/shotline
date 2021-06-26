@@ -6,8 +6,6 @@ public class BigBullet : ActiveItem
     public static bool BBOn = false;
     public static bool BBOff = false;
 
-    public static bool OneBB = true;
-
     public static bool ClickBB = false;
 
     [SerializeField, Header("ビックバレットの最大量")]
@@ -21,7 +19,6 @@ public class BigBullet : ActiveItem
         //BBOnをつける
         BBOff = false;
         BBOn = true;
-        OneBB = true;
         ClickBB = false;
 
     }
@@ -39,8 +36,9 @@ public class BigBullet : ActiveItem
 
     protected override void OnClickButton()
     {
+        ItemManager.ShotBtn.GetComponentInChildren<Projectile>().Fire();
 
-        if (BBOn && Projectile.Line != null && Projectile.Line.enabled && OneBB)
+        if (BBOn && Projectile.Line != null && Projectile.Line.enabled&&Projectile.One)
         {
             NumQuantity.CulNum(maxNumBigBullet);
 
@@ -48,17 +46,14 @@ public class BigBullet : ActiveItem
 
             Projectile.ScaleRatio = 1.5f;
 
-            OneBB = false;
 
             if (ItemManager.currentNum == maxNumBigBullet)
             {
-                OneBB = true;
                 BBOff = true;
                 Terminate();
 
             }
 
-            ItemManager.ShotBtn.GetComponentInChildren<Projectile>().Fire();
         }
 
     }
