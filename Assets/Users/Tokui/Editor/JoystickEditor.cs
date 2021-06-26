@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
 
 /// <summary>
 /// JoystickのInspectorを変えるエディター

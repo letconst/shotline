@@ -104,7 +104,6 @@ public class Projectile : MonoBehaviour
     {
         currentLineData = ShotLineDrawer.DrawingData;
 
-        // Debug.Log($"{lineData.Renderer.enabled} / {One}");
         //ラインが引かれていたら
         if (currentLineData != null && currentLineData.Renderer.enabled && One)
         {
@@ -126,7 +125,7 @@ public class Projectile : MonoBehaviour
             {
                 flag = false;
             }
-            
+
             One = false;
             BigBullet.OneBB = true;
 
@@ -179,7 +178,7 @@ public class Projectile : MonoBehaviour
                     {
                         flag = true;
                     }
-                    
+
                     ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
@@ -210,9 +209,10 @@ public class Projectile : MonoBehaviour
             BigBullet.ClickBB = false;
         }
 
-        LineData currentLineData = ShotLineDrawer.DrawingData;
+        currentLineData = ShotLineDrawer.DrawingData;
 
-        if (currentLineData.IsFixed == false)
+        // 射線が固定されていなければ
+        if (currentLineData is {IsFixed: false})
         {
             //射線の固定
             ShotLineUtil.FixLine(currentLineData);
