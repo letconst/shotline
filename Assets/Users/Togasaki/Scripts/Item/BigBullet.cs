@@ -1,8 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BigBullet : ActiveItem
 {
-    //BigBulletが有効の時用のbool、使ぁE��たすとfalse
+    //BigBulletが有効の時用のbool、使い果たすとfalse
     public static bool BBOn = false;
     public static bool BBOff = false;
 
@@ -10,7 +10,7 @@ public class BigBullet : ActiveItem
 
     public static bool ClickBB = false;
 
-    [SerializeField, Header("�r�b�N�o���b�g�̍ő��")]
+    [SerializeField, Header("ビックバレットの最大量")]
     private float maxNumBigBullet = 3;
 
     //最初に実行される
@@ -18,7 +18,7 @@ public class BigBullet : ActiveItem
     {
         base.Init();
 
-        //BBOn������
+        //BBOnをつける
         BBOff = false;
         BBOn = true;
         OneBB = true;
@@ -39,7 +39,8 @@ public class BigBullet : ActiveItem
 
     protected override void OnClickButton()
     {
-        if (BBOn && OneBB)
+
+        if (BBOn && Projectile.Line != null && Projectile.Line.enabled && OneBB)
         {
             NumQuantity.CulNum(maxNumBigBullet);
 

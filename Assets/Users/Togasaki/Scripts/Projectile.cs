@@ -21,10 +21,10 @@ public class BulletInfo
 
     public BulletInfo(GameObject bullet, Vector3[] fp, int ind, float spd, LineData lineData)
     {
-        Bullet   = bullet;
-        FP       = fp;
-        index    = ind;
-        Speed    = spd;
+        Bullet = bullet;
+        FP = fp;
+        index = ind;
+        Speed = spd;
         LineData = lineData;
     }
 }
@@ -59,7 +59,7 @@ public class Projectile : MonoBehaviour
     public static float ScaleRatio = 1f;
 
     //射線の変数
-    public LineData currentLineData;
+    public static LineRenderer Line;
 
     //一回だけ射線の座標を取得
     private bool One = false;
@@ -79,8 +79,9 @@ public class Projectile : MonoBehaviour
     {
         ItemManager.ShotBtn.onClick.AddListener(() => Fire());
         BulletList = new List<BulletInfo>();
-        ActSpeed   = OriginSpeed;
+        ActSpeed = OriginSpeed;
         ScaleRatio = 1;
+        One = false;
     }
 
     void Update()
@@ -92,11 +93,17 @@ public class Projectile : MonoBehaviour
     //射線に沿って弾丸を移動させる処理
     private void LineAppear()
     {
-        currentLineData = ShotLineDrawer.DrawingData;
+        //もし射線が空だったら
+        if (Line == null)
+        {
+            Line = GameObject.FindGameObjectWithTag("ShotLine").GetComponent<LineRenderer>();
+
+        }
 
         //ラインが引かれていたら
-        if (currentLineData != null && currentLineData.Renderer.enabled && One)
+        if (Line != null && Line.enabled && One)
         {
+            LineData currentLineData = ShotLineDrawer.DrawingData;
             Vector3[] FingerPositions = ShotLineUtil.GetFingerPositions(currentLineData);
 
             //弾生成
@@ -161,15 +168,17 @@ public class Projectile : MonoBehaviour
                 }
 
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
-                if (BulletList[i].index == BulletList[i].FP.Length - 1||BM.BBOn)
+                if (BulletList[i].index == BulletList[i].FP.Length - 1 || BM.BBOn)
                 {
 
-                    if (BulletList.Count == i+1)
+                    if (BulletList.Count == i + 1)
                     {
                         flag = true;
                     }
-
-                    ShotLineUtil.FreeLineData(BulletList[i].LineData);
+                    if (flag && BulletList.Count == i + 1)
+                    {
+                        ShotLineUtil.FreeLineData(BulletList[i].LineData);
+                    }
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
                     BulletList.RemoveAt(i);
@@ -178,6 +187,7 @@ public class Projectile : MonoBehaviour
             }
 
         }
+
     }
 
     //射撃ボタンを押したとき
@@ -197,10 +207,9 @@ public class Projectile : MonoBehaviour
             BigBullet.ClickBB = false;
         }
 
-        currentLineData = ShotLineDrawer.DrawingData;
+        LineData currentLineData = ShotLineDrawer.DrawingData;
 
-        // 射線が固定されていなければ
-        if (currentLineData is {IsFixed: false})
+        if (currentLineData.IsFixed == false)
         {
             //射線の固定
             ShotLineUtil.FixLine(currentLineData);
