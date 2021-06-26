@@ -64,9 +64,6 @@ public class Projectile : MonoBehaviour
     //一回だけ射線の座標を取得
     private bool One = false;
 
-    //BB用のint
-    public static int BBnum = 0;
-
     //for用
     private int i = 0;
 
@@ -75,12 +72,6 @@ public class Projectile : MonoBehaviour
 
     private BulletMovement BM;
 
-    //SE用変数
-    [SerializeField] private GameObject SoundManager;
-
-    //BBの残り回数
-    [SerializeField] private GameObject rad;
-
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -88,7 +79,6 @@ public class Projectile : MonoBehaviour
     {
         ItemManager.ShotBtn.onClick.AddListener(() => Fire());
         BulletList = new List<BulletInfo>();
-        BBnum      = 0;
         ActSpeed   = OriginSpeed;
         ScaleRatio = 1;
     }
@@ -112,8 +102,8 @@ public class Projectile : MonoBehaviour
             //弾生成
             GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
 
-            //SE
-            BasicSoundManager.Instance.PlaySE(SELabel.Shot);
+            //射撃SEを鳴らしている
+            SoundManager.Instance.PlaySE(SELabel.Shot);
 
             BI.transform.localScale = new Vector3(BaseScale * ScaleRatio, BaseScale * ScaleRatio, BaseScale * ScaleRatio);
 
@@ -199,8 +189,6 @@ public class Projectile : MonoBehaviour
 
         if (BigBullet.BBOn && BigBullet.ClickBB)
         {
-            //radial
-            rad.GetComponent<NumQuantity>().CulNum();
             //スケール
             ScaleRatio = 1.5f;
             //スピードを変える

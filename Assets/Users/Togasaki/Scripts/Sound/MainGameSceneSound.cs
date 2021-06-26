@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainGameSceneSound : BasicSoundManager
+public class MainGameSceneSound : SoundManager
 {
-    //•ÏX‚Ì—]’n‚ ‚è
     private void Start()
     {
         PlayBGM(BGMLabel.MainGame);
