@@ -32,6 +32,8 @@ public class Joystick : MonoBehaviour
 
     private Vector2 _beganTouchpos;
 
+    private bool _isClicking;
+
     //スティックの位置(Setter)
     private Vector3 _stickPosition
     {
@@ -114,7 +116,16 @@ public class Joystick : MonoBehaviour
         #region //Unityエディター上での動作確認用
         else
         {
-            if(Input.GetMouseButton(0))
+            if (Input.GetMouseButtonDown(0))
+            {
+                float currentRadius = Vector3.Distance(Input.mousePosition, _stick.transform.position);
+
+                if (currentRadius < _radius)
+                {
+                    _isClicking = true;
+                }
+            }
+            else if(Input.GetMouseButton(0) && _isClicking)
             {
                 Vector2 screenPos = Vector2.zero;
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<RectTransform>(),
@@ -141,13 +152,15 @@ public class Joystick : MonoBehaviour
                     _stickPosition = limitedPosition;
                 }
             }
-            if(Input.GetMouseButtonUp(0))
+            else if(Input.GetMouseButtonUp(0))
             {
                 if (_shouldResetPosition)
                 {
                     //スティックを中心に戻す
                     _stickPosition = Vector3.zero;
                 }
+
+                _isClicking = false;
             }
         }
         #endregion
