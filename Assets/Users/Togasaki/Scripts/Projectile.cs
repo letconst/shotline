@@ -108,7 +108,7 @@ public class Projectile : MonoBehaviour
             //弾生成
             GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
 
-            //SE
+            //射撃SEを鳴らしている
             SoundManager.Instance.PlaySE(SELabel.Shot);
 
             BI.transform.localScale = new Vector3(BaseScale * ScaleRatio, BaseScale * ScaleRatio, BaseScale * ScaleRatio);

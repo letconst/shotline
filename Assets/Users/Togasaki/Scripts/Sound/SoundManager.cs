@@ -43,21 +43,15 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
         bgmSource.volume = BGM_VOLUME;
         seSource.volume = SE_VOLUME;
 
-        
-        for (int i = 0; i < bgm.Length; i++)
+
+        foreach (AudioClip b in bgm)
         {
-            foreach(AudioClip b in bgm)
-            {
-                bgmClipDic.Add(b.name, b);
-            }
+            bgmClipDic.Add(b.name, b);
         }
 
-        for (int i = 0; i < se.Length; i++)
+        foreach (AudioClip s in se)
         {
-            foreach (AudioClip s in se)
-            {
-                seClipDic.Add(s.name, s);
-            }
+            seClipDic.Add(s.name, s);
         }
 
     }
@@ -76,6 +70,18 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
     {
         seSource.clip = seClipDic[seLabel.ToString()];
         seSource.PlayOneShot(seSource.clip);
+    }
+
+    //BGMí‚é~
+    public void StopBGM()
+    {
+        bgmSource.Stop();
+    }
+
+    //SEí‚é~
+    public void StopSE()
+    {
+        seSource.Stop();
     }
 
 }
