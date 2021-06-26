@@ -5,16 +5,22 @@ using UniRx;
 
 public class TitleScript : MonoBehaviour
 {
+    [SerializeField]
+    private bool isDebug;
+
     //マッチ用bool
     private bool MatchSuccess = true;
 
     private bool _isInitConnected;
     private bool _isMatchingStarted;
+    private bool _isNowLoading;
 
     private IDisposable receiver;
 
     private void Start()
     {
+        if (!isDebug) return;
+
         receiver = NetworkManager.OnReceived
                                  .Where(res => res.Type.Equals("Init") || res.Type.Equals("Join"))
                                  .Subscribe(res =>
@@ -62,16 +68,27 @@ public class TitleScript : MonoBehaviour
             isTouched = true;
         }
 
-        if (isTouched && !_isInitConnected)
+        if (isDebug)
         {
-            NetworkManager.Connect();
+            if (isTouched && !_isInitConnected)
+            {
+                NetworkManager.Connect();
 
-            SendData data = new SendData(EventType.Init);
-            NetworkManager.Emit(data);
+                SendData data = new SendData(EventType.Init);
+                NetworkManager.Emit(data);
 
-            _isInitConnected = true;
+                _isInitConnected = true;
 
-            // TODO: 通信中UI表示
+                // TODO: 通信中UI表示
+            }
+        }
+        else
+        {
+            if (!_isNowLoading && (Input.GetMouseButtonDown(0) || isTouched) && !SystemLoader.IsFirstFading)
+            {
+                _isNowLoading = true;
+                SystemSceneManager.LoadNextScene("MainGameScene", SceneTransition.Fade);
+            }
         }
     }
 
