@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BigBullet : ActiveItem
 {
-    //BigBullet縺梧怏蜉ｹ縺ｮ譎ら畑縺ｮbool縲∽ｽｿ縺�譫懊◆縺吶→false
+    //BigBullet縺梧怏蜉ｹ縺ｮ譎ら畑縺ｮbool縲∽ｽｿ縺・棡縺溘☆縺ｨfalse
     public static bool BBOn = false;
     public static bool BBOff = false;
 
@@ -10,19 +10,15 @@ public class BigBullet : ActiveItem
 
     public static bool ClickBB = false;
 
-
-    public GameObject stBtn;
+    [SerializeField, Header("ビックバレットの最大量")]
+    private float maxNumBigBullet = 3;
 
     //譛蛻昴↓螳溯｡後＆繧後ｋ
     protected override void Init()
     {
         base.Init();
 
-        Projectile.BBnum = 0;
-
-        stBtn = GameObject.Find("Shot");
-
-        //BBOn繧偵▽縺代ｋ
+        //BBOnをつける
         BBOff = false;
         BBOn = true;
         OneBB = true;
@@ -35,7 +31,6 @@ public class BigBullet : ActiveItem
     {
         BBOff = false;
         BBOn = false;
-
         base.ClearItemIcon();
 
         base.Terminate();
@@ -44,33 +39,31 @@ public class BigBullet : ActiveItem
 
     protected override void OnClickButton()
     {
-        
         if (BBOn && OneBB)
         {
+            NumQuantity.CulNum(maxNumBigBullet);
+
             ClickBB = true;
 
             Projectile.ScaleRatio = 1.5f;
-            Projectile.BBnum++;
 
             OneBB = false;
-            if (Projectile.BBnum == 3)
+
+            if (ItemManager.currentNum == maxNumBigBullet)
             {
                 OneBB = true;
                 BBOff = true;
+                Terminate();
 
             }
 
-            stBtn.GetComponent<Projectile>().Fire();
+            ItemManager.ShotBtn.GetComponentInChildren<Projectile>().Fire();
         }
 
     }
 
     protected override void UpdateFunction()
     {
-        if (BBOff)
-        {
-            Terminate();
-        }
 
     }
 }

@@ -23,6 +23,8 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
     [SerializeField, Header("回転アニメーション時間 (角度/秒)")]
     private float itemRotationAnimDuration = 100;
 
+    public static float currentNum = 0;
+
     public static Image   ItemIcon { get; private set; }
     public static Button  ItemBtn  => Instance.itemBtn;
     public static Button  ShotBtn  => Instance.shotBtn;
@@ -34,6 +36,7 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
 
     private static ItemBase _holdItem;
 
+
     protected override void Awake()
     {
         base.Awake();
@@ -42,6 +45,9 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
 
         ItemIcon.sprite = null;
         ItemIcon.color  = Color.clear;
+
+        currentNum = 0;
+
     }
 
     /// <summary>
@@ -51,6 +57,8 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
     /// <param name="item">持たせるアイテム</param>
     public static void SetHoldItem(ItemBase item)
     {
+        currentNum = 0;
+
         if (_holdItem != null) _holdItem.Terminate();
 
         _holdItem = item;

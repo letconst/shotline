@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class Shield : ActiveItem
 {
+    [SerializeField, Header("シールドの最大量")]
+    private float maxNumShield = 1;
 
 
     [SerializeField] private GameObject ShieldPrefab;
 
     GameObject Player;
-
 
     //最初に実行される
     protected override void Init()
@@ -15,13 +16,11 @@ public class Shield : ActiveItem
         //とったらはじめにされる処理
         base.Init();
 
-
     }
 
     //最後に実行される
     public override void Terminate()
     {
-
         base.ClearItemIcon();
         base.Terminate();
 
@@ -30,6 +29,7 @@ public class Shield : ActiveItem
 
     protected override void OnClickButton()
     {
+        NumQuantity.CulNum(maxNumShield);
 
         Player = GameObject.FindGameObjectWithTag("Player");
         Vector3 vec;
@@ -41,8 +41,10 @@ public class Shield : ActiveItem
 
         GameObject ShieldObj = Instantiate(ShieldPrefab, pos + vec * 1, Player.transform.rotation);
 
-        Terminate();
-
+        if (ItemManager.currentNum == maxNumShield)
+        {
+            Terminate();
+        }
     }
 
     protected override void UpdateFunction()
