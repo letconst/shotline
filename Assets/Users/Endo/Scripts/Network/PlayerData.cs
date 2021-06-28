@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerData
 {
     public string Name;
@@ -12,7 +13,7 @@ public class PlayerData
     public Vector3    Scale;
 }
 
-public class SelfPlayerData
+public static class SelfPlayerData
 {
     public static string Name;
     public static string Uuid;

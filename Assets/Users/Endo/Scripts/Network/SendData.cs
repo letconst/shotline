@@ -4,6 +4,7 @@ using UnityEngine;
 /// <summary>
 /// サーバーへの送信データクラス
 /// </summary>
+[Serializable]
 public class SendData
 {
     public string     Type;
