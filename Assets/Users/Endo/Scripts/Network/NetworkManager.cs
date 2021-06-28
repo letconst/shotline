@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 
 public enum EventType
 {
     Init,
-    Join,
-    Move,
+    Match,
+    Joined,
+    PlayerMove,
     Disconnect,
-    ClientReload
+    Refresh,
+    Error
 }
 
 public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
@@ -39,8 +44,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
     public static IObservable<SendData> OnReceived => _receiverSubject;
 
-    public static string SelfAddress  => Instance.address;
-    public static int    SelfPort     => Instance.port;
     public static string RivalAddress { get; private set; }
     public static int    RivalPort    { get; private set; }
 
@@ -48,12 +51,17 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     {
         base.Awake();
 
-        _receiverSubject = new Subject<SendData>();
+        _receiverSubject       = new Subject<SendData>();
+        SelfPlayerData.Address = address;
+        SelfPlayerData.Port    = port;
 
         Init();
         DontDestroyOnLoad(this);
+    }
 
-        Connect();
+    private void Start()
+    {
+        OnReceived.Subscribe(EventHandler);
     }
 
     private void OnDestroy()
@@ -66,6 +74,9 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         Disconnect();
     }
 
+    /// <summary>
+    /// 接続情報を初期化する
+    /// </summary>
     private static void Init()
     {
         _players     = new Dictionary<string, GameObject>();
@@ -76,25 +87,26 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     }
 
     /// <summary>
-    /// サーバーに接続する
+    /// サーバーに非同期で接続する
     /// </summary>
     /// <returns>正常に接続できたか</returns>
-    public static bool Connect()
+    public static async UniTask Connect()
     {
-        if (_isConnected) return false;
+        if (_isConnected) return;
 
         _client ??= new UdpClient();
 
         try
         {
-            _client.Connect(Instance.address, Instance.port);
+            // 接続完了まで待機
+            await Task.Run(() => _client.Connect(Instance.address, Instance.port));
 
             _thread = new Thread(ReceiveData);
             _thread.Start();
 
             _isConnected = true;
 
-            return true;
+            return;
         }
         catch (Exception e)
         {
@@ -102,21 +114,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             // TODO: 再試行処理
             Debug.LogError($"サーバーへの接続時にエラーが発生しました: {e.Message}");
 
-            return false;
-        }
-    }
-
-    private static void ReceiveData()
-    {
-        while (true)
-        {
-            IPEndPoint ep       = null;
-            byte[]     received = _client.Receive(ref ep);
-            string     msg      = Encoding.ASCII.GetString(received);
-
-            SendData data = SendData.MakeJsonFrom(msg);
-            // EventHandler(data);
-            _receiverSubject.OnNext(data);
+            return;
         }
     }
 
@@ -127,7 +125,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     {
         if (!_isConnected) return;
 
-        SendData data = new SendData(EventType.Disconnect)
+        var data = new SendData(EventType.Disconnect)
         {
             Self = new PlayerData
             {
@@ -144,6 +142,22 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     }
 
     /// <summary>
+    /// サーバーからのレスポンスを受信し、イベントを発行する
+    /// </summary>
+    private static void ReceiveData()
+    {
+        while (true)
+        {
+            IPEndPoint ep       = null;
+            byte[]     received = _client.Receive(ref ep);
+            string     msg      = Encoding.UTF8.GetString(received);
+
+            SendData data = SendData.MakeJsonFrom(msg);
+            _receiverSubject.OnNext(data);
+        }
+    }
+
+    /// <summary>
     /// サーバーにデータを送信する
     /// </summary>
     /// <param name="data">送信データ</param>
@@ -151,38 +165,86 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     {
         if (!_isConnected) return;
 
-        string msg      = SendData.ParseSendData(data);
+        string msg = SendData.ParseSendData(data);
         byte[] sendData = Encoding.ASCII.GetBytes(msg);
         _client.Send(sendData, sendData.Length);
     }
 
     /// <summary>
-    /// 受け取ったデータのイベントに応じて処理を行う
+    /// サーバーからのレスポンスのイベントに応じて処理を行う
     /// </summary>
     /// <param name="data">受信データ</param>
     private static void EventHandler(SendData data)
     {
-        EventType type = (EventType) Enum.Parse(typeof(EventType), data.Type);
+        var type = (EventType) Enum.Parse(typeof(EventType), data.Type);
 
         switch (type)
         {
             case EventType.Init:
+            {
+                SelfPlayerData.Uuid = data.Self.Uuid;
+
+                // TODO: マップへの参加時にオブジェクト代入
+                _players.Add(data.Self.Uuid, null);
+
+                break;
+            }
+
+            case EventType.Match:
+            {
+                // 相手情報を格納
+                // OPTIMIZE: 後発で参加したプレイヤーのUUIDがSelfで帰ってくるため、どうにかする
+                if (data.Self.Uuid == SelfPlayerData.Uuid)
+                {
+                    _players.Add(data.Rival.Uuid, null);
+                    RivalAddress = data.Rival.Address;
+                    RivalPort    = data.Rival.Port;
+                }
+                else
+                {
+                    _players.Add(data.Self.Uuid, null);
+                    RivalAddress = data.Self.Address;
+                    RivalPort    = data.Self.Port;
+                    IsOwner      = true;
+                }
+
+                break;
+            }
+
+            case EventType.Joined:
                 break;
 
-            case EventType.Join:
-                break;
-
-            case EventType.Move:
+            case EventType.PlayerMove:
                 break;
 
             case EventType.Disconnect:
                 break;
 
-            case EventType.ClientReload:
+            case EventType.Refresh:
+            {
+                KeyValuePair<string, GameObject>[] players = _players.ToArray();
+
+                foreach (KeyValuePair<string, GameObject> player in players)
+                {
+                    if (data.Rival.Uuid != player.Key) continue;
+
+                    _players.Remove(player.Key);
+                }
+
+                // TODO: 対戦相手切断UI表示 && 状況に応じてタイトルに戻す
+
                 break;
+            }
+
+            case EventType.Error:
+            {
+                Debug.LogError(data.Message);
+
+                break;
+            }
 
             default:
-                Debug.LogError($"イベントタイプ「{nameof(type)}」の処理がありません");
+                Debug.LogError($"イベントタイプ「{type.ToString()}」の処理がありません");
 
                 break;
         }
