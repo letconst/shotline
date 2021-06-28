@@ -6,7 +6,7 @@ public class PlayerData
     public string Name;
     public string Uuid;
     public string Address;
-    public string Port;
+    public int    Port;
 
     public Vector3    Position;
     public Quaternion Rotation;

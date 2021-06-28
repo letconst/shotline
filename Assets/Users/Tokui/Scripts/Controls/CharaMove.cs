@@ -46,8 +46,23 @@ public class CharaMove : MonoBehaviour
             return; //RoundMoveがtrueになると操作不能に
         }
 
+        if (!MainGameController.IsControllable)
+        {
+            controller.SimpleMove(Vector3.zero);
+
+            return;
+        }
+
         _moveX = _joystick.Position.x * CurrentSpeed; //JoystickのPositionに_speedをかけて、_moveXに代入
         _moveZ = _joystick.Position.y * CurrentSpeed; //JoystickのPositionに_speedをかけて、_moveYに代入
+
+        // 2pはカメラを反転させるため、移動方向も逆に
+        if (!NetworkManager.IsOwner)
+        {
+            _moveX = -_moveX;
+            _moveZ = -_moveZ;
+        }
+
         Vector3 direction = new Vector3(_moveX, 0, _moveZ);
 
         controller.SimpleMove(direction);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -13,6 +14,7 @@ public enum EventType
 {
     Init,
     Match,
+    Joined,
     Move,
     Disconnect,
     Refresh,
@@ -197,18 +199,21 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
                 {
                     _players.Add(data.Rival.Uuid, null);
                     RivalAddress = data.Rival.Address;
-                    RivalPort    = int.Parse(data.Rival.Port);
+                    RivalPort    = data.Rival.Port;
                 }
                 else
                 {
                     _players.Add(data.Self.Uuid, null);
                     RivalAddress = data.Self.Address;
-                    RivalPort    = int.Parse(data.Self.Port);
+                    RivalPort    = data.Self.Port;
                     IsOwner      = true;
                 }
 
                 break;
             }
+
+            case EventType.Joined:
+                break;
 
             case EventType.Move:
                 break;
@@ -217,10 +222,27 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
                 break;
 
             case EventType.Refresh:
+            {
+                KeyValuePair<string, GameObject>[] players = _players.ToArray();
+
+                foreach (KeyValuePair<string, GameObject> player in players)
+                {
+                    if (data.Rival.Uuid != player.Key) continue;
+
+                    _players.Remove(player.Key);
+                }
+
+                // TODO: 対戦相手切断UI表示 && 状況に応じてタイトルに戻す
+
                 break;
+            }
 
             case EventType.Error:
+            {
+                Debug.LogError(data.Message);
+
                 break;
+            }
 
             default:
                 Debug.LogError($"イベントタイプ「{type.ToString()}」の処理がありません");

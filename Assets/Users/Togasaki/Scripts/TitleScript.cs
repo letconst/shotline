@@ -20,9 +20,9 @@ public class TitleScript : MonoBehaviour
 
     private IDisposable _receiver;
 
-    private const string ConnectingText       = "Connecting...";
-    private const string MatchingText         = "Matching...";
-    private const string MatchingCompleteText = "Matching conpleted!";
+    private const string ConnectingText       = "接続中…";
+    private const string MatchingText         = "マッチング中…";
+    private const string MatchingCompleteText = "マッチング完了！";
 
     private void Awake()
     {
@@ -98,7 +98,9 @@ public class TitleScript : MonoBehaviour
                 {
                     Self = new PlayerData
                     {
-                        Uuid = res.Self.Uuid
+                        Uuid    = res.Self.Uuid,
+                        Address = SelfPlayerData.Address,
+                        Port    = SelfPlayerData.Port
                     }
                 };
 
@@ -125,7 +127,6 @@ public class TitleScript : MonoBehaviour
             case EventType.Error:
             {
                 // TODO: UIでエラー表示
-                Debug.LogError(res.Message);
                 _statusText.text = res.Message;
 
                 break;
