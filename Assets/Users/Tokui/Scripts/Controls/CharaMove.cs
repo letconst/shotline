@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UniRx;
 
 public class CharaMove : MonoBehaviour
 {
@@ -16,11 +17,10 @@ public class CharaMove : MonoBehaviour
     // 弾が当たったかどうかのフラグ
     public bool Thruster;
 
-
     private float _moveX = 0f; //キャラクターのX方向への移動速度
     private float _moveZ = 0f; //キャラクターのY方向への移動速度
 
-    private Vector3 _latestPos;  //前回のPosition
+    private Vector3 _latestPos; //前回のPosition
 
     CharacterController controller; //CharacterControllerの読み込み
 
@@ -30,6 +30,11 @@ public class CharaMove : MonoBehaviour
     {
         speedRatio = 1;
         controller = GetComponent<CharacterController>(); //CharacterControllerの取得
+
+        // 座標が更新されたらサーバーに座標更新通信
+        transform.ObserveEveryValueChanged(x => x.position)
+                 .Subscribe(OnPositionChanged)
+                 .AddTo(this);
     }
 
     void Update()
@@ -67,10 +72,9 @@ public class CharaMove : MonoBehaviour
 
         controller.SimpleMove(direction);
 
-
         // 移動方向にキャラクターが向くようにする
-        Vector3 diff = transform.position - _latestPos;     //前回からどこに進んだかをベクトルで取得
-        _latestPos = transform.position;                    //前回のPositionの更新
+        Vector3 diff = transform.position - _latestPos; //前回からどこに進んだかをベクトルで取得
+        _latestPos = transform.position;                //前回のPositionの更新
 
         //ベクトルの大きさが0.01以上の時に向きを変える処理をする
         if (diff.magnitude > 0.01f && diff.y == 0)
@@ -97,8 +101,24 @@ public class CharaMove : MonoBehaviour
     IEnumerator Move()
     {
         yield return new WaitForFixedUpdate();
-        controller.enabled = false; // CharacterControllerを無効に
+
+        controller.enabled                 = false;        // CharacterControllerを無効に
         this.gameObject.transform.position = Vector3.zero; //プレイヤーのポジションを(0,0,0)に
-        controller.enabled = true; // CharacterControllerを有効に
+        controller.enabled                 = true;         // CharacterControllerを有効に
+    }
+
+    private void OnPositionChanged(Vector3 pos)
+    {
+        var data = new SendData(EventType.PlayerMove)
+        {
+            Self = new PlayerData
+            {
+                Uuid     = SelfPlayerData.Uuid,
+                Position = pos,
+                Rotation = transform.rotation
+            }
+        };
+
+        NetworkManager.Emit(data);
     }
 }

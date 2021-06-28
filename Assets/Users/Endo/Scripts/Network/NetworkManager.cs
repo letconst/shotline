@@ -15,7 +15,7 @@ public enum EventType
     Init,
     Match,
     Joined,
-    Move,
+    PlayerMove,
     Disconnect,
     Refresh,
     Error
@@ -166,7 +166,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         if (!_isConnected) return;
 
         string msg = SendData.ParseSendData(data);
-        Debug.Log(data.Type);
         byte[] sendData = Encoding.ASCII.GetBytes(msg);
         _client.Send(sendData, sendData.Length);
     }
@@ -215,7 +214,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             case EventType.Joined:
                 break;
 
-            case EventType.Move:
+            case EventType.PlayerMove:
                 break;
 
             case EventType.Disconnect:
