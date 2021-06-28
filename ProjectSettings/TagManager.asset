@@ -14,6 +14,7 @@ TagManager:
   - Bullet
   - Shield
   - Rad
+  - Rival
   layers:
   - Default
   - TransparentFX
