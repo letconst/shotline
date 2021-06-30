@@ -3,27 +3,7 @@ guid: c6872af860ea0a945b533d91154c7650
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: audience_seat
-    second: {fileID: 2100000, guid: 0f0bc630caeb0e54e9624451643048bc, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: blinn7
-    second: {fileID: 2100000, guid: 5a678da6df3db744788e1b7706f84c98, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: glass_wall
-    second: {fileID: 2100000, guid: ceadda1191c0fe444a0ded536e2a8ccb, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: map_ground_and_wall
-    second: {fileID: 2100000, guid: c26cf79b05296244a95ccf1ac22c71fe, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0

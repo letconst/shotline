@@ -5,7 +5,6 @@ using UniRx;
 public class CharaMove : MonoBehaviour
 {
     //Joystickプレハブ
-    [SerializeField]
     private Joystick _joystick = null;
 
     //移動速度
@@ -29,6 +28,7 @@ public class CharaMove : MonoBehaviour
     void Start()
     {
         speedRatio = 1;
+        _joystick  = GameObject.FindGameObjectWithTag("Joystick").GetComponent<Joystick>();
         controller = GetComponent<CharacterController>(); //CharacterControllerの取得
 
         // 座標が更新されたらサーバーに座標更新通信
@@ -113,7 +113,6 @@ public class CharaMove : MonoBehaviour
         {
             Self = new PlayerData
             {
-                Uuid     = SelfPlayerData.Uuid,
                 Position = pos,
                 Rotation = transform.rotation
             }

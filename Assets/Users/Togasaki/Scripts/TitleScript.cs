@@ -96,12 +96,7 @@ public class TitleScript : MonoBehaviour
             {
                 var data = new SendData(EventType.Match)
                 {
-                    Self = new PlayerData
-                    {
-                        Uuid    = res.Self.Uuid,
-                        Address = SelfPlayerData.Address,
-                        Port    = SelfPlayerData.Port
-                    }
+                    Self = new PlayerData()
                 };
 
                 NetworkManager.Emit(data);
