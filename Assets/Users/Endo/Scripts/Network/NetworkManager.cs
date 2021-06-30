@@ -16,6 +16,7 @@ public enum EventType
     Match,
     Joined,
     PlayerMove,
+    BulletMove,
     Disconnect,
     Refresh,
     Error
@@ -57,10 +58,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
         Init();
         DontDestroyOnLoad(this);
-    }
-
-    private void Start()
-    {
         OnReceived.Subscribe(EventHandler);
     }
 
@@ -127,10 +124,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
         var data = new SendData(EventType.Disconnect)
         {
-            Self = new PlayerData
-            {
-                Uuid = SelfPlayerData.Uuid
-            }
+            Self = new PlayerData()
         };
 
         Emit(data);
@@ -244,8 +238,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             }
 
             default:
-                Debug.LogError($"イベントタイプ「{type.ToString()}」の処理がありません");
-
                 break;
         }
     }

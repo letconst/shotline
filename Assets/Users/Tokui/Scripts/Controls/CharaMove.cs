@@ -113,7 +113,6 @@ public class CharaMove : MonoBehaviour
         {
             Self = new PlayerData
             {
-                Uuid     = SelfPlayerData.Uuid,
                 Position = pos,
                 Rotation = transform.rotation
             }

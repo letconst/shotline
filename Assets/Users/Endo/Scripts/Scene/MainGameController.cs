@@ -19,6 +19,7 @@ public class MainGameController : MonoBehaviour
     public static bool       IsControllable; // 操作可能状態か
     public static GameObject LinePrefab;     // 射線プレハブ（1Pか2Pかで変動）
     public static GameObject BulletPrefab;   // 弾プレハブ（同上）
+    public static GameObject RivalBulletPrefab;
 
     private void Awake()
     {
@@ -36,8 +37,10 @@ public class MainGameController : MonoBehaviour
             _playerTrf.position = MainGameProperty.Instance.startPos1P.position;
 
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos2P.position, Quaternion.identity);
-            LinePrefab   = Resources.Load<GameObject>("Prefabs/Line_PL1");
-            BulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
+
+            LinePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL1");
+            BulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
+            RivalBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
         }
         // 2P設定
         else
@@ -47,8 +50,10 @@ public class MainGameController : MonoBehaviour
             _playerTrf.position = MainGameProperty.Instance.startPos2P.position;
 
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos1P.position, Quaternion.identity);
-            LinePrefab   = Resources.Load<GameObject>("Prefabs/Line_PL2");
-            BulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
+
+            LinePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL2");
+            BulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
+            RivalBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
         }
 
         _playerTrf.gameObject.SetActive(true);

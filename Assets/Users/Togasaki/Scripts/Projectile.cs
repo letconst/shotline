@@ -98,6 +98,7 @@ public class Projectile : MonoBehaviour
 
             //弾生成
             GameObject BI = Instantiate(MainGameController.BulletPrefab, FingerPositions[0], Quaternion.identity);
+            BI.AddComponent<BulletMovement>();
 
             //射撃SEを鳴らしている
             SoundManager.Instance.PlaySE(SELabel.Shot);
