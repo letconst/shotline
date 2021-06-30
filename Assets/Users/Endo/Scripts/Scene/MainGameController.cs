@@ -16,32 +16,39 @@ public class MainGameController : MonoBehaviour
 
     private IDisposable _receiver;
 
-    public static bool IsControllable;
+    public static bool       IsControllable; // 操作可能状態か
+    public static GameObject LinePrefab;     // 射線プレハブ（1Pか2Pかで変動）
+    public static GameObject BulletPrefab;   // 弾プレハブ（同上）
 
     private void Awake()
     {
         // 開始直後は操作不能に（他プレイヤー待機のため）
         IsControllable = true;
-        MainGameProperty.InputBlocker.SetActive(true);
+        // MainGameProperty.InputBlocker.SetActive(true);
         MainGameProperty.StatusText.text = ConnectionWaitingText;
 
         _playerTrf = GameObject.FindGameObjectWithTag("Player").transform;
         _playerTrf.gameObject.SetActive(false);
 
-        // 初期位置設定
+        // 1P設定
         if (NetworkManager.IsOwner)
         {
             _playerTrf.position = MainGameProperty.Instance.startPos1P.position;
 
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos2P.position, Quaternion.identity);
+            LinePrefab   = Resources.Load<GameObject>("Prefabs/Line_PL1");
+            BulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
         }
-        // 2pはカメラを反転させる
+        // 2P設定
         else
         {
+            // 2Pはカメラ反転
             Camera.main.transform.RotateAround(_playerTrf.position, Vector3.up, 180);
             _playerTrf.position = MainGameProperty.Instance.startPos2P.position;
 
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos1P.position, Quaternion.identity);
+            LinePrefab   = Resources.Load<GameObject>("Prefabs/Line_PL2");
+            BulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
         }
 
         _playerTrf.gameObject.SetActive(true);
@@ -56,10 +63,7 @@ public class MainGameController : MonoBehaviour
 
         var data = new SendData(EventType.Joined)
         {
-            Self = new PlayerData
-            {
-                Uuid = SelfPlayerData.Uuid
-            }
+            Self = new PlayerData()
         };
 
         // 2Pが参加した瞬間に始まるため、少し遅延させる
@@ -98,9 +102,6 @@ public class MainGameController : MonoBehaviour
 
                 break;
             }
-
-            default:
-                throw new ArgumentOutOfRangeException();
         }
     }
 }

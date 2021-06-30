@@ -15,6 +15,7 @@ TagManager:
   - Shield
   - Rad
   - Rival
+  - Joystick
   layers:
   - Default
   - TransparentFX
