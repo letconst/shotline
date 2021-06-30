@@ -43,9 +43,6 @@ public class Projectile : MonoBehaviour
 
     //変数ゾーン///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-    [SerializeField] private GameObject BulletPrefab;
-
     //リストに弾の情報を
     List<BulletInfo> BulletList = new List<BulletInfo>();
 
@@ -100,7 +97,8 @@ public class Projectile : MonoBehaviour
             Vector3[] FingerPositions = ShotLineUtil.GetFingerPositions(currentLineData);
 
             //弾生成
-            GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
+            GameObject BI = Instantiate(MainGameController.BulletPrefab, FingerPositions[0], Quaternion.identity);
+            BI.AddComponent<BulletMovement>();
 
             //射撃SEを鳴らしている
             SoundManager.Instance.PlaySE(SELabel.Shot);

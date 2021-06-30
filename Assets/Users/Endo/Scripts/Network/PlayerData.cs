@@ -11,6 +11,15 @@ public class PlayerData
     public Vector3    Position;
     public Quaternion Rotation;
     public Vector3    Scale;
+
+    public BulletData bullet;
+
+    public PlayerData()
+    {
+        Uuid    = SelfPlayerData.Uuid;
+        Address = SelfPlayerData.Address;
+        Port    = SelfPlayerData.Port;
+    }
 }
 
 public static class SelfPlayerData
