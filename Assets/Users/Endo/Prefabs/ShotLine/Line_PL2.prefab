@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1641711191684671779}
   - component: {fileID: 957035075730601809}
   m_Layer: 6
-  m_Name: Line
+  m_Name: Line PL2
   m_TagString: ShotLine
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,7 +51,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e5a92bca54ab1b245a3cff8d49323e97, type: 2}
+  - {fileID: 2100000, guid: e60d3375d7c074148b83a60c55d14fc9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

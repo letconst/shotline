@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1641711191684671779}
   - component: {fileID: 957035075730601809}
   m_Layer: 6
-  m_Name: Line
+  m_Name: Line_PL1
   m_TagString: ShotLine
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedProfile: {fileID: 11400000, guid: 1ce340d8be679e34184b09e711f27a6c, type: 2}
+  sharedProfile: {fileID: 11400000, guid: d3ba1bb729c9e0f4ab08732057feb0e4, type: 2}
   isGlobal: 1
   blendDistance: 0
   weight: 1
