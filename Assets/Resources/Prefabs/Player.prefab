@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 9222306879767961877}
   - component: {fileID: 9222306879767961866}
   - component: {fileID: 9222306879767961867}
-  - component: {fileID: 9222306879767961864}
   - component: {fileID: 9222306879767961878}
+  - component: {fileID: 9222306879767961864}
   - component: {fileID: 9222306879767961872}
+  - component: {fileID: 5208753602153834419}
   - component: {fileID: 4435972218642477936}
   m_Layer: 0
   m_Name: Player
@@ -120,21 +121,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &9222306879767961864
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9222306879767961865}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12d797bfecdc12b4288fe478d323801b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _speed: 5
-  speedRatio: 1
-  Thruster: 0
 --- !u!54 &9222306879767961878
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -151,6 +137,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &9222306879767961864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9222306879767961865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12d797bfecdc12b4288fe478d323801b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 5
+  speedRatio: 1
+  Thruster: 0
 --- !u!114 &9222306879767961872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,6 +168,18 @@ MonoBehaviour:
     _json: '{"declarations":{"collection":{"$content":[{"name":"Target","value":{"$content":0,"$type":"UnityEngine.Object"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
     _objectReferences:
     - {fileID: 9222306879767961865}
+--- !u!114 &5208753602153834419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9222306879767961865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5e3790605b2452abb2426eb1285b5e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4435972218642477936
 MonoBehaviour:
   m_ObjectHideFlags: 0

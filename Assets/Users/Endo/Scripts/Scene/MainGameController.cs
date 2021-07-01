@@ -8,7 +8,6 @@ public class MainGameController : MonoBehaviour
     [SerializeField, Header("生成する対戦相手オブジェクト")]
     private GameObject rivalPrefab;
 
-    private Transform  _playerTrf;
     private GameObject _rivalObject;
 
     private const string ConnectionWaitingText = "他のプレイヤーを待っています…";
@@ -35,15 +34,16 @@ public class MainGameController : MonoBehaviour
             IsControllable = true;
         }
 
-        _playerTrf = GameObject.FindGameObjectWithTag("Player").transform;
-        _playerTrf.gameObject.SetActive(false);
+        Transform playerTrf = GameObject.FindGameObjectWithTag("Player").transform;
+        playerTrf.gameObject.SetActive(false);
 
         // 1P設定
         if (NetworkManager.IsOwner)
         {
-            _playerTrf.position = MainGameProperty.Instance.startPos1P.position;
+            playerTrf.position = MainGameProperty.Instance.startPos1P.position;
 
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos2P.position, Quaternion.identity);
+            _rivalObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Bullet_PL2");
 
             LinePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL1");
             BulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
@@ -53,17 +53,18 @@ public class MainGameController : MonoBehaviour
         else
         {
             // 2Pはカメラ反転
-            Camera.main.transform.RotateAround(_playerTrf.position, Vector3.up, 180);
-            _playerTrf.position = MainGameProperty.Instance.startPos2P.position;
+            Camera.main.transform.RotateAround(playerTrf.position, Vector3.up, 180);
+            playerTrf.position = MainGameProperty.Instance.startPos2P.position;
 
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos1P.position, Quaternion.identity);
+            _rivalObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Bullet_PL1");
 
             LinePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL2");
             BulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
             RivalBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
         }
 
-        _playerTrf.gameObject.SetActive(true);
+        playerTrf.gameObject.SetActive(true);
     }
 
     private async void Start()
