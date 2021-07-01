@@ -30,11 +30,6 @@ public class CharaMove : MonoBehaviour
         speedRatio = 1;
         _joystick  = GameObject.FindGameObjectWithTag("Joystick").GetComponent<Joystick>();
         controller = GetComponent<CharacterController>(); //CharacterControllerの取得
-
-        // 座標が更新されたらサーバーに座標更新通信
-        transform.ObserveEveryValueChanged(x => x.position)
-                 .Subscribe(OnPositionChanged)
-                 .AddTo(this);
     }
 
     void Update()
@@ -105,19 +100,5 @@ public class CharaMove : MonoBehaviour
         controller.enabled                 = false;        // CharacterControllerを無効に
         this.gameObject.transform.position = Vector3.zero; //プレイヤーのポジションを(0,0,0)に
         controller.enabled                 = true;         // CharacterControllerを有効に
-    }
-
-    private void OnPositionChanged(Vector3 pos)
-    {
-        var data = new SendData(EventType.PlayerMove)
-        {
-            Self = new PlayerData
-            {
-                Position = pos,
-                Rotation = transform.rotation
-            }
-        };
-
-        NetworkManager.Emit(data);
     }
 }

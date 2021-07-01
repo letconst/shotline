@@ -30,7 +30,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     [SerializeField, Header("サーバーポート")]
     private int port = 6080;
 
-    private static bool      _isConnected; // サーバーに接続中か
     private static UdpClient _client;
     private static Thread    _thread;
 
@@ -45,6 +44,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
     public static IObservable<SendData> OnReceived => _receiverSubject;
 
+    public static bool   IsConnected  { get; private set; } // サーバーに接続中か
     public static string RivalAddress { get; private set; }
     public static int    RivalPort    { get; private set; }
 
@@ -76,11 +76,11 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// </summary>
     private static void Init()
     {
-        _players     = new Dictionary<string, GameObject>();
-        _client      = null;
-        _thread      = null;
-        _isConnected = false;
-        IsOwner      = false;
+        _players    = new Dictionary<string, GameObject>();
+        _client     = null;
+        _thread     = null;
+        IsConnected = false;
+        IsOwner     = false;
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <returns>正常に接続できたか</returns>
     public static async UniTask Connect()
     {
-        if (_isConnected) return;
+        if (IsConnected) return;
 
         _client ??= new UdpClient();
 
@@ -101,7 +101,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             _thread = new Thread(ReceiveData);
             _thread.Start();
 
-            _isConnected = true;
+            IsConnected = true;
 
             return;
         }
@@ -120,7 +120,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// </summary>
     private static void Disconnect()
     {
-        if (!_isConnected) return;
+        if (!IsConnected) return;
 
         var data = new SendData(EventType.Disconnect)
         {
@@ -157,9 +157,9 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <param name="data">送信データ</param>
     public static void Emit(SendData data)
     {
-        if (!_isConnected) return;
+        if (!IsConnected) return;
 
-        string msg = SendData.ParseSendData(data);
+        string msg      = SendData.ParseSendData(data);
         byte[] sendData = Encoding.ASCII.GetBytes(msg);
         _client.Send(sendData, sendData.Length);
     }
