@@ -46,7 +46,7 @@ public class CharaMove : MonoBehaviour
             return; //RoundMoveがtrueになると操作不能に
         }
 
-        if (!MainGameController.IsControllable)
+        if (!MainGameController.isControllable)
         {
             controller.SimpleMove(Vector3.zero);
 

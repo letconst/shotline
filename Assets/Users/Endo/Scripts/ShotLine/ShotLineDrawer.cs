@@ -49,7 +49,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
     private void Start()
     {
-        _linePrefab = MainGameController.LinePrefab;
+        _linePrefab = MainGameController.linePrefab;
 
         // 射線データ生成
         for (int i = 0; i < initPoolingCount; i++)

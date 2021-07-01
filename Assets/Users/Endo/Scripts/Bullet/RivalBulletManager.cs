@@ -24,7 +24,7 @@ public class RivalBulletManager : MonoBehaviour
 
     private void Start()
     {
-        _rivalBulletPrefab = MainGameController.RivalBulletPrefab;
+        _rivalBulletPrefab = MainGameController.rivalBulletPrefab;
     }
 
     private void OnReceived(SendData data)
@@ -40,6 +40,7 @@ public class RivalBulletManager : MonoBehaviour
         {
             GameObject newBullet = Instantiate(_rivalBulletPrefab, bullet.position, bullet.rotation);
             newBullet.transform.localScale = bullet.scale;
+            newBullet.tag                  = "RivalBullet";
 
             _rivalBulletObjects.Add(bullet.instanceId, newBullet);
 

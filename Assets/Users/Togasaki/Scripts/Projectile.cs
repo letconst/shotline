@@ -97,7 +97,7 @@ public class Projectile : MonoBehaviour
             Vector3[] FingerPositions = ShotLineUtil.GetFingerPositions(currentLineData);
 
             //弾生成
-            GameObject BI = Instantiate(MainGameController.BulletPrefab, FingerPositions[0], Quaternion.identity);
+            GameObject BI = Instantiate(MainGameController.bulletPrefab, FingerPositions[0], Quaternion.identity);
             BI.AddComponent<BulletMovement>();
 
             //射撃SEを鳴らしている
