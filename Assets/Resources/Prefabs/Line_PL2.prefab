@@ -10,9 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1641711191684671776}
   - component: {fileID: 1641711191684671779}
-  - component: {fileID: 957035075730601809}
   m_Layer: 6
-  m_Name: Line PL2
+  m_Name: Line_PL2
   m_TagString: ShotLine
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,20 +129,3 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &957035075730601809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1641711191684671778}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sharedProfile: {fileID: 11400000, guid: 1ce340d8be679e34184b09e711f27a6c, type: 2}
-  isGlobal: 1
-  blendDistance: 0
-  weight: 1
-  priority: 0
