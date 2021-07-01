@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class SystemProvider : SingletonMonoBehaviour<SystemProvider>
+public class SystemProperty : SingletonMonoBehaviour<SystemProperty>
 {
     [SerializeField]
     private SystemSceneManager systemSceneManager;
@@ -17,4 +17,9 @@ public class SystemProvider : SingletonMonoBehaviour<SystemProvider>
     private Image fadeImage;
 
     public static Image FadeImage => Instance.fadeImage;
+
+    [SerializeField]
+    private Text statusText;
+
+    public static Text StatusText => Instance.statusText;
 }

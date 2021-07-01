@@ -22,7 +22,7 @@ public static class FadeTransition
             await UniTask.Yield(PlayerLoopTiming.Update);
         }
 
-        SystemProvider.FadeImage.raycastTarget = false;
+        SystemProperty.FadeImage.raycastTarget = false;
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public static class FadeTransition
     public static async UniTask FadeOut(CanvasGroup canvasGroup, float fadeSpeed = DefaultFadeSpeed)
     {
         canvasGroup.alpha                      = 0;
-        SystemProvider.FadeImage.raycastTarget = true;
+        SystemProperty.FadeImage.raycastTarget = true;
 
         while (canvasGroup.alpha < 1)
         {

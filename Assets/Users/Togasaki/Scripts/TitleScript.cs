@@ -26,7 +26,7 @@ public class TitleScript : MonoBehaviour
 
     private void Awake()
     {
-        _statusText = TitleProperty.StatusText;
+        _statusText = SystemProperty.StatusText;
     }
 
     private void Start()
