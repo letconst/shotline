@@ -31,10 +31,13 @@ public class CharaMove : MonoBehaviour
         _joystick  = GameObject.FindGameObjectWithTag("Joystick").GetComponent<Joystick>();
         controller = GetComponent<CharacterController>(); //CharacterControllerの取得
 
-        // 座標が更新されたらサーバーに座標更新通信
-        transform.ObserveEveryValueChanged(x => x.position)
-                 .Subscribe(OnPositionChanged)
-                 .AddTo(this);
+        if (NetworkManager.IsConnected)
+        {
+            // 座標が更新されたらサーバーに座標更新通信
+            transform.ObserveEveryValueChanged(x => x.position)
+                     .Subscribe(OnPositionChanged)
+                     .AddTo(this);
+        }
     }
 
     void Update()

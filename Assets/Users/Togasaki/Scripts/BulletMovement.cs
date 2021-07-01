@@ -9,6 +9,8 @@ public class BulletMovement : MonoBehaviour
 
     private void Awake()
     {
+        if (!NetworkManager.IsConnected) return;
+
         _selfInstanceId = GetInstanceID();
 
         // 生成されたことを相手に通知
@@ -32,6 +34,8 @@ public class BulletMovement : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (!NetworkManager.IsConnected) return;
+
         // 破棄されたことを相手に通知
         SendData data = MakeSendData();
         data.Self.bullet.isDestroyed = true;

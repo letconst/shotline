@@ -12,6 +12,8 @@ public class RivalBulletManager : MonoBehaviour
 
     private void Awake()
     {
+        if (!NetworkManager.IsConnected) return;
+
         _rivalBulletObjects = new Dictionary<int, GameObject>();
 
         NetworkManager.OnReceived

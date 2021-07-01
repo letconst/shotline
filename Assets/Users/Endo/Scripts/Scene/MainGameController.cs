@@ -23,10 +23,17 @@ public class MainGameController : MonoBehaviour
 
     private void Awake()
     {
-        // 開始直後は操作不能に（他プレイヤー待機のため）
-        IsControllable = true;
-        // MainGameProperty.InputBlocker.SetActive(true);
-        MainGameProperty.StatusText.text = ConnectionWaitingText;
+        if (NetworkManager.IsConnected)
+        {
+            // 開始直後は操作不能に（他プレイヤー待機のため）
+            IsControllable = false;
+            MainGameProperty.InputBlocker.SetActive(true);
+            MainGameProperty.StatusText.text = ConnectionWaitingText;
+        }
+        else
+        {
+            IsControllable = true;
+        }
 
         _playerTrf = GameObject.FindGameObjectWithTag("Player").transform;
         _playerTrf.gameObject.SetActive(false);
@@ -61,6 +68,8 @@ public class MainGameController : MonoBehaviour
 
     private async void Start()
     {
+        if (!NetworkManager.IsConnected) return;
+
         _receiver = NetworkManager.OnReceived
                                   ?.ObserveOnMainThread()
                                   .Subscribe(OnReceived)
