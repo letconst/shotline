@@ -3,13 +3,14 @@ using UnityEngine.UI;
 
 public class NumQuantity : SingletonMonoBehaviour<NumQuantity>
 {
+    [SerializeField]
+    private Image im;
+
     private static float FA = 0;
-    private static Image im;
 
     private void Start()
     {
         FA = 0;
-        im = GetComponent<Image>();
     }
 
     public static void CulNum(float Max = 1)
@@ -27,7 +28,7 @@ public class NumQuantity : SingletonMonoBehaviour<NumQuantity>
             FA = 0;
         }
 
-        im.fillAmount = FA;
+        Instance.im.fillAmount = FA;
     }
 
 }

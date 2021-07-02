@@ -13,6 +13,8 @@ public class SendData
     public PlayerData Self;
     public PlayerData Rival;
 
+    public bool isReadyAttacker;
+
     public SendData(EventType type)
     {
         Type = type.ToString();

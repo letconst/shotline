@@ -14,6 +14,9 @@ public class PlayerData
 
     public BulletData bullet;
 
+    // TODO: 相打ちになった際の判定のために、UNIX時間等も乗せて鯖で判定してあげる
+    public bool isLose;
+
     public PlayerData()
     {
         Uuid    = SelfPlayerData.Uuid;

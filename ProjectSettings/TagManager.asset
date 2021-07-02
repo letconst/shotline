@@ -16,6 +16,7 @@ TagManager:
   - Rad
   - Rival
   - Joystick
+  - RivalBullet
   layers:
   - Default
   - TransparentFX

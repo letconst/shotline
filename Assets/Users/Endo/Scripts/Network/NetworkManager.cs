@@ -17,6 +17,7 @@ public enum EventType
     Joined,
     PlayerMove,
     BulletMove,
+    RoundUpdate,
     Disconnect,
     Refresh,
     Error
@@ -205,15 +206,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
                 break;
             }
 
-            case EventType.Joined:
-                break;
-
-            case EventType.PlayerMove:
-                break;
-
-            case EventType.Disconnect:
-                break;
-
             case EventType.Refresh:
             {
                 KeyValuePair<string, GameObject>[] players = _players.ToArray();
@@ -236,9 +228,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
                 break;
             }
-
-            default:
-                break;
         }
     }
 }

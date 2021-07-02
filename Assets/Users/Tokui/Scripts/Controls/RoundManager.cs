@@ -1,38 +1,51 @@
-﻿using UnityEngine;
+﻿using System;
+using Cysharp.Threading.Tasks;
+using UniRx;
+using UnityEngine;
+using UnityEngine.UI;
 
-public class RoundManager : MonoBehaviour
+public class RoundManager : SingletonMonoBehaviour<RoundManager>
 {
     [SerializeField]
-    public float PlayerLife = 3; //プレイヤーのライフ
+    private int PlayerLife = 3; //プレイヤーのライフ
+
+    [SerializeField]
+    private Text roundText;
 
     // 現在ラウンドが切り替わっている最中かどうか判別
     public static bool RoundMove = false;
 
-    // Update is called once per frame
-    void Update()
+    public static int  CurrentPlayerLife { get; private set; }
+    public static int  CurrentRound      { get; private set; }
+    public static Text RoundText         => Instance.roundText;
+
+    protected override void Awake()
     {
-        HitVerification();
+        base.Awake();
+
+        RoundMove         = false;
+        CurrentPlayerLife = PlayerLife;
+        CurrentRound      = 1;
+
+        // ラウンド進行を受信時にラウンド数更新
+        NetworkManager.OnReceived
+                      ?.Where(x => x.Type.Equals("RoundUpdate") && !x.isReadyAttacker)
+                      .Subscribe(_ => CurrentRound++)
+                      .AddTo(this);
     }
 
-    public void HitVerification()
+    public static void HitVerification()
     {
-        // 弾が当たったら操作不能にし、ライフを1減らす
-        if (RoundMove == true)
-        {
-            // プレイヤーのライフを1減らす
-            PlayerLife--;
+        // プレイヤーのライフを1減らす
+        CurrentPlayerLife--;
 
-            if (PlayerLife >0)
-            {
-                // ラウンド切り替え
-                RoundMove = false;
-            }
-            // プレイヤーのライフが0になったらリザルトへ
-            if (PlayerLife == 0)
-            {
-                //リザルトへ
-                Debug.Log("Result");
-            }
+        RoundMove = true;
+
+        // プレイヤーのライフが0になったらリザルトへ
+        if (CurrentPlayerLife == 0)
+        {
+            //リザルトへ
+            Debug.Log("Result");
         }
     }
 }
