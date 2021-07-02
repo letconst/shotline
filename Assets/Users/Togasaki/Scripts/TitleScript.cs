@@ -61,6 +61,8 @@ public class TitleScript : MonoBehaviour
         {
             if (isTouched && !_isInitConnected)
             {
+                SoundManager.Instance.PlaySE(SELabel.Start);
+
                 // TODO: 通信中UI表示
                 TitleProperty.StatusBgImage.SetActive(true);
                 _statusText.enabled = true;
@@ -80,6 +82,7 @@ public class TitleScript : MonoBehaviour
         {
             if (!_isNowLoading && (Input.GetMouseButtonDown(0) || isTouched) && !SystemLoader.IsFirstFading)
             {
+                SoundManager.Instance.PlaySE(SELabel.Start);
                 _isNowLoading = true;
                 await SystemSceneManager.LoadNextScene("MainGameScene", SceneTransition.Fade);
             }

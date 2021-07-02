@@ -54,6 +54,14 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
             seClipDic.Add(s.name, s);
         }
 
+        if (this != Instance)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+        }
     }
 
 
@@ -84,6 +92,10 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
         seSource.Stop();
     }
 
+    public static AudioClip GetSEClip(SELabel label)
+    {
+        return Instance.seClipDic[label.ToString()];
+    }
 }
 
 //BGM一覧(名前はファイル名と同じにしてください)
@@ -99,9 +111,11 @@ public enum BGMLabel
 public enum SELabel
 {
     None,
+    Draw,
     Shot,
     Damage,
     Start,
-    ItemGet,
-    ItemUse
+    Get,
+    Use,
+    Set
 }

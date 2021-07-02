@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
 
         if (!other.CompareTag("RivalBullet")) return;
 
+        SoundManager.Instance.PlaySE(SELabel.Damage);
         RoundManager.HitVerification();
 
         Time.timeScale                    = .1f;

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -45,6 +47,13 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _currentFingerId = -1;
         _lineDataList    = new List<LineData>();
         DrawingData      = null;
+
+        // this.UpdateAsObservable()
+        //     .Where(_ => _isHoldClicking)
+        //     .Subscribe(async _ =>
+        //     {
+        //         SoundManager.Instance.PlaySE(SELabel.Draw);
+        //     });
     }
 
     private void Start()
@@ -219,6 +228,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// </summary>
     private void CreateLine()
     {
+        SoundManager.Instance.PlaySE(SELabel.Draw);
+
         Vector3 touchPos;
 
 #if UNITY_EDITOR
@@ -272,6 +283,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private void UpdateLine(Vector3 newFingerPos)
     {
         // TODO: 射線長の上限
+        SoundManager.Instance.PlaySE(SELabel.Draw);
 
         if (DrawingData == null)
         {
