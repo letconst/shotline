@@ -283,7 +283,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private void UpdateLine(Vector3 newFingerPos)
     {
         // TODO: 射線長の上限
-        SoundManager.Instance.PlaySE(SELabel.Draw);
 
         if (DrawingData == null)
         {
