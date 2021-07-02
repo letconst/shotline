@@ -56,10 +56,10 @@ public class Projectile : MonoBehaviour
     public static float ScaleRatio = 1f;
 
     //射線の変数
-    public LineData currentLineData;
+    public static LineData currentLineData;
 
     //一回だけ射線の座標を取得
-    private bool One = false;
+    public static bool One = false;
 
     //for用
     private int i = 0;
@@ -75,9 +75,10 @@ public class Projectile : MonoBehaviour
     private void Start()
     {
         ItemManager.ShotBtn.onClick.AddListener(() => Fire());
-        BulletList = new List<BulletInfo>();
-        ActSpeed   = OriginSpeed;
-        ScaleRatio = 1;
+        BulletList      = new List<BulletInfo>();
+        ActSpeed        = OriginSpeed;
+        ScaleRatio      = 1;
+        currentLineData = null;
     }
 
     void Update()
@@ -115,7 +116,6 @@ public class Projectile : MonoBehaviour
             }
 
             One = false;
-            BigBullet.OneBB = true;
 
         }
 
