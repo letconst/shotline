@@ -3,13 +3,17 @@ using UnityEngine;
 
 /// <summary>
 /// サーバーへの送信データクラス
+/// TODO: やり取りする内容に応じてパラメータ (クラス) を分ける
 /// </summary>
+[Serializable]
 public class SendData
 {
     public string     Type;
     public string     Message;
     public PlayerData Self;
     public PlayerData Rival;
+
+    public bool isReadyAttacker;
 
     public SendData(EventType type)
     {
@@ -44,4 +48,16 @@ public class SendData
     {
         return JsonUtility.ToJson(data);
     }
+}
+
+[Serializable]
+public class BulletData
+{
+    public int  instanceId;
+    public bool isGenerated;
+    public bool isDestroyed;
+
+    public Vector3    position;
+    public Quaternion rotation;
+    public Vector3    scale;
 }

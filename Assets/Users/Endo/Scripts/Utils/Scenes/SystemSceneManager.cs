@@ -31,9 +31,9 @@ public class SystemSceneManager : MonoBehaviour
         {
             case SceneTransition.Fade:
             {
-                await FadeTransition.FadeOut(SystemProvider.FadeCanvasGroup, fadeSpeed);
+                await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, fadeSpeed);
                 await UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName);
-                await FadeTransition.FadeIn(SystemProvider.FadeCanvasGroup, fadeSpeed);
+                await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, fadeSpeed);
 
                 break;
             }

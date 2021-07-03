@@ -23,5 +23,8 @@ public abstract class ActiveItem : ItemBase
     /// <summary>
     /// アイテムボタンをタップした際に動作させる処理
     /// </summary>
-    protected abstract void OnClickButton();
+    protected virtual void OnClickButton()
+    {
+        SoundManager.Instance.PlaySE(SELabel.Use);
+    }
 }

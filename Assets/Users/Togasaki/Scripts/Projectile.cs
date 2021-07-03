@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-
+using UnityEngine.UI;
 
 public class BulletInfo
 {
@@ -21,10 +21,10 @@ public class BulletInfo
 
     public BulletInfo(GameObject bullet, Vector3[] fp, int ind, float spd, LineData lineData)
     {
-        Bullet = bullet;
-        FP = fp;
-        index = ind;
-        Speed = spd;
+        Bullet   = bullet;
+        FP       = fp;
+        index    = ind;
+        Speed    = spd;
         LineData = lineData;
     }
 }
@@ -43,9 +43,6 @@ public class Projectile : MonoBehaviour
 
     //変数ゾーン///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-    [SerializeField] private GameObject BulletPrefab;
-
     //リストに弾の情報を
     List<BulletInfo> BulletList = new List<BulletInfo>();
 
@@ -59,18 +56,25 @@ public class Projectile : MonoBehaviour
     public static float ScaleRatio = 1f;
 
     //射線の変数
-    public static LineRenderer Line;
+    public static LineData currentLineData;
 
     //一回だけ射線の座標を取得
     public static bool One = false;
-
-    //for用
-    private int i = 0;
 
     //射線用
     private bool flag = true;
 
     private BulletMovement BM;
+
+    [SerializeField, Header("スライダー")]
+    private Slider slider;
+
+    [SerializeField, Header("射線ゲージ最大量")]
+    private float MaxLinePower = 100;
+
+    //使用したラインパワー
+    private float usedLinePower;
+
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -78,10 +82,10 @@ public class Projectile : MonoBehaviour
     private void Start()
     {
         ItemManager.ShotBtn.onClick.AddListener(() => Fire());
-        BulletList = new List<BulletInfo>();
-        ActSpeed = OriginSpeed;
-        ScaleRatio = 1;
-        One = false;
+        BulletList      = new List<BulletInfo>();
+        ActSpeed        = OriginSpeed;
+        ScaleRatio      = 1;
+        currentLineData = null;
     }
 
     void Update()
@@ -93,21 +97,25 @@ public class Projectile : MonoBehaviour
     //射線に沿って弾丸を移動させる処理
     private void LineAppear()
     {
-        //もし射線が空だったら
-        if (Line == null)
+        currentLineData = ShotLineDrawer.DrawingData;
+
+        //ラインパワー処理
+        if (currentLineData != null && currentLineData.Renderer.enabled)
         {
-            Line = GameObject.FindGameObjectWithTag("ShotLine").GetComponent<LineRenderer>();
+            usedLinePower = (MaxLinePower - ShotLineUtil.GetFingerPositions(currentLineData).Length) / MaxLinePower;
+            slider.value = usedLinePower;
 
         }
 
+
         //ラインが引かれていたら
-        if (Line != null && Line.enabled && One)
+        if (currentLineData != null && currentLineData.Renderer.enabled && One)
         {
-            LineData currentLineData = ShotLineDrawer.DrawingData;
             Vector3[] FingerPositions = ShotLineUtil.GetFingerPositions(currentLineData);
 
             //弾生成
-            GameObject BI = Instantiate(BulletPrefab, FingerPositions[0], Quaternion.identity);
+            GameObject BI = Instantiate(MainGameController.bulletPrefab, FingerPositions[0], Quaternion.identity);
+            BI.AddComponent<BulletMovement>();
 
             //射撃SEを鳴らしている
             SoundManager.Instance.PlaySE(SELabel.Shot);
@@ -132,10 +140,13 @@ public class Projectile : MonoBehaviour
         if (BulletList.Count > 0)
         {
 
-            for (i = 0; i < BulletList.Count; i++)
+            for (int i = 0; i < BulletList.Count; i++)
             {
 
                 BM = BulletList[i].Bullet.GetComponent<BulletMovement>();
+
+                ////使ったラインパワーを入れる
+                //usedLinePower[i] = BulletList[i].FP.Length;
 
                 //現在の座標を変更できるように変数化
                 BulletInfo currentP = BulletList[i];
@@ -144,6 +155,7 @@ public class Projectile : MonoBehaviour
                 if (BulletList[i].index == BulletList[i].FP.Length - 1)
                 {
                     BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].FP[BulletList[i].FP.Length - 2], BulletList[i].FP[BulletList[i].FP.Length - 1], BulletList[i].Speed * Time.deltaTime);
+                    //slider.value += usedLinePower[i];
                 }
                 else
                 {
@@ -167,17 +179,15 @@ public class Projectile : MonoBehaviour
                 }
 
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
-                if (BulletList[i].index == BulletList[i].FP.Length - 1 || BM.BBOn)
+                if (BulletList[i].index == BulletList[i].FP.Length - 1||BM.BBOn)
                 {
 
-                    if (BulletList.Count == i + 1)
+                    if (BulletList.Count == i+1)
                     {
                         flag = true;
                     }
-                    if (flag && BulletList.Count == i + 1)
-                    {
-                        ShotLineUtil.FreeLineData(BulletList[i].LineData);
-                    }
+
+                    ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
                     BulletList.RemoveAt(i);
@@ -186,7 +196,6 @@ public class Projectile : MonoBehaviour
             }
 
         }
-
     }
 
     //射撃ボタンを押したとき
@@ -206,9 +215,10 @@ public class Projectile : MonoBehaviour
             BigBullet.ClickBB = false;
         }
 
-        LineData currentLineData = ShotLineDrawer.DrawingData;
+        currentLineData = ShotLineDrawer.DrawingData;
 
-        if (currentLineData.IsFixed == false)
+        // 射線が固定されていなければ
+        if (currentLineData is {IsFixed: false})
         {
             //射線の固定
             ShotLineUtil.FixLine(currentLineData);

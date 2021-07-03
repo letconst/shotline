@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class SoundManager : SingletonMonoBehaviour<SoundManager>
 {
-    ///•Ï”//////////////////////////////////////////////////////////////////////////
-    
+    ///å¤‰æ•°//////////////////////////////////////////////////////////////////////////
 
-    //BGMESE‚ÌƒpƒXiƒXƒgƒŠƒ“ƒOj
+
+    //BGMãƒ»SEã®ãƒ‘ã‚¹ï¼ˆã‚¹ãƒˆãƒªãƒ³ã‚°ï¼‰
     private const string BGM_PATH = "Audio/BGM";
     private const string SE_PATH = "Audio/SE";
 
-    //BGMESE‚Ìƒ{ƒŠƒ…[ƒ€
+    //BGMãƒ»SEã®ãƒœãƒªãƒ¥ãƒ¼ãƒ 
     [SerializeField] private float BGM_VOLUME = 1;
     [SerializeField] private float SE_VOLUME = 1;
 
-    //ƒI[ƒfƒBƒIƒ\[ƒX
+    //ã‚ªãƒ¼ãƒ‡ã‚£ã‚ªã‚½ãƒ¼ã‚¹
     private AudioSource bgmSource;
     private AudioSource seSource;
 
@@ -23,7 +23,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
     AudioClip[] bgm;
     AudioClip[] se;
 
-    //BGM‚ÆSE‚ÌDictionary
+    //BGMã¨SEã®Dictionary
     private Dictionary<string, AudioClip> bgmClipDic = new Dictionary<string, AudioClip>();
     private Dictionary<string, AudioClip> seClipDic = new Dictionary<string, AudioClip>();
 
@@ -31,15 +31,15 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
 
     protected override void Awake()
     {
-        //ƒI[ƒfƒBƒIƒ\[ƒX¶¬
+        //ã‚ªãƒ¼ãƒ‡ã‚£ã‚ªã‚½ãƒ¼ã‚¹ç”Ÿæˆ
         bgmSource = gameObject.AddComponent<AudioSource>();
         seSource = gameObject.AddComponent<AudioSource>();
 
-        //BGM_PATHESE_PATH‚Ìƒtƒ@ƒCƒ‹‰º‚ÌƒI[ƒfƒBƒIƒNƒŠƒbƒv‚ğ”z—ñ‚Ö
+        //BGM_PATHãƒ»SE_PATHã®ãƒ•ã‚¡ã‚¤ãƒ«ä¸‹ã®ã‚ªãƒ¼ãƒ‡ã‚£ã‚ªã‚¯ãƒªãƒƒãƒ—ã‚’é…åˆ—ã¸
         bgm = Resources.LoadAll<AudioClip>(BGM_PATH);
         se = Resources.LoadAll<AudioClip>(SE_PATH);
 
-        //‰¹—Ê
+        //éŸ³é‡
         bgmSource.volume = BGM_VOLUME;
         seSource.volume = SE_VOLUME;
 
@@ -54,10 +54,18 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
             seClipDic.Add(s.name, s);
         }
 
+        if (this != Instance)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+        }
     }
 
-    
-    //BGMÄ¶
+
+    //BGMå†ç”Ÿ
     public void PlayBGM(BGMLabel bgmLabel)
     {
         bgmSource.clip = bgmClipDic[bgmLabel.ToString()];
@@ -65,28 +73,32 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
     }
 
 
-    //SEÄ¶
+    //SEå†ç”Ÿ
     public void PlaySE(SELabel seLabel)
     {
         seSource.clip = seClipDic[seLabel.ToString()];
         seSource.PlayOneShot(seSource.clip);
     }
 
-    //BGM’â~
+    //BGMåœæ­¢
     public void StopBGM()
     {
         bgmSource.Stop();
     }
 
-    //SE’â~
+    //SEåœæ­¢
     public void StopSE()
     {
         seSource.Stop();
     }
 
+    public static AudioClip GetSEClip(SELabel label)
+    {
+        return Instance.seClipDic[label.ToString()];
+    }
 }
 
-//BGMˆê——(–¼‘O‚Íƒtƒ@ƒCƒ‹–¼‚Æ“¯‚¶‚É‚µ‚Ä‚­‚¾‚³‚¢)
+//BGMä¸€è¦§(åå‰ã¯ãƒ•ã‚¡ã‚¤ãƒ«åã¨åŒã˜ã«ã—ã¦ãã ã•ã„)
 public enum BGMLabel
 {
     None,
@@ -95,13 +107,15 @@ public enum BGMLabel
     Result
 }
 
-//SEˆê——(–¼‘O‚Íƒtƒ@ƒCƒ‹–¼‚Æ“¯‚¶‚É‚µ‚Ä‚­‚¾‚³‚¢)
+//SEä¸€è¦§(åå‰ã¯ãƒ•ã‚¡ã‚¤ãƒ«åã¨åŒã˜ã«ã—ã¦ãã ã•ã„)
 public enum SELabel
 {
     None,
+    Draw,
     Shot,
     Damage,
     Start,
-    ItemGet,
-    ItemUse
+    Get,
+    Use,
+    Set
 }

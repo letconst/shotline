@@ -29,6 +29,8 @@ public class Shield : ActiveItem
 
     protected override void OnClickButton()
     {
+        base.OnClickButton();
+
         NumQuantity.CulNum(maxNumShield);
 
         Player = GameObject.FindGameObjectWithTag("Player");

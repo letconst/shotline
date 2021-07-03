@@ -42,6 +42,7 @@ public abstract class ItemBase : MonoBehaviour
         {
             // 所持アイテム設定
             ItemManager.SetHoldItem(this);
+            SoundManager.Instance.PlaySE(SELabel.Get);
 
             // UIへの反映
             _itemIcon.sprite = Data.ItemSprite;
