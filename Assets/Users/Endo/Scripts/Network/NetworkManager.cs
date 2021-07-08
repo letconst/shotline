@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -94,25 +93,23 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
         _client ??= new UdpClient();
 
+        // 初回接続時、応答が帰ってくるか確認するためタイムアウト設定。帰ってきたら解除
+        _client.Client.ReceiveTimeout = 5000;
+
         try
         {
             // 接続完了まで待機
-            await Task.Run(() => _client.Connect(Instance.address, Instance.port));
+            await UniTask.Run(() => _client.Connect(Instance.address, Instance.port));
 
-            _thread = new Thread(ReceiveData);
-            _thread.Start();
+            UniTask.Run(ReceiveData);
 
             IsConnected = true;
-
-            return;
         }
         catch (Exception e)
         {
             // TODO: UIで表示
             // TODO: 再試行処理
             Debug.LogError($"サーバーへの接続時にエラーが発生しました: {e.Message}");
-
-            return;
         }
     }
 
@@ -139,16 +136,28 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <summary>
     /// サーバーからのレスポンスを受信し、イベントを発行する
     /// </summary>
-    private static void ReceiveData()
+    private static async void ReceiveData()
     {
-        while (true)
+        try
         {
-            IPEndPoint ep       = null;
-            byte[]     received = _client.Receive(ref ep);
-            string     msg      = Encoding.UTF8.GetString(received);
+            while (true)
+            {
+                IPEndPoint ep       = null;
+                byte[]     received = _client.Receive(ref ep);
+                string     msg      = Encoding.UTF8.GetString(received);
 
-            SendData data = SendData.MakeJsonFrom(msg);
-            _receiverSubject.OnNext(data);
+                SendData data = SendData.MakeJsonFrom(msg);
+                _receiverSubject.OnNext(data);
+            }
+        }
+        catch (SocketException e)
+        {
+            // UIを書き換えるためメインスレッドに戻す（暫定）
+            await UniTask.SwitchToMainThread();
+
+            Debug.LogError(e.Message);
+            SystemProperty.StatusText.text = "サーバーに接続できませんでした";
+            IsConnected                    = false;
         }
     }
 
@@ -177,7 +186,8 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         {
             case EventType.Init:
             {
-                SelfPlayerData.Uuid = data.Self.Uuid;
+                _client.Client.ReceiveTimeout = 0;
+                SelfPlayerData.Uuid           = data.Self.Uuid;
 
                 // TODO: マップへの参加時にオブジェクト代入
                 _players.Add(data.Self.Uuid, null);
