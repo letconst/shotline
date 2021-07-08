@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class ItemBase : MonoBehaviour
+public abstract class ItemBase : MonoBehaviour, IManagedMethod
 {
     [SerializeField]
     private ItemData data;
@@ -15,14 +15,14 @@ public abstract class ItemBase : MonoBehaviour
 
     public bool isAnimate; // アニメーションをするか
 
-    protected virtual void Start()
+    public void ManagedStart()
     {
         _itemIcon = ItemManager.ItemIcon;
         _basePos  = transform.position;
         isAnimate = true;
     }
 
-    private void Update()
+    public void ManagedUpdate()
     {
         if (isAnimate) IdleAnimation();
 
@@ -94,7 +94,7 @@ public abstract class ItemBase : MonoBehaviour
     {
         _isEnabled = false;
         ClearItemIcon();
-        Destroy(gameObject);
+        ItemManager.DestroyItem(gameObject);
     }
 
     /// <summary>
