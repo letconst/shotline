@@ -43,12 +43,10 @@ public class CharaMove : MonoBehaviour
         {
             return; //RoundMoveがtrueになると操作不能に
         }
-
+        
         _moveX = _joystick.Position.x * _speed; //JoystickのPositionに_speedをかけて、_moveXに代入
         _moveZ = _joystick.Position.y * _speed; //JoystickのPositionに_speedをかけて、_moveYに代入
-
-      
-
+        
         if (!MainGameController.isControllable)
         {
             controller.SimpleMove(Vector3.zero);
@@ -58,7 +56,7 @@ public class CharaMove : MonoBehaviour
 
         _moveX = _joystick.Position.x * CurrentSpeed; //JoystickのPositionに_speedをかけて、_moveXに代入
         _moveZ = _joystick.Position.y * CurrentSpeed; //JoystickのPositionに_speedをかけて、_moveYに代入
-
+        
         // 2pはカメラを反転させるため、移動方向も逆に
         if (!NetworkManager.IsOwner)
         {
@@ -66,19 +64,17 @@ public class CharaMove : MonoBehaviour
             _moveZ = -_moveZ;
         }
 
-
-
         // 移動方向にキャラクターが向くようにする
 
-            if (_joystick.Position.y > 0.01f || _joystick.Position.y < -0.01f)
+        if (_joystick.Position.y > 0.01f || _joystick.Position.y < -0.01f)
+        {
+            if (_joystick.Position.x > 0.01f || _joystick.Position.x < -0.01f)
             {
-                if (_joystick.Position.x > 0.01f || _joystick.Position.x < -0.01f)
-                {
-                    Vector3 direction = new Vector3(_moveX, 0, _moveZ);
-                    transform.localRotation = Quaternion.LookRotation(direction);
-                    controller.SimpleMove(direction);
-                }
+                Vector3 direction = new Vector3(_moveX, 0, _moveZ);
+                transform.localRotation = Quaternion.LookRotation(direction);
+                controller.SimpleMove(direction);
             }
+        }
     }
 
     public void OnTriggerEnter(Collider other)
