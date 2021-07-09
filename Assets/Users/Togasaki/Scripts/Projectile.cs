@@ -209,6 +209,9 @@ public class Projectile : MonoBehaviour
             //一回だけ座標を取得用
             One = true;
 
+            //ゲージを消費
+            LineGaugeController.Clicked();
+
         }
 
     }

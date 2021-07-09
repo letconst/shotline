@@ -21,6 +21,10 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     [SerializeField, Header("ゲーム開始時、事前に生成しておく射線オブジェクトの数")]
     private int initPoolingCount = 5;
 
+    [SerializeField, Header("ラインゲージ")]
+    private GameObject Gauge;
+
+
     private GameObject _linePrefab;
     private bool       _isHoldClicking; // 射線を描いている最中か
     private Camera     _camera;
@@ -58,6 +62,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
     private void Start()
     {
+        Gauge.SetActive(false);
         _linePrefab = MainGameController.linePrefab;
 
         // 射線データ生成
@@ -124,13 +129,13 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                     // 射線が固定されていたら処理しない（描きながら射撃した際にも止める）
                     if (DrawingData.IsFixed)
                     {
-                        _isHoldClicking  = false;
+                        _isHoldClicking = false;
                         _currentFingerId = -1;
 
                         break;
                     }
 
-                    Vector3       tmpFingerPos     = _camera.ScreenToWorldPoint(touchPos);
+                    Vector3 tmpFingerPos = _camera.ScreenToWorldPoint(touchPos);
                     List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
 
                     if (Vector2.Distance(tmpFingerPos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
@@ -141,7 +146,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                     break;
 
                 case TouchPhase.Ended:
-                    _isHoldClicking  = false;
+                    _isHoldClicking = false;
                     _currentFingerId = -1;
 
                     break;
@@ -228,6 +233,9 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// </summary>
     private void CreateLine()
     {
+        //ゲージを表示
+        Gauge.SetActive(true);
+
         if (LineGaugeController.AbleDraw)
         {
 

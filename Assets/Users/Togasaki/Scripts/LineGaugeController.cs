@@ -1,14 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LineGaugeController : MonoBehaviour
+public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
 {
-
     [SerializeField, Header("予告ゲージ")]
-    private Slider preslider;
+    private Image preslider;
 
     [SerializeField, Header("本ゲージ")]
-    private Slider slider;
+    private Image slider;
 
     [SerializeField, Header("射線ゲージ最大量"), Range(0, 100)]
     private float MaxLinePower = 100;
@@ -19,19 +18,19 @@ public class LineGaugeController : MonoBehaviour
     //使用したラインパワー
     private float usedLinePower;
 
-    //本ゲージの現在量
-    private float LinePower;
-
     //ラインをひけるかどうか
     public static bool AbleDraw;
+
+    //予告ゲージ保管用
+    private float prefl;
 
     private void Start()
     {
         usedLinePower = 1;
-        LinePower = MaxLinePower;
-        preslider.value = 1;
-        slider.value = 1;
+        preslider.fillAmount = 1;
+        slider.fillAmount = 1;
         AbleDraw = true;
+        prefl = MaxLinePower;
     }
 
     private void Update()
@@ -42,48 +41,50 @@ public class LineGaugeController : MonoBehaviour
 
     private void LineGauge()
     {
-
         //射線をひいたときに予告ゲージを減らす処理
-        if (ShotLineDrawer.DrawingData != null && ShotLineDrawer.DrawingData.Renderer.enabled && preslider.value > 0 && !Projectile.One && !BigBullet.ClickBB)
+        if (ShotLineDrawer.DrawingData != null && ShotLineDrawer.DrawingData.Renderer.enabled && !Projectile.One && !BigBullet.ClickBB)
         {
-            if (LinePower <= ShotLineUtil.GetFingerPositions(ShotLineDrawer.DrawingData).Length)
+
+            if (prefl <= ShotLineUtil.GetFingerPositions(ShotLineDrawer.DrawingData).Length)
             {
                 //ラインを引けなくする
                 AbleDraw = false;
                 usedLinePower = 0;
-                preslider.value = 0;
-                LinePower = 0;
             }
-            else if(AbleDraw)
+            else if (AbleDraw)
             {
-                usedLinePower = (LinePower - ShotLineUtil.GetFingerPositions(ShotLineDrawer.DrawingData).Length) / MaxLinePower;
-                preslider.value = usedLinePower;
-                
+                usedLinePower = (prefl - ShotLineUtil.GetFingerPositions(ShotLineDrawer.DrawingData).Length) / MaxLinePower;
+                preslider.fillAmount = usedLinePower;
+
             }
 
         }
-        else
+        else if (preslider.fillAmount < 1)
         {
             //ゲージ回復
-            if (slider.value < 1)
+            slider.fillAmount += HealingGauge;
+            preslider.fillAmount += HealingGauge;
+            prefl = (preslider.fillAmount * 100);
+
+            AbleDraw = true;
+
+            if (preslider.fillAmount == 1)
             {
-                slider.value += HealingGauge;
-                preslider.value += HealingGauge;
+                gameObject.SetActive(false);
             }
-        }
 
-        //射撃が行われたら本ゲージを減らす処理
-        if (Projectile.One)
-        {
-            slider.value = usedLinePower;
-        }
-
-        //ビッグバレットでの射撃が行われたら本ゲージを減らす処理
-        if (BigBullet.ClickBB)
-        {
 
         }
 
+    }
+
+
+    //射撃が行われたら本ゲージを減らす処理
+    //ビッグバレットでの射撃が行われたら本ゲージを減らす処理
+    public static void Clicked()
+    {
+        LineGaugeController.Instance.slider.fillAmount = LineGaugeController.Instance.usedLinePower;
+        LineGaugeController.Instance.prefl = LineGaugeController.Instance.slider.fillAmount;
     }
 
 
