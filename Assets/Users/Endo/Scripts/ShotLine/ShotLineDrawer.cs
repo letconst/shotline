@@ -228,52 +228,57 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// </summary>
     private void CreateLine()
     {
-        SoundManager.Instance.PlaySE(SELabel.Draw);
+        if (LineGaugeController.AbleDraw)
+        {
 
-        Vector3 touchPos;
+            SoundManager.Instance.PlaySE(SELabel.Draw);
+
+            Vector3 touchPos;
 
 #if UNITY_EDITOR
-        touchPos = Input.mousePosition;
+            touchPos = Input.mousePosition;
 #elif UNITY_IOS || UNITY_ANDROID
         touchPos = Input.GetTouch(0).position;
 #endif
 
-        touchPos.z += lineZPos;
-        Vector3 worldTouchPos = _camera.ScreenToWorldPoint(touchPos);
+            touchPos.z += lineZPos;
+            Vector3 worldTouchPos = _camera.ScreenToWorldPoint(touchPos);
 
-        LineData targetData = null;
+            LineData targetData = null;
 
-        // 未使用の射線があるか確認
-        foreach (LineData data in _lineDataList)
-        {
-            if (data.IsFixed) continue;
+            // 未使用の射線があるか確認
+            foreach (LineData data in _lineDataList)
+            {
+                if (data.IsFixed) continue;
 
-            targetData = data;
+                targetData = data;
 
-            break;
+                break;
+            }
+
+            // なければ生成
+            if (targetData == null)
+            {
+                targetData = InstantiateNewLineData();
+                DrawingData = targetData;
+            }
+            else
+            {
+                DrawingData = targetData;
+                ShotLineUtil.ClearLineData(DrawingData);
+            }
+
+            // タップ位置に起点を設定
+            List<Vector3> targetDataFingerPositions = targetData.FingerPositions;
+            targetDataFingerPositions.Clear();
+            targetDataFingerPositions.Add(worldTouchPos);
+            targetDataFingerPositions.Add(worldTouchPos);
+            targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
+            targetData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
+            targetData.Renderer.enabled = true;
+            targetData.IsFixed = false;
+
         }
-
-        // なければ生成
-        if (targetData == null)
-        {
-            targetData  = InstantiateNewLineData();
-            DrawingData = targetData;
-        }
-        else
-        {
-            DrawingData = targetData;
-            ShotLineUtil.ClearLineData(DrawingData);
-        }
-
-        // タップ位置に起点を設定
-        List<Vector3> targetDataFingerPositions = targetData.FingerPositions;
-        targetDataFingerPositions.Clear();
-        targetDataFingerPositions.Add(worldTouchPos);
-        targetDataFingerPositions.Add(worldTouchPos);
-        targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
-        targetData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
-        targetData.Renderer.enabled = true;
-        targetData.IsFixed          = false;
     }
 
     /// <summary>
@@ -283,17 +288,20 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private void UpdateLine(Vector3 newFingerPos)
     {
         // TODO: 射線長の上限
-
-        if (DrawingData == null)
+        if (LineGaugeController.AbleDraw)
         {
-            Debug.LogError("ドロー中の射線データがありません");
+            if (DrawingData == null)
+            {
+                Debug.LogError("ドロー中の射線データがありません");
 
-            return;
+                return;
+            }
+
+            DrawingData.FingerPositions.Add(newFingerPos);
+            DrawingData.Renderer.positionCount++;
+            DrawingData.Renderer.SetPosition(DrawingData.Renderer.positionCount - 1, newFingerPos);
+
         }
-
-        DrawingData.FingerPositions.Add(newFingerPos);
-        DrawingData.Renderer.positionCount++;
-        DrawingData.Renderer.SetPosition(DrawingData.Renderer.positionCount - 1, newFingerPos);
     }
 
     /// <summary>

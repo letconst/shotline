@@ -185,7 +185,6 @@ public class Projectile : MonoBehaviour
     //射撃ボタンを押したとき
     public void Fire()
     {
-
         ScaleRatio = 1f;
         ActSpeed = OriginSpeed;
 
