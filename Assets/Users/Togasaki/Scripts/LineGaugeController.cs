@@ -15,67 +15,91 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     [SerializeField, Header("回復スピード")]
     private float HealingGauge = 0.001f;
 
-    //使用したラインパワー
-    private float usedLinePower;
-
     //ラインをひけるかどうか
     public static bool AbleDraw;
 
-    //予告ゲージ保管用
-    private float prefl;
 
     private void Start()
     {
-        usedLinePower = 1;
         preslider.fillAmount = 1;
         slider.fillAmount = 1;
         AbleDraw = true;
-        prefl = MaxLinePower;
-    }
-
-    private void Update()
-    {
-        LineGauge();
     }
 
 
-    private void LineGauge()
+    //描けるかどうかを返す
+    public static bool LineGauge(float dis, ref float rdis)
     {
-        //射線をひいたときに予告ゲージを減らす処理
-        if (ShotLineDrawer.DrawingData != null && ShotLineDrawer.DrawingData.Renderer.enabled && !Projectile.One && !BigBullet.ClickBB)
+
+        bool result = true;
+
+        //もし引数が範囲内だったらtrueを返す（shotlinedrawerで変数へ）
+        if (Instance.preslider.fillAmount > 0)
         {
-
-            if (prefl <= ShotLineUtil.GetFingerPositions(ShotLineDrawer.DrawingData).Length)
-            {
-                //ラインを引けなくする
-                AbleDraw = false;
-                usedLinePower = 0;
-            }
-            else if (AbleDraw)
-            {
-                usedLinePower = (prefl - ShotLineUtil.GetFingerPositions(ShotLineDrawer.DrawingData).Length) / MaxLinePower;
-                preslider.fillAmount = usedLinePower;
-
-            }
-
+            result = true;
+            Instance.preslider.fillAmount -= dis / Instance.MaxLinePower;
         }
-        else if (preslider.fillAmount < 1)
+        else
         {
-            //ゲージ回復
-            slider.fillAmount += HealingGauge;
-            preslider.fillAmount += HealingGauge;
-            prefl = (preslider.fillAmount * 100);
+            result = false;
+            rdis = dis - Instance.preslider.fillAmount;
+            AbleDraw = false;
+        }
+
+        ////射線をひいたときに予告ゲージを減らす処理
+        //if (ShotLineDrawer.DrawingData != null && ShotLineDrawer.DrawingData.Renderer.enabled && !Projectile.One && !BigBullet.ClickBB)
+        //{
+
+        //    if (Instance.preslider.fillAmount <= dis)
+        //    {
+        //        //ラインを引けなくする
+        //        //AbleDraw = false;
+        //        Instance.usedLinePower = 0;
+        //    }
+        //    else if (AbleDraw)
+        //    {
+        //        Instance.usedLinePower = (Instance.preslider.fillAmount - dis) / Instance.MaxLinePower;
+        //        Instance.preslider.fillAmount = Instance.usedLinePower;
+
+        //    }
+        //}
+        //else if (Instance.preslider.fillAmount < 1)
+        //{
+        //    //ゲージ回復
+        //    Instance.slider.fillAmount += Instance.HealingGauge;
+        //    Instance.preslider.fillAmount += Instance.HealingGauge;
+        //    Instance.prefl = (Instance.preslider.fillAmount * 100);
+
+        //    AbleDraw = true;
+
+        //    if (Instance.preslider.fillAmount == 1)
+        //    {
+        //        Instance.gameObject.SetActive(false);
+        //    }
+
+        //}
+
+        return result;
+
+    }
+
+    //ゲージ回復
+    public static void HealGauge()
+    {
+        //現在ここが通りません！！
+        if (ShotLineDrawer.DrawingData == null && Instance.preslider.fillAmount < 1)
+        {
+            Debug.Log("Enter");
+            Instance.slider.fillAmount += Instance.HealingGauge;
+            Instance.preslider.fillAmount += Instance.HealingGauge;
 
             AbleDraw = true;
 
-            if (preslider.fillAmount == 1)
-            {
-                gameObject.SetActive(false);
-            }
-
-
+            //if (Instance.preslider.fillAmount == 1)
+            //{
+            //    Instance.gameObject.SetActive(false);
+            //}
         }
-
     }
 
 
@@ -83,8 +107,7 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     //ビッグバレットでの射撃が行われたら本ゲージを減らす処理
     public static void Clicked()
     {
-        LineGaugeController.Instance.slider.fillAmount = LineGaugeController.Instance.usedLinePower;
-        LineGaugeController.Instance.prefl = LineGaugeController.Instance.slider.fillAmount;
+        LineGaugeController.Instance.slider.fillAmount = LineGaugeController.Instance.preslider.fillAmount;
     }
 
 

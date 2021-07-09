@@ -62,7 +62,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
     private void Start()
     {
-        Gauge.SetActive(false);
+        //Gauge.SetActive(false);
         _linePrefab = MainGameController.linePrefab;
 
         // 射線データ生成
@@ -74,6 +74,11 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
     private void Update()
     {
+        if (ShotLineDrawer.DrawingData == null && LineGaugeController.Instance.preslider.fillAmount < 1)
+        {
+            Debug.Log("Enter");
+        }
+            LineGaugeController.HealGauge();
         if (Input.touchCount > 0)
         {
             MobileInputHandler();
@@ -295,6 +300,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// <param name="newFingerPos">追加する位置</param>
     private void UpdateLine(Vector3 newFingerPos)
     {
+        float rdis = 0;
+
         // TODO: 射線長の上限
         if (LineGaugeController.AbleDraw)
         {
@@ -303,6 +310,14 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                 Debug.LogError("ドロー中の射線データがありません");
 
                 return;
+            }
+
+            float dis = Vector3.Distance(DrawingData.FingerPositions[DrawingData.FingerPositions.Count-1],newFingerPos);
+            bool isDraw = LineGaugeController.LineGauge(dis, ref rdis);
+
+            if (!isDraw)
+            {
+                newFingerPos = Vector3.Lerp(DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1], newFingerPos, rdis / dis);
             }
 
             DrawingData.FingerPositions.Add(newFingerPos);
