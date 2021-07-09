@@ -1,21 +1,7 @@
-using UnityEngine;
-
-public class TestItem : PassiveItem
+public class TestItem : ItemBase
 {
-    // Start is called before the first frame update
-    void Start()
+    protected override void UpdateFunction()
     {
         
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    protected override void Function()
-    {
-        throw new System.NotImplementedException();
     }
 }

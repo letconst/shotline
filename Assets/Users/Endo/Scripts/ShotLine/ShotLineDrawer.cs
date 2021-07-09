@@ -1,12 +1,11 @@
 using System.Collections.Generic;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 {
-    [SerializeField, Header("射線オブジェクト")]
-    private GameObject linePrefab;
-
     [SerializeField, Header("射線のZ位置")]
     private float lineZPos = 9.8f;
 
@@ -19,47 +18,142 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     [SerializeField, Header("射線のカメラ")]
     private Camera lineCamera;
 
-    private bool          _isHoldClicking; // 射線を描いている最中か
-    private bool          _isFixed;        // 射線が固定されているか
-    private Camera        _camera;
-    private GameObject    _shotLine;        // 射線オブジェクト
-    private Vector3       _shotLineCamPos;  // タップ開始時の射線カメラの位置
-    private Vector3       _prevLineCamPos;  // 1フレーム前の射線カメラの位置
-    private Vector2       _screenCenterPos; // 画面の中心位置
-    private List<Vector3> _fingerPositions; // 描画された射線の通過位置
-    private LineRenderer  _lineRenderer;
+    [SerializeField, Header("ゲーム開始時、事前に生成しておく射線オブジェクトの数")]
+    private int initPoolingCount = 5;
 
-    private void Start()
+    private GameObject _linePrefab;
+    private bool       _isHoldClicking; // 射線を描いている最中か
+    private Camera     _camera;
+    private Vector3    _shotLineCamPos;  // タップ開始時の射線カメラの位置
+    private Vector3    _prevLineCamPos;  // 1フレーム前の射線カメラの位置
+    private Vector2    _screenCenterPos; // 画面の中心位置
+    private int        _currentFingerId; // 現在射線を描いている指ID
+
+    private List<LineData> _lineDataList;
+
+    /// <summary>
+    /// ドロー中の射線データ。ドロー開始時から射撃が終了するまで保持される。
+    /// </summary>
+    public static LineData DrawingData { get; private set; }
+
+    protected override void Awake()
     {
+        base.Awake();
+
         _camera          = Camera.main;
         _shotLineCamPos  = Vector3.zero;
         _prevLineCamPos  = Vector3.zero;
         _screenCenterPos = new Vector2(Screen.width / 2f, Screen.height / 2f);
-        _fingerPositions = new List<Vector3>();
+        _currentFingerId = -1;
+        _lineDataList    = new List<LineData>();
+        DrawingData      = null;
 
-        // 射線オブジェクト生成
-        if (!_shotLine)
+        // this.UpdateAsObservable()
+        //     .Where(_ => _isHoldClicking)
+        //     .Subscribe(async _ =>
+        //     {
+        //         SoundManager.Instance.PlaySE(SELabel.Draw);
+        //     });
+    }
+
+    private void Start()
+    {
+        _linePrefab = MainGameController.linePrefab;
+
+        // 射線データ生成
+        for (int i = 0; i < initPoolingCount; i++)
         {
-            _shotLine             = Instantiate(linePrefab, Vector3.zero, Quaternion.identity);
-            _lineRenderer         = _shotLine.GetComponent<LineRenderer>();
-            _lineRenderer.enabled = false; // 初回時非表示
+            _lineDataList.Add(new LineData(_linePrefab));
         }
     }
 
     private void Update()
     {
-        // TODO: 開始地点をプレイヤー（画面中央）からに限定する
+        if (Input.touchCount > 0)
+        {
+            MobileInputHandler();
+        }
+        else
+        {
+            PCInputHandler();
+        }
+    }
 
-        DrawLine();
+    private void LateUpdate()
+    {
         FollowLineToCamera();
     }
 
     /// <summary>
-    /// 入力によって射線を描画する
+    /// タッチ入力の処理
     /// </summary>
-    private void DrawLine()
+    private void MobileInputHandler()
     {
-#if UNITY_EDITOR
+        Touch[] touches = Input.touches;
+
+        foreach (Touch touch in touches)
+        {
+            // 描いている最中、その指IDでなければ弾く
+            if (_currentFingerId != -1 && touch.fingerId != _currentFingerId) continue;
+
+            Vector3 touchPos = touch.position;
+            touchPos.z += lineZPos;
+
+            switch (touch.phase)
+            {
+                case TouchPhase.Began:
+                    // UIをクリックした際は反応させない
+                    if (EventSystem.current.IsPointerOverGameObject(touch.fingerId)) return;
+
+                    // 画面中央からのドローのみ受け付ける
+                    if (Vector2.Distance(_screenCenterPos, touchPos) > drawableAreaRadius) return;
+
+                    if (_currentFingerId == -1)
+                    {
+                        _currentFingerId = touch.fingerId;
+                    }
+
+                    _isHoldClicking = true;
+                    _shotLineCamPos = lineCamera.transform.position;
+
+                    CreateLine();
+
+                    break;
+
+                case TouchPhase.Moved when _isHoldClicking:
+                    // 射線が固定されていたら処理しない（描きながら射撃した際にも止める）
+                    if (DrawingData.IsFixed)
+                    {
+                        _isHoldClicking  = false;
+                        _currentFingerId = -1;
+
+                        break;
+                    }
+
+                    Vector3       tmpFingerPos     = _camera.ScreenToWorldPoint(touchPos);
+                    List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
+
+                    if (Vector2.Distance(tmpFingerPos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
+                    {
+                        UpdateLine(tmpFingerPos);
+                    }
+
+                    break;
+
+                case TouchPhase.Ended:
+                    _isHoldClicking  = false;
+                    _currentFingerId = -1;
+
+                    break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// マウス入力の処理
+    /// </summary>
+    private void PCInputHandler()
+    {
         Vector3 mousePos = Input.mousePosition;
         mousePos.z += lineZPos;
         Vector3 tmpMousePos = _camera.ScreenToWorldPoint(mousePos);
@@ -80,7 +174,9 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         else if (Input.GetMouseButton(0) && _isHoldClicking)
         {
             // 1つ前の射線位置から指定距離離れていたら伸ばす
-            if (Vector2.Distance(tmpMousePos, _fingerPositions[_fingerPositions.Count - 1]) > lineFineness)
+            List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
+
+            if (Vector2.Distance(tmpMousePos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
             {
                 UpdateLine(tmpMousePos);
             }
@@ -89,43 +185,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         {
             _isHoldClicking = false;
         }
-#elif UNITY_IOS
-        if (Input.touchCount > 0)
-        {
-            Touch   t        = Input.GetTouch(0);
-            Vector3 touchPos = t.position;
-            touchPos.z += lineZPos;
-            Vector3 tmpFingerPos = _camera.ScreenToWorldPoint(touchPos);
-
-            switch (t.phase)
-            {
-                case TouchPhase.Began:
-                    if (EventSystem.current.IsPointerOverGameObject()) return;
-
-                    if (Vector2.Distance(_screenCenterPos, touchPos) > drawableAreaRadius) return;
-
-                    _isHoldClicking = true;
-                    _shotLineCamPos = lineCamera.transform.position;
-
-                    CreateLine();
-
-                    break;
-
-                case TouchPhase.Moved when _isHoldClicking:
-                    if (Vector2.Distance(tmpFingerPos, _fingerPositions[_fingerPositions.Count - 1]) > lineFineness)
-                    {
-                        UpdateLine(tmpFingerPos);
-                    }
-
-                    break;
-
-                case TouchPhase.Ended:
-                    _isHoldClicking = false;
-
-                    break;
-            }
-        }
-#endif
     }
 
     /// <summary>
@@ -133,8 +192,10 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// </summary>
     private void FollowLineToCamera()
     {
+        if (DrawingData == null) return;
+
         // 射線が描画状態であり、かつ固定されていないときのみ処理
-        if (!_lineRenderer.enabled || _isFixed) return;
+        if (!DrawingData.Renderer.enabled || DrawingData.IsFixed) return;
 
         Vector3 curLineCamPos = lineCamera.transform.position;
 
@@ -142,18 +203,21 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         if (curLineCamPos == _prevLineCamPos) return;
 
         // 射線のドロー開始時と現在の射線カメラの差分座標
-        Vector3 deltaPosToCam = new Vector3(curLineCamPos.x - _shotLineCamPos.x,
-                                            curLineCamPos.y - _shotLineCamPos.y,
-                                            curLineCamPos.z - _shotLineCamPos.z);
+        var deltaPosToCam = new Vector3(curLineCamPos.x - _shotLineCamPos.x,
+                                        curLineCamPos.y - _shotLineCamPos.y,
+                                        curLineCamPos.z - _shotLineCamPos.z);
+
+        List<Vector3> drawingFingerPos     = DrawingData.FingerPositions;
+        int           fingerPositionsCount = drawingFingerPos.Count;
 
         // 射線の全ポイントの座標を更新
-        for (int i = 0; i < _fingerPositions.Count; i++)
+        for (int i = 0; i < fingerPositionsCount; i++)
         {
-            Vector3 newPos = new Vector3(_fingerPositions[i].x + deltaPosToCam.x,
-                                         _fingerPositions[i].y + deltaPosToCam.y,
-                                         _fingerPositions[i].z + deltaPosToCam.z);
+            var newPos = new Vector3(drawingFingerPos[i].x + deltaPosToCam.x,
+                                     drawingFingerPos[i].y + deltaPosToCam.y,
+                                     drawingFingerPos[i].z + deltaPosToCam.z);
 
-            _lineRenderer.SetPosition(i, newPos);
+            DrawingData.Renderer.SetPosition(i, newPos);
         }
 
         _prevLineCamPos = curLineCamPos;
@@ -164,67 +228,130 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// </summary>
     private void CreateLine()
     {
+        SoundManager.Instance.PlaySE(SELabel.Draw);
+
         Vector3 touchPos;
 
 #if UNITY_EDITOR
         touchPos = Input.mousePosition;
-#elif UNITY_IOS
+#elif UNITY_IOS || UNITY_ANDROID
         touchPos = Input.GetTouch(0).position;
 #endif
 
         touchPos.z += lineZPos;
         Vector3 worldTouchPos = _camera.ScreenToWorldPoint(touchPos);
-        ClearLine();
+
+        LineData targetData = null;
+
+        // 未使用の射線があるか確認
+        foreach (LineData data in _lineDataList)
+        {
+            if (data.IsFixed) continue;
+
+            targetData = data;
+
+            break;
+        }
+
+        // なければ生成
+        if (targetData == null)
+        {
+            targetData  = InstantiateNewLineData();
+            DrawingData = targetData;
+        }
+        else
+        {
+            DrawingData = targetData;
+            ShotLineUtil.ClearLineData(DrawingData);
+        }
 
         // タップ位置に起点を設定
-        _fingerPositions.Clear();
-        _fingerPositions.Add(worldTouchPos);
-        _fingerPositions.Add(worldTouchPos);
-        _lineRenderer.SetPosition(0, _fingerPositions[0]);
-        _lineRenderer.SetPosition(1, _fingerPositions[1]);
-        _lineRenderer.enabled = true;
-        _isFixed              = false;
+        List<Vector3> targetDataFingerPositions = targetData.FingerPositions;
+        targetDataFingerPositions.Clear();
+        targetDataFingerPositions.Add(worldTouchPos);
+        targetDataFingerPositions.Add(worldTouchPos);
+        targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
+        targetData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
+        targetData.Renderer.enabled = true;
+        targetData.IsFixed          = false;
     }
 
     /// <summary>
-    /// 射線レンダラーに追記し、射線を伸ばす
+    /// ドロー中の射線を伸ばす
     /// </summary>
     /// <param name="newFingerPos">追加する位置</param>
     private void UpdateLine(Vector3 newFingerPos)
     {
         // TODO: 射線長の上限
 
-        _fingerPositions.Add(newFingerPos);
-        _lineRenderer.positionCount++;
-        _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, newFingerPos);
+        if (DrawingData == null)
+        {
+            Debug.LogError("ドロー中の射線データがありません");
+
+            return;
+        }
+
+        DrawingData.FingerPositions.Add(newFingerPos);
+        DrawingData.Renderer.positionCount++;
+        DrawingData.Renderer.SetPosition(DrawingData.Renderer.positionCount - 1, newFingerPos);
     }
 
     /// <summary>
-    /// 射線の位置を固定する
+    /// すべての射線の描画をクリアする
     /// </summary>
-    public static void FixLine()
+    public static void ClearAllLine()
     {
-        Instance._isFixed = true;
+        foreach (LineData data in Instance._lineDataList)
+        {
+            if (data.IsFixed) continue;
+
+            ShotLineUtil.ClearLineData(data);
+        }
     }
 
     /// <summary>
-    /// 射線の描画をクリアする
+    /// 射線データを新たに生成し、管理下に加える
     /// </summary>
-    public static void ClearLine()
+    /// <returns>生成された射線データ</returns>
+    private static LineData InstantiateNewLineData()
     {
-        Instance._lineRenderer.positionCount = 2;
-        Instance._lineRenderer.enabled       = false;
+        LineData newData = ShotLineUtil.InstantiateLine(Instance._linePrefab);
+        Instance._lineDataList.Add(newData);
+
+        return newData;
     }
 
     /// <summary>
-    /// 射線の通過座標を取得する
+    /// 使用されていない射線データを取得する
     /// </summary>
-    /// <returns>射線の通過座標</returns>
-    public static Vector3[] GetFingerPositions()
+    /// <returns>射線データ</returns>
+    public static LineData GetFreeLine()
     {
-        Vector3[] fingerPositions = new Vector3[Instance._lineRenderer.positionCount];
-        Instance._lineRenderer.GetPositions(fingerPositions);
+        foreach (LineData lineData in Instance._lineDataList)
+        {
+            if (lineData.IsFixed) continue;
 
-        return fingerPositions;
+            return lineData;
+        }
+
+        // すべて使用済みなら新たに生成
+        return InstantiateNewLineData();
+    }
+}
+
+public class LineData
+{
+    public readonly GameObject    LineObj;
+    public readonly LineRenderer  Renderer;
+    public          bool          IsFixed;
+    public readonly List<Vector3> FingerPositions;
+
+    public LineData(GameObject linePrefab)
+    {
+        LineObj          = Object.Instantiate(linePrefab);
+        Renderer         = LineObj.GetComponent<LineRenderer>();
+        Renderer.enabled = false; // 初回非表示
+        IsFixed          = false;
+        FingerPositions  = new List<Vector3>();
     }
 }
