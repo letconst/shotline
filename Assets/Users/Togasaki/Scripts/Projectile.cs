@@ -66,15 +66,6 @@ public class Projectile : MonoBehaviour
 
     private BulletMovement BM;
 
-    [SerializeField, Header("スライダー")]
-    private Slider slider;
-
-    [SerializeField, Header("射線ゲージ最大量")]
-    private float MaxLinePower = 100;
-
-    //使用したラインパワー
-    private float usedLinePower;
-
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -86,6 +77,7 @@ public class Projectile : MonoBehaviour
         ActSpeed        = OriginSpeed;
         ScaleRatio      = 1;
         currentLineData = null;
+        One = false;
     }
 
     void Update()
@@ -98,15 +90,6 @@ public class Projectile : MonoBehaviour
     private void LineAppear()
     {
         currentLineData = ShotLineDrawer.DrawingData;
-
-        //ラインパワー処理
-        if (currentLineData != null && currentLineData.Renderer.enabled)
-        {
-            usedLinePower = (MaxLinePower - ShotLineUtil.GetFingerPositions(currentLineData).Length) / MaxLinePower;
-            slider.value = usedLinePower;
-
-        }
-
 
         //ラインが引かれていたら
         if (currentLineData != null && currentLineData.Renderer.enabled && One)
@@ -132,6 +115,7 @@ public class Projectile : MonoBehaviour
             }
 
             One = false;
+            BigBullet.ClickBB = false;
 
         }
 

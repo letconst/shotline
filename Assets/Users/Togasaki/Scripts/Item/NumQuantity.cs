@@ -29,6 +29,7 @@ public class NumQuantity : SingletonMonoBehaviour<NumQuantity>
         }
 
         Instance.im.fillAmount = FA;
+
     }
 
 }
