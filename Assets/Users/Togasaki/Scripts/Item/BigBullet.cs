@@ -1,40 +1,69 @@
 using UnityEngine;
 
-public class BigBullet : PassiveItem
+public class BigBullet : ActiveItem
 {
-    //BigBullet‚ª—LŒø‚Ì—p‚ÌboolAg‚¢‰Ê‚½‚·‚Æfalse
+    //BigBulletãŒæœ‰åŠ¹ã®æ™‚ç”¨ã®boolã€ä½¿ãEï¿½ï¿½ãŸã™ã¨false
     public static bool BBOn = false;
     public static bool BBOff = false;
 
-    //Å‰‚ÉÀs‚³‚ê‚é
+    public static bool ClickBB = false;
+
+    [SerializeField, Header("ï¿½rï¿½bï¿½Nï¿½oï¿½ï¿½ï¿½bï¿½gï¿½ÌÅ‘ï¿½ï¿½")]
+    private float maxNumBigBullet = 3;
+
+    //æœ€åˆã«å®Ÿè¡Œã•ã‚Œã‚‹
     protected override void Init()
     {
         base.Init();
 
-        //BBOn‚ğ‚Â‚¯‚é
+        //BBOnï¿½ï¿½Â‚ï¿½ï¿½ï¿½
         BBOff = false;
         BBOn = true;
+        ClickBB = false;
 
     }
 
-    //ÅŒã‚ÉÀs‚³‚ê‚é
+    //æœ€å¾Œã«å®Ÿè¡Œã•ã‚Œã‚‹
     public override void Terminate()
     {
-
+        BBOff = false;
         BBOn = false;
-
         base.ClearItemIcon();
 
         base.Terminate();
 
     }
 
+    protected override void OnClickButton()
+    {
+        // å°„ç·šãŒæã„ã¦ã‚ã‚‹ã¨ãã®ã¿ç™ºå°„
+        if (Projectile.currentLineData is {IsFixed: false} && Projectile.currentLineData.Renderer.enabled)
+        {
+            ItemManager.ShotBtn.GetComponentInChildren<Projectile>().Fire();
+            SoundManager.Instance.PlaySE(SELabel.Shot);
+        }
+
+        if (BBOn && Projectile.One)
+        {
+            NumQuantity.CulNum(maxNumBigBullet);
+
+            ClickBB = true;
+
+            Projectile.ScaleRatio = 1.5f;
+
+            if (ItemManager.currentNum == maxNumBigBullet)
+            {
+                BBOff = true;
+                Terminate();
+
+            }
+
+        }
+
+    }
+
     protected override void UpdateFunction()
     {
-        if (BBOff)
-        {
-            Terminate();
-        }
 
     }
 }

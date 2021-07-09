@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Thruster
   m_EditorClassIdentifier: 
   itemName: "\u30B9\u30E9\u30B9\u30BF\u30FC"
-  itemSprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
-  itemObject: {fileID: 6625466425217524550, guid: 85289869b36144a428a03dcc72846ae7, type: 3}
+  itemSprite: {fileID: 21300000, guid: 4bc3ec1b478d8cb4aa927e15a18157b3, type: 3}
+  itemObject: {fileID: 1364826700401681965, guid: 873456c46895b6d4bbeffb979a2198aa, type: 3}

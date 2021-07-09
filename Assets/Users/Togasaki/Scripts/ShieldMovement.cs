@@ -3,20 +3,23 @@ using UnityEngine;
 public class ShieldMovement : MonoBehaviour
 {
 
-    public static int ShieldLimit = 4;
+    private int ShieldLimit = 10;
 
+    private void Start()
+    {
+        ShieldLimit = 10;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
 
-        if (other.gameObject.tag == "Bullet")
+        if (other.CompareTag("Bullet") || other.CompareTag("RivalBullet"))
         {
-            //“–‚½‚è”»’è‚É“ü‚Á‚½‚Ì‚ªBullet‚¾‚Á‚½ê‡ShieldLimit‚ğƒ}ƒCƒiƒX‚P
+            //ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ï¿½Bulletï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ShieldLimitï¿½ï¿½ï¿½}ï¿½Cï¿½iï¿½Xï¿½P
             ShieldLimit--;
 
-            if (ShieldLimit < 0)
+            if (ShieldLimit <= 0)
             {
-                ShieldLimit = 4;
                 Destroy(gameObject);
             }
         }

@@ -7,39 +7,41 @@ public class Thruster : ActiveItem
 
     CharacterController BoostSpeed;
     Vector3 Direction;
-    //ˆÚ“®‘¬“xƒJƒEƒ“ƒgƒ_ƒEƒ“—p•Ï”
+    //ç§»å‹•é€Ÿåº¦ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ç”¨å¤‰æ•°
     public float MoveCountDown;
     bool ClickButton;
 
 
-    //–³“GŠÔƒJƒEƒ“ƒgƒ_ƒEƒ“—p•Ï”
+    //ç„¡æ•µæ™‚é–“ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ç”¨å¤‰æ•°
     public float FlagCountDown;
 
     protected override void Init()
     {
         base.Init();
 
-        //ƒXƒ‰ƒXƒ^[‚ÌŠŠm”F
+        //ã‚¹ãƒ©ã‚¹ã‚¿ãƒ¼ã®æ‰€æŒç¢ºèª
         Player = GameObject.FindGameObjectWithTag("Player");
         Chara = Player.GetComponent<CharaMove>();
 
-        //CharacterController‚ğæ“¾
+        //CharacterControllerã‚’å–å¾—
         BoostSpeed = Player.GetComponent<CharacterController>();
 
     }
 
     protected override void OnClickButton()
     {
-        //ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚Æ‚«ˆÚ“®‘¬“x1.5”{
+        base.OnClickButton();
+
+        //ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã¨ãç§»å‹•é€Ÿåº¦1.5å€
         Chara.speedRatio = 1.5f;
 
-        //ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç’e‚Ìƒtƒ‰ƒOˆ—‚ğ true ‚É‚·‚é
+        //ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰å¼¾ã®ãƒ•ãƒ©ã‚°å‡¦ç†ã‚’ true ã«ã™ã‚‹
         Chara.Thruster = true;
 
-        //ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚Æ‚«ƒJƒEƒ“ƒgŠJn
+        //ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã¨ãã‚«ã‚¦ãƒ³ãƒˆé–‹å§‹
         ClickButton = true;
 
-        //ƒ{ƒ^ƒ“‚ğ‰Ÿ‚·‚ÆPlayer‚ÌŒü‚¢‚Ä‚¢‚é•ûŒü‚ğæ“¾
+        //ãƒœã‚¿ãƒ³ã‚’æŠ¼ã™ã¨Playerã®å‘ã„ã¦ã„ã‚‹æ–¹å‘ã‚’å–å¾—
         Direction = Player.transform.rotation * new Vector3(0, 0, Chara.CurrentSpeed);
 
         ClearItemIcon();
@@ -48,35 +50,35 @@ public class Thruster : ActiveItem
     protected override void UpdateFunction()
     {
 
-        //ˆÚ“®‘¬“x1.5”{ƒJƒEƒ“ƒg
+        //ç§»å‹•é€Ÿåº¦1.5å€ã‚«ã‚¦ãƒ³ãƒˆ
         if (ClickButton && MoveCountDown > 0)
         {
             MoveCountDown -= Time.deltaTime;
         }
 
-        //–³“GŠÔ‚ÌƒJƒEƒ“ƒg
+        //ç„¡æ•µæ™‚é–“ã®ã‚«ã‚¦ãƒ³ãƒˆ
         if (Chara.Thruster == true)
         {
             FlagCountDown -= Time.deltaTime;
 
-            //true ‚ÌAŒü‚¢‚Ä‚¢‚é•ûŒü‚ÉˆÚ“®
+            //true ã®æ™‚ã€å‘ã„ã¦ã„ã‚‹æ–¹å‘ã«ç§»å‹•
             BoostSpeed.SimpleMove(Direction);
         }
 
-        //ˆÚ“®‘¬“x‚ğŒ³‚É–ß‚·
+        //ç§»å‹•é€Ÿåº¦ã‚’å…ƒã«æˆ»ã™
         if (MoveCountDown <= 0)
         {
             Chara.speedRatio = 1f;
         }
 
-        //–³“G‰ğœ
-        //ƒtƒ‰ƒO‚ğ false ‚É–ß‚·
+        //ç„¡æ•µè§£é™¤
+        //ãƒ•ãƒ©ã‚°ã‚’ false ã«æˆ»ã™
         if (FlagCountDown <= 0)
         {
             Chara.Thruster = false;
         }
 
-        //—¼ƒJƒEƒ“ƒg‚ª0‚É‚È‚Á‚½‚ç Terminate ‚ğŒÄ‚Ô
+        //ä¸¡ã‚«ã‚¦ãƒ³ãƒˆãŒ0ã«ãªã£ãŸã‚‰ Terminate ã‚’å‘¼ã¶
         if (MoveCountDown <= 0 && FlagCountDown <= 0)
         {
             Terminate();
