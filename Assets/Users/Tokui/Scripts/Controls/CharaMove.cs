@@ -14,8 +14,6 @@ public class CharaMove : MonoBehaviour
     private float _moveX = 0f; //キャラクターのX方向への移動速度
     private float _moveZ = 0f; //キャラクターのY方向への移動速度
 
-    private Vector3 _latestPos;  //前回のPosition
-
     CharacterController controller; //CharacterControllerの読み込み
 
     void Start()
@@ -32,18 +30,16 @@ public class CharaMove : MonoBehaviour
 
         _moveX = _joystick.Position.x * _speed; //JoystickのPositionに_speedをかけて、_moveXに代入
         _moveZ = _joystick.Position.y * _speed; //JoystickのPositionに_speedをかけて、_moveYに代入
-        Vector3 direction = new Vector3(_moveX, 0, _moveZ);
 
-        controller.SimpleMove(direction);
-
-        // 移動方向にキャラクターが向くようにする
-        Vector3 diff = transform.position - _latestPos;     //前回からどこに進んだかをベクトルで取得
-        _latestPos = transform.position;                    //前回のPositionの更新
-
-        //ベクトルの大きさが0.01以上の時に向きを変える処理をする
-        if (diff.magnitude > 0.01f)
+        //ジョイスティックが傾いている方向を向く
+        if (_joystick.Position.x > 0.01f || _joystick.Position.x < -0.01f)
         {
-            transform.rotation = Quaternion.LookRotation(diff); //向きを変更する
+            if (_joystick.Position.x > 0.01f || _joystick.Position.x < -0.01f)
+            {
+                Vector3 direction = new Vector3(_moveX, 0, _moveZ);
+                transform.localRotation = Quaternion.LookRotation(direction);
+                controller.SimpleMove(direction);
+            }
         }
     }
 
