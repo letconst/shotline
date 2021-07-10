@@ -74,11 +74,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
     private void Update()
     {
-        if (ShotLineDrawer.DrawingData == null && LineGaugeController.Instance.preslider.fillAmount < 1)
-        {
-            Debug.Log("Enter");
-        }
-            LineGaugeController.HealGauge();
+
         if (Input.touchCount > 0)
         {
             MobileInputHandler();

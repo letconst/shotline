@@ -61,9 +61,6 @@ public class Projectile : MonoBehaviour
     //一回だけ射線の座標を取得
     public static bool One = false;
 
-    //射線用
-    private bool flag = true;
-
     private BulletMovement BM;
 
 
@@ -108,11 +105,6 @@ public class Projectile : MonoBehaviour
 
             //配列に射線の全座標とそれに対応する弾丸をいれる
             BulletList.Add(new BulletInfo(BI, ShotLineUtil.GetFingerPositions(currentLineData), 0, ActSpeed, currentLineData));
-
-            if (BulletList.Count > 1)
-            {
-                flag = false;
-            }
 
             One = false;
             BigBullet.ClickBB = false;
@@ -165,11 +157,6 @@ public class Projectile : MonoBehaviour
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
                 if (BulletList[i].index == BulletList[i].FP.Length - 1||BM.BBOn)
                 {
-
-                    if (BulletList.Count == i+1)
-                    {
-                        flag = true;
-                    }
 
                     ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     BM.BBOn = false;

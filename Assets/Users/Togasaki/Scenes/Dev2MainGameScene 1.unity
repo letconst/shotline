@@ -2211,7 +2211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preslider: {fileID: 1958302086}
   slider: {fileID: 1629280942}
-  MaxLinePower: 17.3
+  MaxLinePower: 20
   HealingGauge: 0.005
 --- !u!114 &1629280942
 MonoBehaviour:

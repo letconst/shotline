@@ -4,10 +4,10 @@ using UnityEngine.UI;
 public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
 {
     [SerializeField, Header("予告ゲージ")]
-    private Image preslider;
+    public Image preslider;
 
     [SerializeField, Header("本ゲージ")]
-    private Image slider;
+    public Image slider;
 
     [SerializeField, Header("射線ゲージ最大量"), Range(0, 100)]
     private float MaxLinePower = 100;
@@ -26,6 +26,10 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
         AbleDraw = true;
     }
 
+    private void Update()
+    {
+        HealGauge();
+    }
 
     //描けるかどうかを返す
     public static bool LineGauge(float dis, ref float rdis)
@@ -86,19 +90,15 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     //ゲージ回復
     public static void HealGauge()
     {
-        //現在ここが通りません！！
-        if (ShotLineDrawer.DrawingData == null && Instance.preslider.fillAmount < 1)
+        if (LineGaugeController.Instance.slider.fillAmount < 1)
         {
-            Debug.Log("Enter");
-            Instance.slider.fillAmount += Instance.HealingGauge;
-            Instance.preslider.fillAmount += Instance.HealingGauge;
-
             AbleDraw = true;
 
-            //if (Instance.preslider.fillAmount == 1)
-            //{
-            //    Instance.gameObject.SetActive(false);
-            //}
+            if (!(Instance.preslider.fillAmount >= 1))
+            {
+                Instance.slider.fillAmount += Instance.HealingGauge;
+                Instance.preslider.fillAmount += Instance.HealingGauge;
+            }
         }
     }
 
