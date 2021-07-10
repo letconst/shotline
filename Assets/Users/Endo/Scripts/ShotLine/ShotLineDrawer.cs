@@ -1,12 +1,11 @@
 using System.Collections.Generic;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 {
-    [SerializeField, Header("射線オブジェクト")]
-    private GameObject linePrefab;
-
     [SerializeField, Header("射線のZ位置")]
     private float lineZPos = 9.8f;
 
@@ -22,12 +21,13 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     [SerializeField, Header("ゲーム開始時、事前に生成しておく射線オブジェクトの数")]
     private int initPoolingCount = 5;
 
-    private bool    _isHoldClicking; // 射線を描いている最中か
-    private Camera  _camera;
-    private Vector3 _shotLineCamPos;  // タップ開始時の射線カメラの位置
-    private Vector3 _prevLineCamPos;  // 1フレーム前の射線カメラの位置
-    private Vector2 _screenCenterPos; // 画面の中心位置
-    private int     _currentFingerId; // 現在射線を描いている指ID
+    private GameObject _linePrefab;
+    private bool       _isHoldClicking; // 射線を描いている最中か
+    private Camera     _camera;
+    private Vector3    _shotLineCamPos;  // タップ開始時の射線カメラの位置
+    private Vector3    _prevLineCamPos;  // 1フレーム前の射線カメラの位置
+    private Vector2    _screenCenterPos; // 画面の中心位置
+    private int        _currentFingerId; // 現在射線を描いている指ID
 
     private List<LineData> _lineDataList;
 
@@ -48,10 +48,22 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _lineDataList    = new List<LineData>();
         DrawingData      = null;
 
+        // this.UpdateAsObservable()
+        //     .Where(_ => _isHoldClicking)
+        //     .Subscribe(async _ =>
+        //     {
+        //         SoundManager.Instance.PlaySE(SELabel.Draw);
+        //     });
+    }
+
+    private void Start()
+    {
+        _linePrefab = MainGameController.linePrefab;
+
         // 射線データ生成
         for (int i = 0; i < initPoolingCount; i++)
         {
-            _lineDataList.Add(new LineData(linePrefab));
+            _lineDataList.Add(new LineData(_linePrefab));
         }
     }
 
@@ -92,7 +104,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                 case TouchPhase.Began:
                     // UIをクリックした際は反応させない
                     if (EventSystem.current.IsPointerOverGameObject(touch.fingerId)) return;
-                    
+
                     // 画面中央からのドローのみ受け付ける
                     if (Vector2.Distance(_screenCenterPos, touchPos) > drawableAreaRadius) return;
 
@@ -117,7 +129,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
                         break;
                     }
-                    
+
                     Vector3       tmpFingerPos     = _camera.ScreenToWorldPoint(touchPos);
                     List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
 
@@ -216,6 +228,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// </summary>
     private void CreateLine()
     {
+        SoundManager.Instance.PlaySE(SELabel.Draw);
+
         Vector3 touchPos;
 
 #if UNITY_EDITOR
@@ -301,7 +315,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// <returns>生成された射線データ</returns>
     private static LineData InstantiateNewLineData()
     {
-        LineData newData = ShotLineUtil.InstantiateLine(Instance.linePrefab);
+        LineData newData = ShotLineUtil.InstantiateLine(Instance._linePrefab);
         Instance._lineDataList.Add(newData);
 
         return newData;

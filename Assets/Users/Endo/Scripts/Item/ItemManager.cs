@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
-public class ItemManager : SingletonMonoBehaviour<ItemManager>
+public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
 {
     [SerializeField]
     private Button itemBtn;
@@ -13,7 +14,6 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
     private Transform holdPos;
 
     [Header("浮遊アニメーションが1往復する秒数")]
-
     [SerializeField, Header("ドロップアイテムのアニメーション関連")]
     private float itemFloatingAnimDuration;
 
@@ -22,6 +22,8 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
 
     [SerializeField, Header("回転アニメーション時間 (角度/秒)")]
     private float itemRotationAnimDuration = 100;
+
+    private Dictionary<GameObject, IManagedMethod> _generatedItems;
 
     public static float currentNum = 0;
 
@@ -36,18 +38,34 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
 
     private static ItemBase _holdItem;
 
-
-    protected override void Awake()
+    public void ManagedStart()
     {
-        base.Awake();
-
-        ItemIcon = ItemBtn.GetComponentsInChildren<Image>()[1];
+        _generatedItems = new Dictionary<GameObject, IManagedMethod>();
+        ItemIcon        = ItemBtn.GetComponentsInChildren<Image>()[1];
 
         ItemIcon.sprite = null;
         ItemIcon.color  = Color.clear;
 
         currentNum = 0;
 
+        // 初期配置されたアイテムがあればStartを呼ぶ
+        GameObject[] defaultSpawnItems = GameObject.FindGameObjectsWithTag("Item");
+
+        foreach (GameObject itemObj in defaultSpawnItems)
+        {
+            var item = itemObj.GetComponent<IManagedMethod>();
+
+            item.ManagedStart();
+            _generatedItems.Add(itemObj, item);
+        }
+    }
+
+    public void ManagedUpdate()
+    {
+        foreach (KeyValuePair<GameObject, IManagedMethod> item in _generatedItems)
+        {
+            item.Value.ManagedUpdate();
+        }
     }
 
     /// <summary>
@@ -62,7 +80,15 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
         if (_holdItem != null) _holdItem.Terminate();
 
         _holdItem = item;
-
     }
 
+    /// <summary>
+    /// 指定したアイテムオブジェクトを管轄下から削除し、対象も破棄する
+    /// </summary>
+    /// <param name="itemObj"></param>
+    public static void DestroyItem(GameObject itemObj)
+    {
+        Instance._generatedItems.Remove(itemObj);
+        Destroy(itemObj);
+    }
 }

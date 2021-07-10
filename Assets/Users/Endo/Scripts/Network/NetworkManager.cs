@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -16,6 +15,8 @@ public enum EventType
     Match,
     Joined,
     PlayerMove,
+    BulletMove,
+    RoundUpdate,
     Disconnect,
     Refresh,
     Error
@@ -29,7 +30,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     [SerializeField, Header("サーバーポート")]
     private int port = 6080;
 
-    private static bool      _isConnected; // サーバーに接続中か
     private static UdpClient _client;
     private static Thread    _thread;
 
@@ -44,6 +44,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
     public static IObservable<SendData> OnReceived => _receiverSubject;
 
+    public static bool   IsConnected  { get; private set; } // サーバーに接続中か
     public static string RivalAddress { get; private set; }
     public static int    RivalPort    { get; private set; }
 
@@ -57,10 +58,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
         Init();
         DontDestroyOnLoad(this);
-    }
-
-    private void Start()
-    {
         OnReceived.Subscribe(EventHandler);
     }
 
@@ -79,11 +76,11 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// </summary>
     private static void Init()
     {
-        _players     = new Dictionary<string, GameObject>();
-        _client      = null;
-        _thread      = null;
-        _isConnected = false;
-        IsOwner      = false;
+        _players    = new Dictionary<string, GameObject>();
+        _client     = null;
+        _thread     = null;
+        IsConnected = false;
+        IsOwner     = false;
     }
 
     /// <summary>
@@ -92,29 +89,27 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <returns>正常に接続できたか</returns>
     public static async UniTask Connect()
     {
-        if (_isConnected) return;
+        if (IsConnected) return;
 
         _client ??= new UdpClient();
+
+        // 初回接続時、応答が帰ってくるか確認するためタイムアウト設定。帰ってきたら解除
+        _client.Client.ReceiveTimeout = 5000;
 
         try
         {
             // 接続完了まで待機
-            await Task.Run(() => _client.Connect(Instance.address, Instance.port));
+            await UniTask.Run(() => _client.Connect(Instance.address, Instance.port));
 
-            _thread = new Thread(ReceiveData);
-            _thread.Start();
+            UniTask.Run(ReceiveData);
 
-            _isConnected = true;
-
-            return;
+            IsConnected = true;
         }
         catch (Exception e)
         {
             // TODO: UIで表示
             // TODO: 再試行処理
             Debug.LogError($"サーバーへの接続時にエラーが発生しました: {e.Message}");
-
-            return;
         }
     }
 
@@ -123,14 +118,11 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// </summary>
     private static void Disconnect()
     {
-        if (!_isConnected) return;
+        if (!IsConnected) return;
 
         var data = new SendData(EventType.Disconnect)
         {
-            Self = new PlayerData
-            {
-                Uuid = SelfPlayerData.Uuid
-            }
+            Self = new PlayerData()
         };
 
         Emit(data);
@@ -144,16 +136,28 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <summary>
     /// サーバーからのレスポンスを受信し、イベントを発行する
     /// </summary>
-    private static void ReceiveData()
+    private static async void ReceiveData()
     {
-        while (true)
+        try
         {
-            IPEndPoint ep       = null;
-            byte[]     received = _client.Receive(ref ep);
-            string     msg      = Encoding.UTF8.GetString(received);
+            while (true)
+            {
+                IPEndPoint ep       = null;
+                byte[]     received = _client.Receive(ref ep);
+                string     msg      = Encoding.UTF8.GetString(received);
 
-            SendData data = SendData.MakeJsonFrom(msg);
-            _receiverSubject.OnNext(data);
+                SendData data = SendData.MakeJsonFrom(msg);
+                _receiverSubject.OnNext(data);
+            }
+        }
+        catch (SocketException e)
+        {
+            // UIを書き換えるためメインスレッドに戻す（暫定）
+            await UniTask.SwitchToMainThread();
+
+            Debug.LogError(e.Message);
+            SystemProperty.StatusText.text = "サーバーに接続できませんでした";
+            IsConnected                    = false;
         }
     }
 
@@ -163,9 +167,9 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <param name="data">送信データ</param>
     public static void Emit(SendData data)
     {
-        if (!_isConnected) return;
+        if (!IsConnected) return;
 
-        string msg = SendData.ParseSendData(data);
+        string msg      = SendData.ParseSendData(data);
         byte[] sendData = Encoding.ASCII.GetBytes(msg);
         _client.Send(sendData, sendData.Length);
     }
@@ -182,7 +186,8 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         {
             case EventType.Init:
             {
-                SelfPlayerData.Uuid = data.Self.Uuid;
+                _client.Client.ReceiveTimeout = 0;
+                SelfPlayerData.Uuid           = data.Self.Uuid;
 
                 // TODO: マップへの参加時にオブジェクト代入
                 _players.Add(data.Self.Uuid, null);
@@ -211,15 +216,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
                 break;
             }
 
-            case EventType.Joined:
-                break;
-
-            case EventType.PlayerMove:
-                break;
-
-            case EventType.Disconnect:
-                break;
-
             case EventType.Refresh:
             {
                 KeyValuePair<string, GameObject>[] players = _players.ToArray();
@@ -242,11 +238,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
                 break;
             }
-
-            default:
-                Debug.LogError($"イベントタイプ「{type.ToString()}」の処理がありません");
-
-                break;
         }
     }
 }

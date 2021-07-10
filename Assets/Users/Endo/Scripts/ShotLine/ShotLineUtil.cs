@@ -32,6 +32,8 @@ public static class ShotLineUtil
     /// <param name="data">射線データ</param>
     public static void ClearLineData(LineData data)
     {
+        if (data == null) return;
+
         data.Renderer.positionCount = 2;
         data.Renderer.enabled       = false;
         data.IsFixed                = false;
@@ -43,6 +45,8 @@ public static class ShotLineUtil
     /// <param name="data">射線データ</param>
     public static void FreeLineData(LineData data)
     {
+        if (data == null) return;
+
         ClearLineData(data);
         data.FingerPositions.Clear();
     }

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8428920788170041746}
   - component: {fileID: 8428920788170041741}
+  - component: {fileID: 5469036753914017901}
   m_Layer: 0
   m_Name: ItemManager
   m_TagString: Untagged
@@ -49,3 +50,15 @@ MonoBehaviour:
   itemFloatingAnimDuration: 0
   itemFloatingAnimScale: 0
   itemRotationAnimDuration: 100
+--- !u!114 &5469036753914017901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8428920788170041740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77067e3c46d4b6549a56153e03e3f1e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

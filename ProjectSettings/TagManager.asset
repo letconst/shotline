@@ -15,6 +15,8 @@ TagManager:
   - Shield
   - Rad
   - Rival
+  - Joystick
+  - RivalBullet
   layers:
   - Default
   - TransparentFX
@@ -37,7 +39,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - PostProcessing
   - 
   - 
   - 

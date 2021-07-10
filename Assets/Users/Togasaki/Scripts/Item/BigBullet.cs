@@ -2,15 +2,13 @@ using UnityEngine;
 
 public class BigBullet : ActiveItem
 {
-    //BigBulletが有効の時用のbool、使ぁE��たすとfalse
+    //BigBulletが有効の時用のbool、使ぁE��たすとfalse
     public static bool BBOn = false;
     public static bool BBOff = false;
 
-    public static bool OneBB = true;
-
     public static bool ClickBB = false;
 
-    [SerializeField, Header("�r�b�N�o���b�g�̍ő��")]
+    [SerializeField, Header("�r�b�N�o���b�g�̍ő��")]
     private float maxNumBigBullet = 3;
 
     //最初に実行される
@@ -18,10 +16,9 @@ public class BigBullet : ActiveItem
     {
         base.Init();
 
-        //BBOn������
+        //BBOn�����
         BBOff = false;
         BBOn = true;
-        OneBB = true;
         ClickBB = false;
 
     }
@@ -39,7 +36,14 @@ public class BigBullet : ActiveItem
 
     protected override void OnClickButton()
     {
-        if (BBOn && OneBB)
+        // 射線が描いてあるときのみ発射
+        if (Projectile.currentLineData is {IsFixed: false} && Projectile.currentLineData.Renderer.enabled)
+        {
+            ItemManager.ShotBtn.GetComponentInChildren<Projectile>().Fire();
+            SoundManager.Instance.PlaySE(SELabel.Shot);
+        }
+
+        if (BBOn && Projectile.One)
         {
             NumQuantity.CulNum(maxNumBigBullet);
 
@@ -47,17 +51,13 @@ public class BigBullet : ActiveItem
 
             Projectile.ScaleRatio = 1.5f;
 
-            OneBB = false;
-
             if (ItemManager.currentNum == maxNumBigBullet)
             {
-                OneBB = true;
                 BBOff = true;
                 Terminate();
 
             }
 
-            ItemManager.ShotBtn.GetComponentInChildren<Projectile>().Fire();
         }
 
     }

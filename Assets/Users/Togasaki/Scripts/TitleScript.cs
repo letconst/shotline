@@ -23,10 +23,11 @@ public class TitleScript : MonoBehaviour
     private const string ConnectingText       = "接続中…";
     private const string MatchingText         = "マッチング中…";
     private const string MatchingCompleteText = "マッチング完了！";
+    private const string LoadingText          = "ロード中…";
 
     private void Awake()
     {
-        _statusText = TitleProperty.StatusText;
+        _statusText = SystemProperty.StatusText;
     }
 
     private void Start()
@@ -60,6 +61,8 @@ public class TitleScript : MonoBehaviour
         {
             if (isTouched && !_isInitConnected)
             {
+                SoundManager.Instance.PlaySE(SELabel.Start);
+
                 // TODO: 通信中UI表示
                 TitleProperty.StatusBgImage.SetActive(true);
                 _statusText.enabled = true;
@@ -79,6 +82,7 @@ public class TitleScript : MonoBehaviour
         {
             if (!_isNowLoading && (Input.GetMouseButtonDown(0) || isTouched) && !SystemLoader.IsFirstFading)
             {
+                SoundManager.Instance.PlaySE(SELabel.Start);
                 _isNowLoading = true;
                 await SystemSceneManager.LoadNextScene("MainGameScene", SceneTransition.Fade);
             }
@@ -96,12 +100,7 @@ public class TitleScript : MonoBehaviour
             {
                 var data = new SendData(EventType.Match)
                 {
-                    Self = new PlayerData
-                    {
-                        Uuid    = res.Self.Uuid,
-                        Address = SelfPlayerData.Address,
-                        Port    = SelfPlayerData.Port
-                    }
+                    Self = new PlayerData()
                 };
 
                 NetworkManager.Emit(data);
@@ -118,6 +117,8 @@ public class TitleScript : MonoBehaviour
                 _statusText.text = MatchingCompleteText;
 
                 await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
+
+                _statusText.text = LoadingText;
 
                 await SystemSceneManager.LoadNextScene("MainGameScene", SceneTransition.Fade);
 
