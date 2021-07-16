@@ -32,6 +32,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private Vector3    _prevLineCamPos;  // 1フレーム前の射線カメラの位置
     private Vector2    _screenCenterPos; // 画面の中心位置
     private int        _currentFingerId; // 現在射線を描いている指ID
+    public static float      currentDis;     //最新のゲージ消費量
 
     private List<LineData> _lineDataList;
 
@@ -51,6 +52,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _currentFingerId = -1;
         _lineDataList    = new List<LineData>();
         DrawingData      = null;
+        currentDis = 0;
 
         // this.UpdateAsObservable()
         //     .Where(_ => _isHoldClicking)
@@ -119,6 +121,11 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                         _currentFingerId = touch.fingerId;
                     }
 
+                    //ラインゲージの引き直し分をゲージにプラス、初回は0
+                    LineGaugeController.Instance.preslider.fillAmount += currentDis;
+                    currentDis = 0;
+                    LineGaugeController.AbleDraw = true;
+
                     _isHoldClicking = true;
                     _shotLineCamPos = lineCamera.transform.position;
 
@@ -171,6 +178,12 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
             // 画面中央からのドローのみ受け付ける
             if (Vector2.Distance(_screenCenterPos, mousePos) > drawableAreaRadius) return;
+
+            //ラインゲージの引き直し分をゲージにプラス、初回は0
+            LineGaugeController.Instance.preslider.fillAmount += currentDis;
+            currentDis = 0;
+            LineGaugeController.AbleDraw = true;
+
 
             _isHoldClicking = true;
             _shotLineCamPos = lineCamera.transform.position;
@@ -310,6 +323,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
             float dis = Vector3.Distance(DrawingData.FingerPositions[DrawingData.FingerPositions.Count-1],newFingerPos);
             bool isDraw = LineGaugeController.LineGauge(dis, ref rdis);
+            currentDis += dis/LineGaugeController.Instance.MaxLinePower;
+            LineGaugeController.holdAmount = LineGaugeController.Instance.preslider.fillAmount;
 
             if (!isDraw)
             {
