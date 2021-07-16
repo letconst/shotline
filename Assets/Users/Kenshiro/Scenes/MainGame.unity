@@ -1521,7 +1521,7 @@ MeshCollider:
   m_Enabled: 1
   serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 30
+  m_CookingOptions: -1
   m_Mesh: {fileID: -5597002278806442958, guid: c6872af860ea0a945b533d91154c7650, type: 3}
 --- !u!1 &727487062 stripped
 GameObject:
@@ -2857,6 +2857,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3852341972610935857, guid: c6872af860ea0a945b533d91154c7650, type: 3}
+      propertyPath: m_TagString
+      value: Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: -3852341972610935857, guid: c6872af860ea0a945b533d91154c7650, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
@@ -3075,6 +3079,10 @@ PrefabInstance:
     - target: {fileID: 8360513071783699033, guid: c6872af860ea0a945b533d91154c7650, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8360513071783699033, guid: c6872af860ea0a945b533d91154c7650, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8360513071783699033, guid: c6872af860ea0a945b533d91154c7650, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3734,6 +3742,10 @@ PrefabInstance:
       propertyPath: polySurface30
       value: 
       objectReference: {fileID: 1898369965}
+    - target: {fileID: 3167375634653241226, guid: e16a8caa8157d334a8172f736788f9b8, type: 3}
+      propertyPath: PlayerDeathFlag
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3167375634653241226, guid: e16a8caa8157d334a8172f736788f9b8, type: 3}
       propertyPath: SuddenDeathFlag
       value: 0

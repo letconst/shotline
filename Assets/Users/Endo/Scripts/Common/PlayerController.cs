@@ -133,4 +133,38 @@ public class PlayerController : MonoBehaviour
 
         NetworkManager.Emit(data);
     }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+         
+
+        if (hit.gameObject.tag == "Wall")
+        { 
+            // どちらに当たったかの方向を取得
+
+            if (hit.point.normalized.x >= 0.0)
+            {
+                Debug.Log("Left");
+            }
+
+            if (hit.point.normalized.x <= 0.0)
+            {
+                Debug.Log("Right");
+            }
+
+            if (hit.point.normalized.z >= 0.1)
+            {
+                Debug.Log("Botom");
+            }
+
+            if (hit.point.normalized.z <= -0.1)
+            {
+                Debug.Log("Top");
+            }
+
+            // ↓この情報で斜めの場合は絶対値にする
+            // どちらもまったく同じ場合は一旦無視
+            Debug.Log(hit.point.normalized);
+        }
+    }
 }

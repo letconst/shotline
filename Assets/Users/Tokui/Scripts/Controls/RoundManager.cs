@@ -54,7 +54,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         CurrentPlayerLife = PlayerLife;
         CurrentRound      = 1;
 
-        SuddenDeathFlag = false;
+        SuddenDeathFlag = true;
         SuddenDeathStartText.SetActive(false);
 
         // ラウンド進行を受信時にラウンド数更新
@@ -71,7 +71,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
 	
 	private void Update()
 	{
-        if (SuddenDeathFlag == false)
+        if (SuddenDeathFlag == true)
         {
             //サドンデス開始用テキスト表示
             SuddenDeathStartText.SetActive(true);
@@ -83,6 +83,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
             sotoWallScale.z -= WallSpeed * Time.deltaTime;
             sotoWallTransform.localScale = sotoWallScale;
 
+            
             // カウントダウン
             CountDown -= Time.deltaTime;
 
@@ -90,7 +91,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
             {
                 SuddenDeathStartText.SetActive(false);
             }
-
+            /*
             if (CountDown <= WallCount)
             {
                 WallSpeed = WallSpeedReset;
@@ -99,6 +100,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
 
                 CountDown = CountDownReset;
             }
+            */
         }
 	}
 
