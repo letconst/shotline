@@ -45,7 +45,6 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     {
         HealGauge();
         DealSlider();
-        Debug.Log(AbleDraw);
     }
 
     //•`‚¯‚é‚©‚Ç‚¤‚©‚ð•Ô‚·
