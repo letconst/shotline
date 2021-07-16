@@ -8,7 +8,7 @@
     "com.unity.postprocessing": "3.0.3",
     "com.unity.render-pipelines.universal": "10.3.2",
     "com.unity.test-framework": "1.1.26",
-    "com.unity.toolchain.win-x86_64-linux-x86_64": "0.1.20-preview",
+    "com.unity.toolchain.win-x86_64-linux-x86_64": "0.1.21-preview",
     "com.unity.ugui": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",

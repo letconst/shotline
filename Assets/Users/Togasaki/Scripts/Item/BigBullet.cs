@@ -49,6 +49,8 @@ public class BigBullet : ActiveItem
 
             ClickBB = true;
 
+            LineGaugeController.Clicked();
+
             Projectile.ScaleRatio = 1.5f;
 
             if (ItemManager.currentNum == maxNumBigBullet)
