@@ -24,6 +24,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     [SerializeField, Header("ラインゲージ")]
     private GameObject Gauge;
 
+    [SerializeField, Header("自分の位置")]
+    private GameObject centerPos;
 
     private GameObject _linePrefab;
     private bool       _isHoldClicking; // 射線を描いている最中か
@@ -33,6 +35,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private Vector2    _screenCenterPos; // 画面の中心位置
     private int        _currentFingerId; // 現在射線を描いている指ID
     public static float      currentDis;     //最新のゲージ消費量
+    public static bool _isCenter;       //リニアドローで中心を取るためのbool
 
     private List<LineData> _lineDataList;
 
@@ -53,6 +56,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _lineDataList    = new List<LineData>();
         DrawingData      = null;
         currentDis = 0;
+        _isCenter = true;
 
         // this.UpdateAsObservable()
         //     .Where(_ => _isHoldClicking)
@@ -176,16 +180,25 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             // UIをクリックした際は反応させない
             if (EventSystem.current.IsPointerOverGameObject()) return;
 
-            // 画面中央からのドローのみ受け付ける
-            if (Vector2.Distance(_screenCenterPos, mousePos) > drawableAreaRadius) return;
+            //リニアドローオフ
+            if (LinearDraw._linearDrawOn)
+            {
+                // 画面中央からのドローのみ受け付ける
+                if (Vector2.Distance(_screenCenterPos, mousePos) > drawableAreaRadius) return;
+                _isHoldClicking = true;
+            }
+            else
+            {
+                //リニアドローオン
+                _isHoldClicking = false;
+            }
+
 
             //ラインゲージの引き直し分をゲージにプラス、初回は0
             LineGaugeController.Instance.preslider.fillAmount += currentDis;
             currentDis = 0;
             LineGaugeController.AbleDraw = true;
 
-
-            _isHoldClicking = true;
             _shotLineCamPos = lineCamera.transform.position;
 
             CreateLine();
@@ -295,13 +308,27 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             targetDataFingerPositions.Clear();
             targetDataFingerPositions.Add(worldTouchPos);
             targetDataFingerPositions.Add(worldTouchPos);
-            targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
+            if (LinearDraw._linearDrawOn)
+            {
+                targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
+            }
+            else if(_isCenter)
+            {
+                //リニアドローで最初に中心座標をとる
+                targetData.Renderer.SetPosition(0, centerPos.transform.position);
+                _isCenter = false;
+            }
+            else if((_isCenter))
+            {
+                targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
+            }
             targetData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
             targetData.Renderer.enabled = true;
             targetData.IsFixed = false;
 
         }
     }
+
 
     /// <summary>
     /// ドロー中の射線を伸ばす
@@ -321,9 +348,9 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                 return;
             }
 
-            float dis = Vector3.Distance(DrawingData.FingerPositions[DrawingData.FingerPositions.Count-1],newFingerPos);
+            float dis = Vector3.Distance(DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1], newFingerPos);
             bool isDraw = LineGaugeController.LineGauge(dis, ref rdis);
-            currentDis += dis/LineGaugeController.Instance.MaxLinePower;
+            currentDis += dis / LineGaugeController.Instance.MaxLinePower;
             LineGaugeController.holdAmount = LineGaugeController.Instance.preslider.fillAmount;
 
             if (!isDraw)

@@ -4,9 +4,9 @@ using UnityEngine.UI;
 public class NumQuantity : SingletonMonoBehaviour<NumQuantity>
 {
     [SerializeField]
-    private Image im;
+    public Image im;
 
-    private static float FA = 0;
+    public static float FA = 0;
 
     private void Start()
     {
@@ -30,6 +30,22 @@ public class NumQuantity : SingletonMonoBehaviour<NumQuantity>
 
         Instance.im.fillAmount = FA;
 
+    }
+
+    public static void CulLinear(bool n)
+    {
+        if (n)
+        {
+            NumQuantity.FA = 1;
+            NumQuantity.Instance.im.fillAmount = NumQuantity.FA;
+            LinearDraw._linearDrawOn = false;
+
+        }
+        else
+        {
+            NumQuantity.FA = 0;
+            NumQuantity.Instance.im.fillAmount = NumQuantity.FA;
+        }
     }
 
 }
