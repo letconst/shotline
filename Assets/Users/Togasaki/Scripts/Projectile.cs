@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-
+using UnityEngine.UI;
 
 public class BulletInfo
 {
@@ -61,13 +61,8 @@ public class Projectile : MonoBehaviour
     //一回だけ射線の座標を取得
     public static bool One = false;
 
-    //for用
-    private int i = 0;
-
-    //射線用
-    private bool flag = true;
-
     private BulletMovement BM;
+
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -79,6 +74,7 @@ public class Projectile : MonoBehaviour
         ActSpeed        = OriginSpeed;
         ScaleRatio      = 1;
         currentLineData = null;
+        One = false;
     }
 
     void Update()
@@ -110,12 +106,8 @@ public class Projectile : MonoBehaviour
             //配列に射線の全座標とそれに対応する弾丸をいれる
             BulletList.Add(new BulletInfo(BI, ShotLineUtil.GetFingerPositions(currentLineData), 0, ActSpeed, currentLineData));
 
-            if (BulletList.Count > 1)
-            {
-                flag = false;
-            }
-
             One = false;
+            BigBullet.ClickBB = false;
 
         }
 
@@ -124,10 +116,13 @@ public class Projectile : MonoBehaviour
         if (BulletList.Count > 0)
         {
 
-            for (i = 0; i < BulletList.Count; i++)
+            for (int i = 0; i < BulletList.Count; i++)
             {
 
                 BM = BulletList[i].Bullet.GetComponent<BulletMovement>();
+
+                ////使ったラインパワーを入れる
+                //usedLinePower[i] = BulletList[i].FP.Length;
 
                 //現在の座標を変更できるように変数化
                 BulletInfo currentP = BulletList[i];
@@ -136,6 +131,7 @@ public class Projectile : MonoBehaviour
                 if (BulletList[i].index == BulletList[i].FP.Length - 1)
                 {
                     BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].FP[BulletList[i].FP.Length - 2], BulletList[i].FP[BulletList[i].FP.Length - 1], BulletList[i].Speed * Time.deltaTime);
+                    //slider.value += usedLinePower[i];
                 }
                 else
                 {
@@ -162,11 +158,6 @@ public class Projectile : MonoBehaviour
                 if (BulletList[i].index == BulletList[i].FP.Length - 1||BM.BBOn)
                 {
 
-                    if (BulletList.Count == i+1)
-                    {
-                        flag = true;
-                    }
-
                     ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
@@ -181,7 +172,6 @@ public class Projectile : MonoBehaviour
     //射撃ボタンを押したとき
     public void Fire()
     {
-
         ScaleRatio = 1f;
         ActSpeed = OriginSpeed;
 
@@ -205,6 +195,9 @@ public class Projectile : MonoBehaviour
 
             //一回だけ座標を取得用
             One = true;
+
+            //ゲージを消費
+            LineGaugeController.Clicked();
 
         }
 

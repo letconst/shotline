@@ -21,6 +21,10 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     [SerializeField, Header("ゲーム開始時、事前に生成しておく射線オブジェクトの数")]
     private int initPoolingCount = 5;
 
+    [SerializeField, Header("ラインゲージ")]
+    private GameObject Gauge;
+
+
     private GameObject _linePrefab;
     private bool       _isHoldClicking; // 射線を描いている最中か
     private Camera     _camera;
@@ -28,6 +32,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private Vector3    _prevLineCamPos;  // 1フレーム前の射線カメラの位置
     private Vector2    _screenCenterPos; // 画面の中心位置
     private int        _currentFingerId; // 現在射線を描いている指ID
+    public static float      currentDis;     //最新のゲージ消費量
 
     private List<LineData> _lineDataList;
 
@@ -47,6 +52,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _currentFingerId = -1;
         _lineDataList    = new List<LineData>();
         DrawingData      = null;
+        currentDis = 0;
 
         // this.UpdateAsObservable()
         //     .Where(_ => _isHoldClicking)
@@ -58,6 +64,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
     private void Start()
     {
+        //Gauge.SetActive(false);
         _linePrefab = MainGameController.linePrefab;
 
         // 射線データ生成
@@ -69,6 +76,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
     private void Update()
     {
+
         if (Input.touchCount > 0)
         {
             MobileInputHandler();
@@ -113,6 +121,11 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                         _currentFingerId = touch.fingerId;
                     }
 
+                    //ラインゲージの引き直し分をゲージにプラス、初回は0
+                    LineGaugeController.Instance.preslider.fillAmount += currentDis;
+                    currentDis = 0;
+                    LineGaugeController.AbleDraw = true;
+
                     _isHoldClicking = true;
                     _shotLineCamPos = lineCamera.transform.position;
 
@@ -124,13 +137,13 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                     // 射線が固定されていたら処理しない（描きながら射撃した際にも止める）
                     if (DrawingData.IsFixed)
                     {
-                        _isHoldClicking  = false;
+                        _isHoldClicking = false;
                         _currentFingerId = -1;
 
                         break;
                     }
 
-                    Vector3       tmpFingerPos     = _camera.ScreenToWorldPoint(touchPos);
+                    Vector3 tmpFingerPos = _camera.ScreenToWorldPoint(touchPos);
                     List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
 
                     if (Vector2.Distance(tmpFingerPos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
@@ -141,7 +154,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                     break;
 
                 case TouchPhase.Ended:
-                    _isHoldClicking  = false;
+                    _isHoldClicking = false;
                     _currentFingerId = -1;
 
                     break;
@@ -165,6 +178,12 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
             // 画面中央からのドローのみ受け付ける
             if (Vector2.Distance(_screenCenterPos, mousePos) > drawableAreaRadius) return;
+
+            //ラインゲージの引き直し分をゲージにプラス、初回は0
+            LineGaugeController.Instance.preslider.fillAmount += currentDis;
+            currentDis = 0;
+            LineGaugeController.AbleDraw = true;
+
 
             _isHoldClicking = true;
             _shotLineCamPos = lineCamera.transform.position;
@@ -228,52 +247,60 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// </summary>
     private void CreateLine()
     {
-        SoundManager.Instance.PlaySE(SELabel.Draw);
+        //ゲージを表示
+        Gauge.SetActive(true);
 
-        Vector3 touchPos;
+        if (LineGaugeController.AbleDraw)
+        {
+
+            SoundManager.Instance.PlaySE(SELabel.Draw);
+
+            Vector3 touchPos;
 
 #if UNITY_EDITOR
-        touchPos = Input.mousePosition;
+            touchPos = Input.mousePosition;
 #elif UNITY_IOS || UNITY_ANDROID
         touchPos = Input.GetTouch(0).position;
 #endif
 
-        touchPos.z += lineZPos;
-        Vector3 worldTouchPos = _camera.ScreenToWorldPoint(touchPos);
+            touchPos.z += lineZPos;
+            Vector3 worldTouchPos = _camera.ScreenToWorldPoint(touchPos);
 
-        LineData targetData = null;
+            LineData targetData = null;
 
-        // 未使用の射線があるか確認
-        foreach (LineData data in _lineDataList)
-        {
-            if (data.IsFixed) continue;
+            // 未使用の射線があるか確認
+            foreach (LineData data in _lineDataList)
+            {
+                if (data.IsFixed) continue;
 
-            targetData = data;
+                targetData = data;
 
-            break;
+                break;
+            }
+
+            // なければ生成
+            if (targetData == null)
+            {
+                targetData = InstantiateNewLineData();
+                DrawingData = targetData;
+            }
+            else
+            {
+                DrawingData = targetData;
+                ShotLineUtil.ClearLineData(DrawingData);
+            }
+
+            // タップ位置に起点を設定
+            List<Vector3> targetDataFingerPositions = targetData.FingerPositions;
+            targetDataFingerPositions.Clear();
+            targetDataFingerPositions.Add(worldTouchPos);
+            targetDataFingerPositions.Add(worldTouchPos);
+            targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
+            targetData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
+            targetData.Renderer.enabled = true;
+            targetData.IsFixed = false;
+
         }
-
-        // なければ生成
-        if (targetData == null)
-        {
-            targetData  = InstantiateNewLineData();
-            DrawingData = targetData;
-        }
-        else
-        {
-            DrawingData = targetData;
-            ShotLineUtil.ClearLineData(DrawingData);
-        }
-
-        // タップ位置に起点を設定
-        List<Vector3> targetDataFingerPositions = targetData.FingerPositions;
-        targetDataFingerPositions.Clear();
-        targetDataFingerPositions.Add(worldTouchPos);
-        targetDataFingerPositions.Add(worldTouchPos);
-        targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
-        targetData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
-        targetData.Renderer.enabled = true;
-        targetData.IsFixed          = false;
     }
 
     /// <summary>
@@ -282,18 +309,33 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// <param name="newFingerPos">追加する位置</param>
     private void UpdateLine(Vector3 newFingerPos)
     {
+        float rdis = 0;
+
         // TODO: 射線長の上限
-
-        if (DrawingData == null)
+        if (LineGaugeController.AbleDraw)
         {
-            Debug.LogError("ドロー中の射線データがありません");
+            if (DrawingData == null)
+            {
+                Debug.LogError("ドロー中の射線データがありません");
 
-            return;
+                return;
+            }
+
+            float dis = Vector3.Distance(DrawingData.FingerPositions[DrawingData.FingerPositions.Count-1],newFingerPos);
+            bool isDraw = LineGaugeController.LineGauge(dis, ref rdis);
+            currentDis += dis/LineGaugeController.Instance.MaxLinePower;
+            LineGaugeController.holdAmount = LineGaugeController.Instance.preslider.fillAmount;
+
+            if (!isDraw)
+            {
+                newFingerPos = Vector3.Lerp(DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1], newFingerPos, rdis / dis);
+            }
+
+            DrawingData.FingerPositions.Add(newFingerPos);
+            DrawingData.Renderer.positionCount++;
+            DrawingData.Renderer.SetPosition(DrawingData.Renderer.positionCount - 1, newFingerPos);
+
         }
-
-        DrawingData.FingerPositions.Add(newFingerPos);
-        DrawingData.Renderer.positionCount++;
-        DrawingData.Renderer.SetPosition(DrawingData.Renderer.positionCount - 1, newFingerPos);
     }
 
     /// <summary>
