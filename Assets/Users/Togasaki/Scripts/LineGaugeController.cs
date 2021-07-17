@@ -43,6 +43,7 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
 
     private void Update()
     {
+        
         HealGauge();
         DealSlider();
     }
@@ -52,18 +53,19 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     {
 
         bool result = true;
-
         //‚à‚µˆø”dis‚ª”ÍˆÍ“à‚¾‚Á‚½‚çtrue‚ğ•Ô‚·ishotlinedrawer‚Å•Ï”‚Öj
-        if (Instance.preslider.fillAmount > 0)
+        if (Instance.preslider.fillAmount > dis)
         {
+            //‚±‚±‚Édis‚ª”ÍˆÍŠO‚Ìê‡
             result = true;
             Instance.preslider.fillAmount -= dis / Instance.MaxLinePower;
-            AbleDraw = false;
         }
         else
         {
+            AbleDraw = false;
             result = false;
             rdis = dis - Instance.preslider.fillAmount;
+            Instance.preslider.fillAmount -= rdis / Instance.MaxLinePower;
         }
 
         return result;

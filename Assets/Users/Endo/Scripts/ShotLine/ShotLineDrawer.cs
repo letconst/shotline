@@ -35,7 +35,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private Vector2    _screenCenterPos; // 画面の中心位置
     private int        _currentFingerId; // 現在射線を描いている指ID
     public static float      currentDis;     //最新のゲージ消費量
-    public static bool _isCenter;       //リニアドローで中心を取るためのbool
 
     private List<LineData> _lineDataList;
 
@@ -56,8 +55,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         _lineDataList    = new List<LineData>();
         DrawingData      = null;
         currentDis = 0;
-        _isCenter = true;
-
         // this.UpdateAsObservable()
         //     .Where(_ => _isHoldClicking)
         //     .Subscribe(async _ =>
@@ -190,7 +187,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             else
             {
                 //リニアドローオン
-                _isHoldClicking = false;
+                _isHoldClicking = true;
             }
 
 
@@ -260,8 +257,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// </summary>
     private void CreateLine()
     {
-        //ゲージを表示
-        Gauge.SetActive(true);
 
         if (LineGaugeController.AbleDraw)
         {
@@ -308,19 +303,29 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             targetDataFingerPositions.Clear();
             targetDataFingerPositions.Add(worldTouchPos);
             targetDataFingerPositions.Add(worldTouchPos);
+            //if (LinearDraw._linearDrawOn)
+            //{
+            //    targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
+            //}
+            //else if(_isCenter)
+            //{
+            //    //リニアドローで最初に中心座標をとる
+            //    targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
+
+            //    _isCenter = false;
+            //}
+            //else if((_isCenter))
+            //{
+            //    targetData.Renderer.SetPosition(0, centerPos.transform.position);
+            //    //targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
+            //}
             if (LinearDraw._linearDrawOn)
             {
                 targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
             }
-            else if(_isCenter)
+            else
             {
-                //リニアドローで最初に中心座標をとる
-                targetData.Renderer.SetPosition(0, centerPos.transform.position);
-                _isCenter = false;
-            }
-            else if((_isCenter))
-            {
-                targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
+                targetData.Renderer.SetPosition(0,centerPos.transform.position);
             }
             targetData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
             targetData.Renderer.enabled = true;
