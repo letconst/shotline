@@ -24,9 +24,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     [SerializeField, Header("ラインゲージ")]
     private GameObject Gauge;
 
-    [SerializeField, Header("自分の位置")]
-    private GameObject centerPos;
-
     private GameObject _linePrefab;
     private bool       _isHoldClicking; // 射線を描いている最中か
     private Camera     _camera;
@@ -187,9 +184,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             else
             {
                 //リニアドローオン
-                _isHoldClicking = true;
+                _isHoldClicking = false;
             }
-
 
             //ラインゲージの引き直し分をゲージにプラス、初回は0
             LineGaugeController.Instance.preslider.fillAmount += currentDis;
@@ -199,6 +195,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             _shotLineCamPos = lineCamera.transform.position;
 
             CreateLine();
+
         }
         else if (Input.GetMouseButton(0) && _isHoldClicking)
         {
@@ -319,14 +316,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             //    targetData.Renderer.SetPosition(0, centerPos.transform.position);
             //    //targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
             //}
-            if (LinearDraw._linearDrawOn)
-            {
-                targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
-            }
-            else
-            {
-                targetData.Renderer.SetPosition(0,centerPos.transform.position);
-            }
+            targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
             targetData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
             targetData.Renderer.enabled = true;
             targetData.IsFixed = false;

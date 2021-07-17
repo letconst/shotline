@@ -16,8 +16,8 @@ public class BulletInfo
     //個々の弾のスピード
     public float Speed;
 
+    //ラインデータ
     public readonly LineData LineData;
-
 
     public BulletInfo(GameObject bullet, Vector3[] fp, int ind, float spd, LineData lineData)
     {
@@ -62,6 +62,9 @@ public class Projectile : MonoBehaviour
     public static bool One = false;
 
     private BulletMovement BM;
+
+    [SerializeField, Header("自分の位置")]
+    public GameObject centerPos;
 
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,6 +114,10 @@ public class Projectile : MonoBehaviour
 
         }
 
+        if (!(LinearDraw._linearDrawOn))
+        {
+            Debug.Log("Enter");
+        }
 
         //弾を実際に動かす部分
         if (BulletList.Count > 0)
@@ -128,24 +135,29 @@ public class Projectile : MonoBehaviour
                 BulletInfo currentP = BulletList[i];
 
                 //もし射線の長さが最後だったら
-                if (BulletList[i].index == BulletList[i].FP.Length - 1)
-                {
-                    BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].FP[BulletList[i].FP.Length - 2], BulletList[i].FP[BulletList[i].FP.Length - 1], BulletList[i].Speed * Time.deltaTime);
-                    //slider.value += usedLinePower[i];
-                }
-                else
-                {
-                    //射線の最初
-                    if (BulletList[i].index == 0)
-                    {
-                        BulletList[i].Bullet.transform.position = BulletList[i].FP[0];
-                    }
-                    else
-                    {
-                        //現在の射線の位置から次の射線の位置まで移動
-                        BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], BulletList[i].Speed * Time.deltaTime);
-                    }
-                }
+                //if (BulletList[i].index == BulletList[i].FP.Length - 1)
+                //{
+                //    BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].FP[BulletList[i].FP.Length - 2], BulletList[i].FP[BulletList[i].FP.Length - 1], BulletList[i].Speed * Time.deltaTime);
+                //    //slider.value += usedLinePower[i];
+                //}
+                //else
+                //{
+
+
+                //射線の最初
+                //if (BulletList[i].index == 0)
+                //{
+                //    BulletList[i].Bullet.transform.position = BulletList[i].FP[0];
+
+                //}
+
+
+
+                //現在の射線の位置から次の射線の位置まで移動
+                BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], BulletList[i].Speed * Time.deltaTime);
+                
+
+                //}
 
                 //もし弾が次の位置まで到達したら、その次の位置を読み込む
                 if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
@@ -199,6 +211,11 @@ public class Projectile : MonoBehaviour
             //ゲージを消費
             LineGaugeController.Clicked();
 
+            //リニアドローならもう一度射線を真ん中からひかせる
+            if (LinearDraw._linearDrawOn)
+            {
+                LinearDraw._firstDraw = true;
+            }
         }
 
     }
