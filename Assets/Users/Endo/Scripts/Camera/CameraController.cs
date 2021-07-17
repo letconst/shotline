@@ -7,6 +7,14 @@ namespace Endo
         [SerializeField, Header("メインカメラと位置を同期させるカメラ")]
         private Camera[] followCameras;
 
+        private void Start()
+        {
+            foreach (Camera cam in followCameras)
+            {
+                cam.transform.rotation = transform.rotation;
+            }
+        }
+
         private void Update()
         {
             foreach (Camera cam in followCameras)
