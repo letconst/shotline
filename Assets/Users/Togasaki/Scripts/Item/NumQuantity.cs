@@ -38,7 +38,6 @@ public class NumQuantity : SingletonMonoBehaviour<NumQuantity>
         {
             NumQuantity.FA = 1;
             NumQuantity.Instance.im.fillAmount = NumQuantity.FA;
-            LinearDraw._linearDrawOn = false;
 
         }
         else

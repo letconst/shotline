@@ -63,10 +63,6 @@ public class Projectile : MonoBehaviour
 
     private BulletMovement BM;
 
-    [SerializeField, Header("自分の位置")]
-    public GameObject centerPos;
-
-
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -112,11 +108,6 @@ public class Projectile : MonoBehaviour
             One = false;
             BigBullet.ClickBB = false;
 
-        }
-
-        if (!(LinearDraw._linearDrawOn))
-        {
-            Debug.Log("Enter");
         }
 
         //弾を実際に動かす部分
@@ -212,9 +203,9 @@ public class Projectile : MonoBehaviour
             LineGaugeController.Clicked();
 
             //リニアドローならもう一度射線を真ん中からひかせる
-            if (LinearDraw._linearDrawOn)
+            if (!LinearDraw._linearDrawOn)
             {
-                LinearDraw._firstDraw = true;
+                LinearDraw._islinearDraw = true;
             }
         }
 

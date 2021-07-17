@@ -24,6 +24,10 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     [SerializeField, Header("ラインゲージ")]
     private GameObject Gauge;
 
+    [SerializeField, Header("自分の位置")]
+    public GameObject centerPos;
+
+
     private GameObject _linePrefab;
     private bool       _isHoldClicking; // 射線を描いている最中か
     private Camera     _camera;
@@ -175,7 +179,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             if (EventSystem.current.IsPointerOverGameObject()) return;
 
             //リニアドローオフ
-            if (LinearDraw._linearDrawOn)
+            if (!(LinearDraw._islinearDraw))
             {
                 // 画面中央からのドローのみ受け付ける
                 if (Vector2.Distance(_screenCenterPos, mousePos) > drawableAreaRadius) return;
@@ -316,10 +320,23 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             //    targetData.Renderer.SetPosition(0, centerPos.transform.position);
             //    //targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
             //}
-            targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
-            targetData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
-            targetData.Renderer.enabled = true;
-            targetData.IsFixed = false;
+
+            //リニアドローで射線をかく場合
+            if (LinearDraw._islinearDraw)
+            {
+                Debug.Log(centerPos.transform.position);
+                targetData.Renderer.SetPosition(0, centerPos.transform.position);
+                targetData.Renderer.SetPosition(1, targetDataFingerPositions[0]);
+                targetData.Renderer.enabled = true;
+                targetData.IsFixed = false;
+            }
+            else
+            {
+                targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
+                targetData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
+                targetData.Renderer.enabled = true;
+                targetData.IsFixed = false;
+            }
 
         }
     }

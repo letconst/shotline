@@ -5,20 +5,20 @@ public class LinearDraw : ActiveItem
     //ライナードローを取得したときのブール
     public static bool _linearDrawOn = true;
 
-    //ライナードローで射線をひくときに最初の一度だけtrueになっているブール
-    public static bool _firstDraw = false;
+    //ライナードローで射線をひくときにtrueになるブール
+    public static bool _islinearDraw = false;
 
     protected override void Init()
     {
         base.Init();
         _linearDrawOn = true;
-        _firstDraw = false;
+        _islinearDraw = false;
     }
 
     public override void Terminate()
     {
         _linearDrawOn = true;
-        _firstDraw = false;
+        _islinearDraw = false;
         base.Terminate();
     }
 
@@ -26,8 +26,9 @@ public class LinearDraw : ActiveItem
     {
         if (_linearDrawOn)
         {
-            _firstDraw = true;
+            _islinearDraw = true;
             NumQuantity.CulLinear(_linearDrawOn);
+            _linearDrawOn = false;
         }
         else if (!(_linearDrawOn))
         {
