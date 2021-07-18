@@ -10,6 +10,7 @@ if [ "${data}" == '' ]; then
   echo 'Fetch timed out'
   curl \
     -m 5 \
+    -H "Content-Type: application/json" \
     -X POST "${baseSelfUrl}/notify" \
     -d '{"type":"timeout"}'
   exit 0
@@ -32,12 +33,14 @@ if [ "$is_error" == 'false' ]; then
   version=$(echo "${result}" | jq -r .results.version_code)
   curl \
     -m 5 \
+    -H "Content-Type: application/json" \
     -X POST "${baseSelfUrl}/notify" \
     -d "{\"type\":\"success\",\"version\":\"${version}\"}"
 else
   message=$(echo "${result}" | jq -r .message)
   curl \
     -m 5 \
+    -H "Content-Type: application/json" \
     -X POST "${baseSelfUrl}/notify" \
     -d "{\"type\":\"failed\",\"message\":\"${message}\"}"
 fi
