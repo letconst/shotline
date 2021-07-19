@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public class MainGameController : MonoBehaviour
+public class MainGameController : SingletonMonoBehaviour<MainGameController>
 {
     [SerializeField, Header("生成する対戦相手オブジェクト")]
     private GameObject rivalPrefab;
@@ -144,6 +144,9 @@ public class MainGameController : MonoBehaviour
             // アイテム生成通信受信時
             case EventType.ItemGenerate:
             {
+                // ラウンド進行中は生成しない
+                if (RoundManager.RoundMove) return;
+
                 // 乱数シードをセットし、アイテムをランダム生成
                 Random.InitState(data.seed);
                 ItemManager.GenerateRandomItem();
@@ -212,6 +215,7 @@ public class MainGameController : MonoBehaviour
                     // リセット処理
                     ResetPlayersPosition();
                     ShotLineUtil.FreeLineData(ShotLineDrawer.DrawingData);
+                    ItemManager.ClearGeneratedItem();
 
                     _roundText.text  = $"Round {RoundManager.CurrentRound.ToString()}";
                     _statusText.text = "待機中…";
@@ -241,7 +245,7 @@ public class MainGameController : MonoBehaviour
         }
     }
 
-    private void ResetPlayersPosition()
+    public void ResetPlayersPosition()
     {
         _playerObject.SetActive(false);
         _rivalObject.SetActive(false);

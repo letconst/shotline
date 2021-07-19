@@ -161,10 +161,24 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
             return;
         }
 
-        removeTarget.managedMethod = null;
-        removeTarget.itemObject    = null;
-        GeneratedItems.Remove(removeTarget);
-        Destroy(itemObj);
+        DestroyItem(removeTarget);
+    }
+
+    /// <summary>
+    /// 生成情報からアイテムを破棄する
+    /// </summary>
+    /// <param name="item">対象アイテムの生成情報</param>
+    /// <param name="isRemoveFromList">管轄リストから削除するか</param>
+    private static void DestroyItem(GeneratedItem item, bool isRemoveFromList = true)
+    {
+        if (isRemoveFromList)
+        {
+            GeneratedItems.Remove(item);
+        }
+
+        Destroy(item.itemObject);
+        item.managedMethod = null;
+        item.itemObject    = null;
     }
 
     /// <summary>
@@ -176,6 +190,33 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
 
         _holdItem    = null;
         _holdItemObj = null;
+    }
+
+    /// <summary>
+    /// 生成されているアイテムをすべて破棄する
+    /// </summary>
+    public static void ClearGeneratedItem()
+    {
+        // 所持アイテムがある場合は破棄
+        if (_holdItem != null) _holdItem.Terminate();
+
+        _holdItem    = null;
+        _holdItemObj = null;
+
+        foreach (GeneratedItem item in GeneratedItems)
+        {
+            DestroyItem(item, false);
+        }
+
+        GeneratedItems.Clear();
+
+        // シールドが出現している場合はすべて破棄
+        GameObject[] shields = GameObject.FindGameObjectsWithTag("Shield");
+
+        foreach (GameObject shield in shields)
+        {
+            Destroy(shield);
+        }
     }
 
     /// <summary>
