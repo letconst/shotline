@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
@@ -15,6 +16,28 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
     [SerializeField]
     public Transform startPos2P;
 
+    [SerializeField]
+    private GameObject[] itemSpawnPoints;
+
+    private List<ItemPositionData> _itemSpawnPoints;
+
     public static GameObject InputBlocker => Instance.inputBlocker;
     public static Text       StatusText   => Instance.statusText;
+
+    public static List<ItemPositionData> ItemSpawnPoints
+    {
+        get => Instance._itemSpawnPoints;
+        private set => Instance._itemSpawnPoints = value;
+    }
+
+    protected override void Awake()
+    {
+        ItemSpawnPoints ??= new List<ItemPositionData>();
+        ItemSpawnPoints.Clear();
+
+        foreach (GameObject point in itemSpawnPoints)
+        {
+            _itemSpawnPoints.Add(point.GetComponent<ItemPositionData>());
+        }
+    }
 }
