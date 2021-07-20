@@ -15,11 +15,17 @@ public class ItemPositionData : MonoBehaviour
     /// </summary>
     public bool isSpawned;
 
+    /// <summary>
+    /// この場所に生成されているアイテムオブジェクト
+    /// </summary>
+    public GameObject itemObject;
+
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Item"))
         {
-            isSpawned = false;
+            isSpawned  = false;
+            itemObject = null;
         }
     }
 }

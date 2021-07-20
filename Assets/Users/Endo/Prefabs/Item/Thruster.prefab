@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81e4ad452cc6f044f9a68a5425258a2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: bb1ad3088825a9f42aa4d97b94a452b7, type: 2}
+  itemData: {fileID: 11400000, guid: bb1ad3088825a9f42aa4d97b94a452b7, type: 2}
   isAnimate: 0
   MoveCountDown: 1
   FlagCountDown: 1

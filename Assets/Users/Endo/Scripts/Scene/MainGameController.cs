@@ -3,8 +3,9 @@ using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
-public class MainGameController : MonoBehaviour
+public class MainGameController : SingletonMonoBehaviour<MainGameController>
 {
     [SerializeField, Header("生成する対戦相手オブジェクト")]
     private GameObject rivalPrefab;
@@ -85,15 +86,27 @@ public class MainGameController : MonoBehaviour
                                   .Subscribe(OnReceived)
                                   .AddTo(this);
 
-        var data = new SendData(EventType.Joined)
+        // 2Pが参加した瞬間に始まるため、少し遅延させる
+        await UniTask.Delay(TimeSpan.FromSeconds(2));
+
+        var joinedData = new SendData(EventType.Joined)
         {
             Self = new PlayerData()
         };
 
-        // 2Pが参加した瞬間に始まるため、少し遅延させる
-        await UniTask.Delay(TimeSpan.FromSeconds(2));
+        NetworkManager.Emit(joinedData);
 
-        NetworkManager.Emit(data);
+        // ホストならアイテム生成情報送信
+        if (NetworkManager.IsOwner)
+        {
+            var itemInitData = new SendData(EventType.ItemInit)
+            {
+                maxItemGenerateCount = ItemManager.MaxGenerateCount,
+                itemGenerateInterval = ItemManager.GenerateInterval
+            };
+
+            NetworkManager.Emit(itemInitData);
+        }
     }
 
     private async void OnReceived(SendData data)
@@ -108,13 +121,45 @@ public class MainGameController : MonoBehaviour
                 MainGameProperty.InputBlocker.SetActive(false);
                 _statusText.text = "";
 
+                // ホストならラウンド開始通知
+                if (NetworkManager.IsOwner)
+                {
+                    var roundStartData = new SendData(EventType.RoundStart);
+
+                    NetworkManager.Emit(roundStartData);
+                }
+
                 break;
             }
 
+            // 相手の移動時
             case EventType.PlayerMove:
             {
                 _rivalObject.transform.position = data.Rival.Position;
                 _rivalObject.transform.rotation = data.Rival.Rotation;
+
+                break;
+            }
+
+            // アイテム生成通信受信時
+            case EventType.ItemGenerate:
+            {
+                // ラウンド進行中は生成しない
+                if (RoundManager.RoundMove) return;
+
+                // 乱数シードをセットし、アイテムをランダム生成
+                Random.InitState(data.seed);
+                ItemManager.GenerateRandomItem();
+
+                break;
+            }
+
+            // 相手のアイテム取得時
+            case EventType.ItemGet:
+            {
+                // 対象のアイテムオブジェクトを破棄
+                GameObject target = MainGameProperty.ItemSpawnPoints[data.generatedPointIndex].itemObject;
+                ItemManager.DestroyItem(target);
 
                 break;
             }
@@ -145,15 +190,21 @@ public class MainGameController : MonoBehaviour
                     RoundManager.RoundMove     = false;
                     _roundText.text            = "";
                     _inputBlocker.SetActive(false);
+
+                    var sendData = new SendData(EventType.RoundStart);
+
+                    NetworkManager.Emit(sendData);
                 }
                 // 攻撃者のラウンド進行
                 else if (!PlayerController.isDamaged)
                 {
+                    // ゲーム速度を低速にし、被弾させた表示
                     Time.timeScale  = .1f;
                     _roundText.text = "Hit!";
                     isControllable  = false;
                     _inputBlocker.SetActive(true);
 
+                    // フェード処理
                     await FadeTransition.FadeIn(_roundText, .1f);
                     await UniTask.Delay(TimeSpan.FromSeconds(.5f), true);
                     await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
@@ -161,8 +212,10 @@ public class MainGameController : MonoBehaviour
                     _roundText.text = "";
                     Time.timeScale  = 1;
 
+                    // リセット処理
                     ResetPlayersPosition();
                     ShotLineUtil.FreeLineData(ShotLineDrawer.DrawingData);
+                    ItemManager.ClearGeneratedItem();
 
                     _roundText.text  = $"Round {RoundManager.CurrentRound.ToString()}";
                     _statusText.text = "待機中…";
@@ -192,7 +245,7 @@ public class MainGameController : MonoBehaviour
         }
     }
 
-    private void ResetPlayersPosition()
+    public void ResetPlayersPosition()
     {
         _playerObject.SetActive(false);
         _rivalObject.SetActive(false);
