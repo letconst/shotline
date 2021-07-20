@@ -88,24 +88,11 @@ public class PlayerController : MonoBehaviour
         _roundText.text = "";
         Time.timeScale  = 1;
 
+        // 生成アイテムをリセット
+        ItemManager.ClearGeneratedItem();
+
         // 各プレイヤーを所定位置に戻す
-        // TODO: 位置はランダムにするため、本来はサーバーで計算
-        gameObject.SetActive(false);
-        _rivalObject.SetActive(false);
-
-        if (NetworkManager.IsOwner)
-        {
-            gameObject.transform.position = MainGameProperty.Instance.startPos1P.position;
-            _rivalObject.transform.position  = MainGameProperty.Instance.startPos2P.position;
-        }
-        else
-        {
-            gameObject.transform.position = MainGameProperty.Instance.startPos2P.position;
-            _rivalObject.transform.position  = MainGameProperty.Instance.startPos1P.position;
-        }
-
-        gameObject.SetActive(true);
-        _rivalObject.SetActive(true);
+        MainGameController.Instance.ResetPlayersPosition();
 
         // 描画中かもしれない射線を開放
         ShotLineUtil.FreeLineData(ShotLineDrawer.DrawingData);

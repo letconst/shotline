@@ -14,6 +14,11 @@ public class SendData
     public PlayerData Rival;
 
     public bool isReadyAttacker;
+    public int  seed;
+    public int  generatedPointIndex;
+
+    public int   maxItemGenerateCount;
+    public float itemGenerateInterval;
 
     public SendData(EventType type)
     {

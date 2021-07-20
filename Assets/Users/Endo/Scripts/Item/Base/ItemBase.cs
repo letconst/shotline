@@ -4,9 +4,9 @@ using UnityEngine.UI;
 public abstract class ItemBase : MonoBehaviour, IManagedMethod
 {
     [SerializeField]
-    private ItemData data;
+    private ItemData itemData;
 
-    public ItemData Data => data;
+    public ItemData ItemData => itemData;
 
     private bool    _isEnabled;
     private bool    _isInitialized;
@@ -41,11 +41,11 @@ public abstract class ItemBase : MonoBehaviour, IManagedMethod
         if (other.CompareTag("Player"))
         {
             // 所持アイテム設定
-            ItemManager.SetHoldItem(this);
+            ItemManager.SetHoldItem(this, gameObject);
             SoundManager.Instance.PlaySE(SELabel.Get);
 
             // UIへの反映
-            _itemIcon.sprite = Data.ItemSprite;
+            _itemIcon.sprite = ItemData.ItemSprite;
             _itemIcon.color  = Color.white;
 
             // 画面外への移動
@@ -53,6 +53,13 @@ public abstract class ItemBase : MonoBehaviour, IManagedMethod
 
             // アニメーション停止
             isAnimate = false;
+
+            var data = new SendData(EventType.ItemGet)
+            {
+                generatedPointIndex = ItemManager.GetItemIndex(gameObject)
+            };
+
+            NetworkManager.Emit(data);
         }
     }
 
@@ -94,7 +101,7 @@ public abstract class ItemBase : MonoBehaviour, IManagedMethod
     {
         _isEnabled = false;
         ClearItemIcon();
-        ItemManager.DestroyItem(gameObject);
+        ItemManager.DestroyHoldItem();
     }
 
     /// <summary>

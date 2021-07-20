@@ -10,6 +10,12 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     [SerializeField]
     private Button shotBtn;
 
+    [SerializeField, Header("最大生成個数")]
+    private int maxGenerateCount;
+
+    [SerializeField, Header("生成される時間間隔 (秒)")]
+    private float generateInterval;
+
     [SerializeField, Header("アイテム取得後、画面外への退避先の座標")]
     private Transform holdPos;
 
@@ -23,8 +29,6 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     [SerializeField, Header("回転アニメーション時間 (角度/秒)")]
     private float itemRotationAnimDuration = 100;
 
-    private Dictionary<GameObject, IManagedMethod> _generatedItems;
-
     public static float currentNum = 0;
 
     public static Image   ItemIcon { get; private set; }
@@ -32,21 +36,30 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     public static Button  ShotBtn  => Instance.shotBtn;
     public static Vector3 HoldPos  => Instance.holdPos.position;
 
+    public static int   MaxGenerateCount => Instance.maxGenerateCount;
+    public static float GenerateInterval => Instance.generateInterval;
+
     public static float ItemFloatingAnimDuration => Instance.itemFloatingAnimDuration;
     public static float ItemFloatingAnimScale    => Instance.itemFloatingAnimScale;
     public static float ItemRotationAnimDuration => Instance.itemRotationAnimDuration;
+    public static int   GeneratedPointIndex      { get; private set; }
 
-    private static ItemBase _holdItem;
+    public static List<GeneratedItem> GeneratedItems { get; private set; }
+
+    private static ItemBase   _holdItem;
+    private static GameObject _holdItemObj;
 
     public void ManagedStart()
     {
-        _generatedItems = new Dictionary<GameObject, IManagedMethod>();
-        ItemIcon        = ItemBtn.GetComponentsInChildren<Image>()[1];
+        GeneratedItems = new List<GeneratedItem>();
+        ItemIcon       = ItemBtn.GetComponentsInChildren<Image>()[1];
 
         ItemIcon.sprite = null;
         ItemIcon.color  = Color.clear;
 
-        currentNum = 0;
+        currentNum   = 0;
+        _holdItem    = null;
+        _holdItemObj = null;
 
         // 初期配置されたアイテムがあればStartを呼ぶ
         GameObject[] defaultSpawnItems = GameObject.FindGameObjectsWithTag("Item");
@@ -56,15 +69,20 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
             var item = itemObj.GetComponent<IManagedMethod>();
 
             item.ManagedStart();
-            _generatedItems.Add(itemObj, item);
+            GeneratedItems.Add(new GeneratedItem
+            {
+                itemObject    = itemObj,
+                managedMethod = item,
+                index         = -1
+            });
         }
     }
 
     public void ManagedUpdate()
     {
-        foreach (KeyValuePair<GameObject, IManagedMethod> item in _generatedItems)
+        foreach (GeneratedItem item in GeneratedItems)
         {
-            item.Value.ManagedUpdate();
+            item.managedMethod.ManagedUpdate();
         }
     }
 
@@ -73,22 +91,157 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     /// すでに持っているアイテムがある場合は、そちらのTerminate()を呼んでから上書き。
     /// </summary>
     /// <param name="item">持たせるアイテム</param>
-    public static void SetHoldItem(ItemBase item)
+    /// <param name="obj">アイテムオブジェクト</param>
+    public static void SetHoldItem(ItemBase item, GameObject obj)
     {
         currentNum = 0;
 
         if (_holdItem != null) _holdItem.Terminate();
 
-        _holdItem = item;
+        _holdItem    = item;
+        _holdItemObj = obj;
     }
 
     /// <summary>
-    /// 指定したアイテムオブジェクトを管轄下から削除し、対象も破棄する
+    /// ランダムな位置にランダムなアイテムを生成する
+    /// </summary>
+    public static void GenerateRandomItem()
+    {
+        List<ItemPositionData> spawnPoints = MainGameProperty.ItemSpawnPoints;
+        ItemPositionData       spawnPoint  = null;
+
+        // 未生成位置が出るまで選出
+        while (spawnPoint == null || spawnPoint.isSpawned)
+        {
+            GeneratedPointIndex = Random.Range(0, spawnPoints.Count);
+            spawnPoint          = spawnPoints[GeneratedPointIndex];
+        }
+
+        ItemData item = ItemDatabase.GetRandomItem();
+
+        // アイテムを生成し、初期化実行
+        GameObject itemObject        = Instantiate(item.ItemObject, spawnPoint.Position, Quaternion.identity);
+        var        itemManagedMethod = itemObject.GetComponent<IManagedMethod>();
+
+        itemManagedMethod.ManagedStart();
+
+        GeneratedItems.Add(new GeneratedItem
+        {
+            itemObject    = itemObject,
+            managedMethod = itemManagedMethod,
+            index         = GeneratedPointIndex
+        });
+
+        // 生成位置にアイテム情報を設定
+        spawnPoint.itemObject = itemObject;
+        spawnPoint.isSpawned  = true;
+    }
+
+    /// <summary>
+    /// 指定したアイテムオブジェクトを管轄下から削除し、破棄する
     /// </summary>
     /// <param name="itemObj"></param>
     public static void DestroyItem(GameObject itemObj)
     {
-        Instance._generatedItems.Remove(itemObj);
-        Destroy(itemObj);
+        GeneratedItem removeTarget = null;
+
+        foreach (GeneratedItem item in GeneratedItems)
+        {
+            if (item.itemObject != itemObj) continue;
+
+            removeTarget = item;
+
+            break;
+        }
+
+        if (removeTarget == null)
+        {
+            Debug.LogWarning("削除対象がリストにありません");
+
+            return;
+        }
+
+        DestroyItem(removeTarget);
     }
+
+    /// <summary>
+    /// 生成情報からアイテムを破棄する
+    /// </summary>
+    /// <param name="item">対象アイテムの生成情報</param>
+    /// <param name="isRemoveFromList">管轄リストから削除するか</param>
+    private static void DestroyItem(GeneratedItem item, bool isRemoveFromList = true)
+    {
+        if (isRemoveFromList)
+        {
+            GeneratedItems.Remove(item);
+        }
+
+        Destroy(item.itemObject);
+        item.managedMethod = null;
+        item.itemObject    = null;
+    }
+
+    /// <summary>
+    /// 所持アイテムオブジェクトを管轄下から削除し、破棄する
+    /// </summary>
+    public static void DestroyHoldItem()
+    {
+        DestroyItem(_holdItemObj);
+
+        _holdItem    = null;
+        _holdItemObj = null;
+    }
+
+    /// <summary>
+    /// 生成されているアイテムをすべて破棄する
+    /// </summary>
+    public static void ClearGeneratedItem()
+    {
+        // 所持アイテムがある場合は破棄
+        if (_holdItem != null) _holdItem.Terminate();
+
+        _holdItem    = null;
+        _holdItemObj = null;
+
+        foreach (GeneratedItem item in GeneratedItems)
+        {
+            DestroyItem(item, false);
+        }
+
+        GeneratedItems.Clear();
+
+        // シールドが出現している場合はすべて破棄
+        GameObject[] shields = GameObject.FindGameObjectsWithTag("Shield");
+
+        foreach (GameObject shield in shields)
+        {
+            Destroy(shield);
+        }
+    }
+
+    /// <summary>
+    /// 指定したアイテムオブジェクトの管轄下でのインデックスを取得する
+    /// </summary>
+    /// <param name="itemObj">アイテムオブジェクト</param>
+    /// <returns>インデックス</returns>
+    public static int GetItemIndex(GameObject itemObj)
+    {
+        int result = -1;
+
+        foreach (GeneratedItem item in GeneratedItems)
+        {
+            if (item.itemObject != itemObj) continue;
+
+            result = item.index;
+        }
+
+        return result;
+    }
+}
+
+public class GeneratedItem
+{
+    public GameObject     itemObject;
+    public IManagedMethod managedMethod;
+    public int            index;
 }
