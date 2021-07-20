@@ -32,6 +32,8 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
 
     protected override void Awake()
     {
+        base.Awake();
+
         ItemSpawnPoints ??= new List<ItemPositionData>();
         ItemSpawnPoints.Clear();
 

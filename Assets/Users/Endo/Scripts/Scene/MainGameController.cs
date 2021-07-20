@@ -26,8 +26,10 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
     public static GameObject bulletPrefab;   // 弾プレハブ（同上）
     public static GameObject rivalBulletPrefab;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         if (NetworkManager.IsConnected)
         {
             // 開始直後は操作不能に（他プレイヤー待機のため）
