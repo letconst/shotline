@@ -64,10 +64,15 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             // プレイヤー追従用カメラを反転
             vcam2Trf.RotateAround(_playerObject.transform.position, Vector3.up, 180);
 
+            // 初期位置設定
             _playerObject.transform.position = MainGameProperty.Instance.startPos1P.position;
 
+            // 相手オブジェクト生成
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos2P.position, Quaternion.identity);
-            _rivalObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Bullet_PL2");
+
+            // 表示オブジェクト選択
+            _playerObject.transform.Find("player_2").gameObject.SetActive(false);
+            _rivalObject.transform.Find("player_1").gameObject.SetActive(false);
 
             linePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL1");
             bulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
@@ -80,10 +85,15 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             vcam1Trf.RotateAround(_playerObject.transform.position, Vector3.up, 180);
             _vcam2Transposer.m_FollowOffset.z *= -1;
 
+            // 初期位置設定
             _playerObject.transform.position = MainGameProperty.Instance.startPos2P.position;
 
+            // 相手オブジェクト生成
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos1P.position, Quaternion.identity);
-            _rivalObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Bullet_PL1");
+
+            // 表示オブジェクト選択
+            _playerObject.transform.Find("player_1").gameObject.SetActive(false);
+            _rivalObject.transform.Find("player_2").gameObject.SetActive(false);
 
             linePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL2");
             bulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
@@ -265,6 +275,10 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         }
     }
 
+    /// <summary>
+    /// 各プレイヤーの座標をリセットする
+    /// TODO: ランダムな対角位置に設定する
+    /// </summary>
     public void ResetPlayersPosition()
     {
         _playerObject.SetActive(false);

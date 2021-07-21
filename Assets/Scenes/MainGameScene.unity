@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecbffccc1d2f43a9bb23913b9ec664a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rivalPrefab: {fileID: 4132294904617575844, guid: 1b8adaf0a7ec93d4c9bc0e0781cfe6a4, type: 3}
+  rivalPrefab: {fileID: 9222306879767961865, guid: 47a45b504b1ca9245ad477d0903effe9, type: 3}
   vcam1Trf: {fileID: 1053489612}
   vcam2Trf: {fileID: 991753282}
   vcam2: {fileID: 991753281}
