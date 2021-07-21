@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UniRx;
 
-public class CharaMove : MonoBehaviour
+public class CharaMove : MonoBehaviour, IManagedMethod
 {
     //Joystickプレハブ
     private Joystick _joystick = null;
@@ -23,14 +22,14 @@ public class CharaMove : MonoBehaviour
 
     public float CurrentSpeed => _speed * speedRatio;
 
-    void Start()
+    public void ManagedStart()
     {
         speedRatio = 1;
         _joystick  = GameObject.FindGameObjectWithTag("Joystick").GetComponent<Joystick>();
         controller = GetComponent<CharacterController>(); //CharacterControllerの取得
     }
 
-    void Update()
+    public void ManagedUpdate()
     {
         //無敵フラグが立っているとき
         //移動処理を行わない
@@ -43,10 +42,10 @@ public class CharaMove : MonoBehaviour
         {
             return; //RoundMoveがtrueになると操作不能に
         }
-        
+
         _moveX = _joystick.Position.x * _speed; //JoystickのPositionに_speedをかけて、_moveXに代入
         _moveZ = _joystick.Position.y * _speed; //JoystickのPositionに_speedをかけて、_moveYに代入
-        
+
         if (!MainGameController.isControllable)
         {
             controller.SimpleMove(Vector3.zero);
@@ -56,7 +55,7 @@ public class CharaMove : MonoBehaviour
 
         _moveX = _joystick.Position.x * CurrentSpeed; //JoystickのPositionに_speedをかけて、_moveXに代入
         _moveZ = _joystick.Position.y * CurrentSpeed; //JoystickのPositionに_speedをかけて、_moveYに代入
-        
+
         // 2pはカメラを反転させるため、移動方向も逆に
         if (!NetworkManager.IsOwner)
         {
@@ -74,17 +73,6 @@ public class CharaMove : MonoBehaviour
                 transform.localRotation = Quaternion.LookRotation(direction);
                 controller.SimpleMove(direction);
             }
-        }
-    }
-
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Wall") //特定のTagの付いたオブジェクトを判別
-        {
-            // 一時的に無効化
-            // Debug.Log("Hit");
-            // RoundManager.RoundMove = true;
-            // StartCoroutine(Move());
         }
     }
 

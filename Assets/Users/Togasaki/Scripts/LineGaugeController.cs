@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
+public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, IManagedMethod
 {
     [SerializeField, Header("予告ゲージ")]
     public Image preslider;
@@ -18,6 +18,9 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     [SerializeField,Header("本ゲージの消費スピード"),Range(0.0001f,0.8f)]
     private float DealSliderSpeed = 0.0001f;
 
+    [SerializeField, Header("プレイヤーへの追従時のオフセット値")]
+    private Vector3 followOffset;
+
     //予告ゲージの量
     public static float holdAmount;
 
@@ -30,21 +33,26 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     //presliderを回復できるかどうか
     public static bool _isHeal;
 
+    // プレイヤーのTransform
+    private Transform _playerTrf;
 
-    private void Start()
+    public void ManagedStart()
     {
         preslider.fillAmount = 1;
-        slider.fillAmount = 1;
-        AbleDraw = true;
-        holdAmount = 0;
-        _isHold = false;
-        _isHeal = false;
+        slider.fillAmount    = 1;
+        AbleDraw             = true;
+        holdAmount           = 0;
+        _isHold              = false;
+        _isHeal              = false;
+
+        _playerTrf = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    private void Update()
+    public void ManagedUpdate()
     {
         HealGauge();
         DealSlider();
+        FollowToPlayer();
     }
 
     //描けるかどうかを返す
@@ -129,4 +137,11 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
         }
     }
 
+    /// <summary>
+    /// ゲージUIの位置をプレイヤーに追従させる
+    /// </summary>
+    private void FollowToPlayer()
+    {
+        transform.position = _playerTrf.position + followOffset;
+    }
 }
