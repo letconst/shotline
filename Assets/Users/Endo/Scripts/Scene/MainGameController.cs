@@ -1,4 +1,5 @@
 ﻿using System;
+using Cinemachine;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -9,6 +10,15 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
 {
     [SerializeField, Header("生成する対戦相手オブジェクト")]
     private GameObject rivalPrefab;
+
+    [SerializeField, Header("初期位置用Virtual CameraのTransform")]
+    private Transform vcam1Trf;
+
+    [SerializeField, Header("プレイヤー追従用Virtual CameraのTransform")]
+    private Transform vcam2Trf;
+
+    [SerializeField, Header("プレイヤー追従用Virtual Camera")]
+    private CinemachineVirtualCamera vcam2;
 
     private GameObject _playerObject;
     private GameObject _rivalObject;
@@ -26,6 +36,8 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
     public static GameObject bulletPrefab;   // 弾プレハブ（同上）
     public static GameObject rivalBulletPrefab;
 
+    private CinemachineTransposer _vcam2Transposer;
+
     protected override void Awake()
     {
         base.Awake();
@@ -42,12 +54,16 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             isControllable = true;
         }
 
-        _playerObject = GameObject.FindGameObjectWithTag("Player");
+        _vcam2Transposer = vcam2.GetCinemachineComponent<CinemachineTransposer>();
+        _playerObject    = GameObject.FindGameObjectWithTag("Player");
         _playerObject.SetActive(false);
 
         // 1P設定
         if (NetworkManager.IsOwner)
         {
+            // プレイヤー追従用カメラを反転
+            vcam2Trf.RotateAround(_playerObject.transform.position, Vector3.up, 180);
+
             _playerObject.transform.position = MainGameProperty.Instance.startPos1P.position;
 
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos2P.position, Quaternion.identity);
@@ -60,8 +76,10 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         // 2P設定
         else
         {
-            // 2Pはカメラ反転
-            Camera.main.transform.RotateAround(_playerObject.transform.position, Vector3.up, 180);
+            // 初期位置用カメラおよび追従用カメラのオフセット値を反転
+            vcam1Trf.RotateAround(_playerObject.transform.position, Vector3.up, 180);
+            _vcam2Transposer.m_FollowOffset.z *= -1;
+
             _playerObject.transform.position = MainGameProperty.Instance.startPos2P.position;
 
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos1P.position, Quaternion.identity);
