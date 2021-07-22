@@ -2749,6 +2749,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1893924712 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 276637055302969568, guid: a3520b68dd5439646857b7561b2a8249, type: 3}
+  m_PrefabInstance: {fileID: 504358255}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1904367997
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3978,11 +3983,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedStartObjects.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedUpdateObjects.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedStartObjects.Array.data[0]
@@ -3997,6 +4002,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1793806918}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
+      propertyPath: managedStartObjects.Array.data[3]
+      value: 
+      objectReference: {fileID: 1893924712}
+    - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedUpdateObjects.Array.data[0]
       value: 
       objectReference: {fileID: 2141871275}
@@ -4008,6 +4017,10 @@ PrefabInstance:
       propertyPath: managedUpdateObjects.Array.data[2]
       value: 
       objectReference: {fileID: 1793806918}
+    - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
+      propertyPath: managedUpdateObjects.Array.data[3]
+      value: 
+      objectReference: {fileID: 1893924712}
     - target: {fileID: 566441633433876813, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: m_Name
       value: ManagedEventCaller

@@ -4,7 +4,7 @@ using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
+public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMethod
 {
     [SerializeField, Header("射線のZ位置")]
     private float lineZPos = 9.8f;
@@ -28,11 +28,13 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private GameObject _linePrefab;
     private bool       _isHoldClicking; // 射線を描いている最中か
     private Camera     _camera;
-    private Vector3    _shotLineCamPos;  // タップ開始時の射線カメラの位置
-    private Vector3    _prevLineCamPos;  // 1フレーム前の射線カメラの位置
-    private Vector2    _screenCenterPos; // 画面の中心位置
-    private int        _currentFingerId; // 現在射線を描いている指ID
+    private Vector3    _touchedPlayerPos; // タップ開始時のプレイヤーの位置
+    private Vector3    _prevPlayerPos;    // 1フレーム前のプレイヤーの位置
+    private Vector2    _screenCenterPos;  // 画面の中心位置
+    private int        _currentFingerId;  // 現在射線を描いている指ID
     public static float      currentDis;     //最新のゲージ消費量
+
+    private Transform _playerTrf;
 
     private List<LineData> _lineDataList;
 
@@ -45,13 +47,13 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     {
         base.Awake();
 
-        _camera          = Camera.main;
-        _shotLineCamPos  = Vector3.zero;
-        _prevLineCamPos  = Vector3.zero;
-        _screenCenterPos = new Vector2(Screen.width / 2f, Screen.height / 2f);
-        _currentFingerId = -1;
-        _lineDataList    = new List<LineData>();
-        DrawingData      = null;
+        _camera           = Camera.main;
+        _touchedPlayerPos = Vector3.zero;
+        _prevPlayerPos    = Vector3.zero;
+        _screenCenterPos  = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        _currentFingerId  = -1;
+        _lineDataList     = new List<LineData>();
+        DrawingData       = null;
         currentDis = 0;
 
         // this.UpdateAsObservable()
@@ -62,10 +64,11 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         //     });
     }
 
-    private void Start()
+    public void ManagedStart()
     {
         //Gauge.SetActive(false);
         _linePrefab = MainGameController.linePrefab;
+        _playerTrf  = GameObject.FindGameObjectWithTag("Player").transform;
 
         // 射線データ生成
         for (int i = 0; i < initPoolingCount; i++)
@@ -74,9 +77,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         }
     }
 
-    private void Update()
+    public void ManagedUpdate()
     {
-
         if (Input.touchCount > 0)
         {
             MobileInputHandler();
@@ -85,10 +87,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         {
             PCInputHandler();
         }
-    }
 
-    private void LateUpdate()
-    {
         FollowLineToCamera();
     }
 
@@ -128,8 +127,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                     currentDis = 0;
                     LineGaugeController.AbleDraw = true;
 
-                    _isHoldClicking = true;
-                    _shotLineCamPos = lineCamera.transform.position;
+                    _isHoldClicking   = true;
+                    _touchedPlayerPos = _playerTrf.position;
 
                     CreateLine(touchPos);
 
@@ -188,8 +187,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             LineGaugeController.AbleDraw = true;
 
 
-            _isHoldClicking = true;
-            _shotLineCamPos = lineCamera.transform.position;
+            _isHoldClicking   = true;
+            _touchedPlayerPos = _playerTrf.position;
 
             CreateLine(mousePos);
         }
@@ -222,15 +221,13 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         // 射線が描画状態であり、かつ固定されていないときのみ処理
         if (!DrawingData.Renderer.enabled || DrawingData.IsFixed) return;
 
-        Vector3 curLineCamPos = lineCamera.transform.position;
+        Vector3 curPlayerPos  = _playerTrf.position;
 
-        // カメラの位置が1フレーム前と同じなら処理しない
-        if (curLineCamPos == _prevLineCamPos) return;
+        // プレイヤーの位置が1フレーム前と同じなら処理しない
+        if (curPlayerPos == _prevPlayerPos) return;
 
-        // 射線のドロー開始時と現在の射線カメラの差分座標
-        var deltaPosToCam = new Vector3(curLineCamPos.x - _shotLineCamPos.x,
-                                        curLineCamPos.y - _shotLineCamPos.y,
-                                        curLineCamPos.z - _shotLineCamPos.z);
+        // 射線のドロー開始時と現在のプレイヤーの差分座標
+        Vector3 deltaPosToPlayer = curPlayerPos - _touchedPlayerPos;
 
         List<Vector3> drawingFingerPos     = DrawingData.FingerPositions;
         int           fingerPositionsCount = drawingFingerPos.Count;
@@ -238,14 +235,12 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         // 射線の全ポイントの座標を更新
         for (int i = 0; i < fingerPositionsCount; i++)
         {
-            var newPos = new Vector3(drawingFingerPos[i].x + deltaPosToCam.x,
-                                     drawingFingerPos[i].y + deltaPosToCam.y,
-                                     drawingFingerPos[i].z + deltaPosToCam.z);
+            Vector3 newPos = drawingFingerPos[i] + deltaPosToPlayer;
 
             DrawingData.Renderer.SetPosition(i, newPos);
         }
 
-        _prevLineCamPos = curLineCamPos;
+        _prevPlayerPos = curPlayerPos;
     }
 
     /// <summary>
