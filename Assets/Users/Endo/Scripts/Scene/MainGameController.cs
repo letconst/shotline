@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Cinemachine;
 using Cysharp.Threading.Tasks;
 using UniRx;
@@ -291,6 +291,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     ResetPlayersPosition();
                     ShotLineUtil.FreeLineData(ShotLineDrawer.DrawingData);
                     ItemManager.ClearGeneratedItem();
+                    Projectile.DestroyAllBullets();
 
                     _roundText.text  = $"Round {RoundManager.CurrentRound.ToString()}";
                     _statusText.text = "待機中…";
