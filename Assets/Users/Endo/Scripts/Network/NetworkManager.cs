@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -31,8 +31,8 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     [SerializeField, Header("サーバーアドレス")]
     private string address = "localhost";
 
-    [SerializeField, Header("サーバーポート")]
-    private int port = 6080;
+    [SerializeField, Header("サーバーポート"), Range(0, 65535)]
+    private ushort port = 6080;
 
     private static UdpClient _client;
     private static Thread    _thread;

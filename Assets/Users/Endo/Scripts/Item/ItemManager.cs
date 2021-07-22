@@ -10,10 +10,10 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     [SerializeField]
     private Button shotBtn;
 
-    [SerializeField, Header("最大生成個数")]
-    private int maxGenerateCount;
+    [SerializeField, Header("最大生成個数"), Range(0, 255)]
+    private byte maxGenerateCount;
 
-    [SerializeField, Header("生成される時間間隔 (秒)")]
+    [SerializeField, Header("生成される時間間隔 (秒)"), Range(0, 255)]
     private float generateInterval;
 
     [SerializeField, Header("アイテム取得後、画面外への退避先の座標")]
@@ -36,13 +36,13 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     public static Button  ShotBtn  => Instance.shotBtn;
     public static Vector3 HoldPos  => Instance.holdPos.position;
 
-    public static int   MaxGenerateCount => Instance.maxGenerateCount;
+    public static byte  MaxGenerateCount => Instance.maxGenerateCount;
     public static float GenerateInterval => Instance.generateInterval;
 
     public static float ItemFloatingAnimDuration => Instance.itemFloatingAnimDuration;
     public static float ItemFloatingAnimScale    => Instance.itemFloatingAnimScale;
     public static float ItemRotationAnimDuration => Instance.itemRotationAnimDuration;
-    public static int   GeneratedPointIndex      { get; private set; }
+    public static sbyte GeneratedPointIndex      { get; private set; }
 
     public static List<GeneratedItem> GeneratedItems { get; private set; }
 
@@ -113,7 +113,7 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
         // 未生成位置が出るまで選出
         while (spawnPoint == null || spawnPoint.isSpawned)
         {
-            GeneratedPointIndex = Random.Range(0, spawnPoints.Count);
+            GeneratedPointIndex = (sbyte) Random.Range(0, spawnPoints.Count);
             spawnPoint          = spawnPoints[GeneratedPointIndex];
         }
 
@@ -224,9 +224,9 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     /// </summary>
     /// <param name="itemObj">アイテムオブジェクト</param>
     /// <returns>インデックス</returns>
-    public static int GetItemIndex(GameObject itemObj)
+    public static sbyte GetItemIndex(GameObject itemObj)
     {
-        int result = -1;
+        sbyte result = -1;
 
         foreach (GeneratedItem item in GeneratedItems)
         {
@@ -243,5 +243,5 @@ public class GeneratedItem
 {
     public GameObject     itemObject;
     public IManagedMethod managedMethod;
-    public int            index;
+    public sbyte          index;
 }
