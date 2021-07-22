@@ -104,8 +104,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             // 描いている最中、その指IDでなければ弾く
             if (_currentFingerId != -1 && touch.fingerId != _currentFingerId) continue;
 
-            Vector3 touchPos = touch.position;
-            touchPos.z += lineZPos;
+            Vector2 touchPos = touch.position;
 
             switch (touch.phase)
             {
@@ -132,7 +131,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                     _isHoldClicking = true;
                     _shotLineCamPos = lineCamera.transform.position;
 
-                    CreateLine();
+                    CreateLine(touchPos);
 
                     break;
 
@@ -147,12 +146,14 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                         break;
                     }
 
-                    Vector3 tmpFingerPos = _camera.ScreenToWorldPoint(touchPos);
                     List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
+                    Vector3       tmpTouchPos      = touchPos;
+                    tmpTouchPos.z += lineZPos;
+                    Vector3 worldFingerPos = _camera.ScreenToWorldPoint(tmpTouchPos);
 
-                    if (Vector2.Distance(tmpFingerPos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
+                    if (Vector2.Distance(worldFingerPos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
                     {
-                        UpdateLine(tmpFingerPos);
+                        UpdateLine(touchPos);
                     }
 
                     break;
@@ -172,8 +173,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     private void PCInputHandler()
     {
         Vector3 mousePos = Input.mousePosition;
-        mousePos.z += lineZPos;
-        Vector3 tmpMousePos = _camera.ScreenToWorldPoint(mousePos);
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -192,16 +191,19 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             _isHoldClicking = true;
             _shotLineCamPos = lineCamera.transform.position;
 
-            CreateLine();
+            CreateLine(mousePos);
         }
         else if (Input.GetMouseButton(0) && _isHoldClicking)
         {
             // 1つ前の射線位置から指定距離離れていたら伸ばす
             List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
+            Vector3       tmpMousePos      = mousePos;
+            tmpMousePos.z += lineZPos;
+            Vector3 worldMousePos = _camera.ScreenToWorldPoint(tmpMousePos);
 
-            if (Vector2.Distance(tmpMousePos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
+            if (Vector2.Distance(worldMousePos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
             {
-                UpdateLine(tmpMousePos);
+                UpdateLine(mousePos);
             }
         }
         else if (Input.GetMouseButtonUp(0))
@@ -249,7 +251,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
     /// <summary>
     /// 射線を作成する
     /// </summary>
-    private void CreateLine()
+    private void CreateLine(Vector3 newFingerPosition)
     {
         //ゲージを表示
         Gauge.SetActive(true);
@@ -259,16 +261,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
             SoundManager.Instance.PlaySE(SELabel.Draw);
 
-            Vector3 touchPos;
-
-#if UNITY_EDITOR
-            touchPos = Input.mousePosition;
-#elif UNITY_IOS || UNITY_ANDROID
-        touchPos = Input.GetTouch(0).position;
-#endif
-
-            touchPos.z += lineZPos;
-            Vector3 worldTouchPos = _camera.ScreenToWorldPoint(touchPos);
+            newFingerPosition.z += lineZPos;
+            Vector3 worldFingerPos = _camera.ScreenToWorldPoint(newFingerPosition);
 
             LineData targetData = null;
 
@@ -295,14 +289,14 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             }
 
             // タップ位置に起点を設定
-            List<Vector3> targetDataFingerPositions = targetData.FingerPositions;
+            List<Vector3> targetDataFingerPositions = DrawingData.FingerPositions;
             targetDataFingerPositions.Clear();
-            targetDataFingerPositions.Add(worldTouchPos);
-            targetDataFingerPositions.Add(worldTouchPos);
-            targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
-            targetData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
-            targetData.Renderer.enabled = true;
-            targetData.IsFixed = false;
+            targetDataFingerPositions.Add(worldFingerPos);
+            targetDataFingerPositions.Add(worldFingerPos);
+            DrawingData.Renderer.SetPosition(0, worldFingerPos);
+            DrawingData.Renderer.SetPosition(1, worldFingerPos);
+            DrawingData.Renderer.enabled = true;
+            DrawingData.IsFixed = false;
 
         }
     }
@@ -325,19 +319,22 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                 return;
             }
 
-            float dis = Vector3.Distance(DrawingData.FingerPositions[DrawingData.FingerPositions.Count-1],newFingerPos);
+            newFingerPos.z += lineZPos;
+            Vector3 worldFingerPos = _camera.ScreenToWorldPoint(newFingerPos);
+
+            float dis = Vector3.Distance(DrawingData.FingerPositions[DrawingData.FingerPositions.Count-1],worldFingerPos);
             bool isDraw = LineGaugeController.LineGauge(dis, ref rdis);
             currentDis += dis/LineGaugeController.Instance.MaxLinePower;
             LineGaugeController.holdAmount = LineGaugeController.Instance.preslider.fillAmount;
 
             if (!isDraw)
             {
-                newFingerPos = Vector3.Lerp(DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1], newFingerPos, rdis / dis);
+                worldFingerPos = Vector3.Lerp(DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1], worldFingerPos, rdis / dis);
             }
 
-            DrawingData.FingerPositions.Add(newFingerPos);
+            DrawingData.FingerPositions.Add(worldFingerPos);
             DrawingData.Renderer.positionCount++;
-            DrawingData.Renderer.SetPosition(DrawingData.Renderer.positionCount - 1, newFingerPos);
+            DrawingData.Renderer.SetPosition(DrawingData.Renderer.positionCount - 1, worldFingerPos);
 
         }
     }
