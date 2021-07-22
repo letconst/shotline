@@ -30,7 +30,7 @@ public class BulletInfo
 }
 
 
-public class Projectile : MonoBehaviour
+public class Projectile : SingletonMonoBehaviour<Projectile>
 {
     /*
 
@@ -63,6 +63,7 @@ public class Projectile : MonoBehaviour
 
     private BulletMovement BM;
 
+    private bool _isQueuedDestroyAll;
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -79,6 +80,16 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
+        // 全破棄がキューされてたらそれ実行
+        if (_isQueuedDestroyAll)
+        {
+            _isQueuedDestroyAll = false;
+
+            InnerDestroyAllBullets();
+
+            return;
+        }
+
         LineAppear();
     }
 
@@ -203,5 +214,18 @@ public class Projectile : MonoBehaviour
 
     }
 
+    private void InnerDestroyAllBullets()
+    {
+        foreach (BulletInfo bullet in BulletList)
+        {
+            Destroy(bullet.Bullet);
+        }
 
+        BulletList.Clear();
+    }
+
+    public static void DestroyAllBullets()
+    {
+        Instance._isQueuedDestroyAll = true;
+    }
 }
