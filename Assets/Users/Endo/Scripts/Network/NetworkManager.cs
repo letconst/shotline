@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 public enum EventType
@@ -19,6 +20,9 @@ public enum EventType
     ItemInit,
     ItemGenerate,
     ItemGet,
+    Instantiate,
+    Destroy,
+    ShieldUpdate,
     RoundStart,
     RoundUpdate,
     Disconnect,
@@ -31,8 +35,8 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     [SerializeField, Header("サーバーアドレス")]
     private string address = "localhost";
 
-    [SerializeField, Header("サーバーポート")]
-    private int port = 6080;
+    [SerializeField, Header("サーバーポート"), Range(0, 65535)]
+    private ushort port = 6080;
 
     private static UdpClient _client;
     private static Thread    _thread;
@@ -40,6 +44,8 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     private static Dictionary<string, GameObject> _players;
 
     private static Subject<SendData> _receiverSubject;
+
+    private static Dictionary<string, GameObject> _networkedObjects;
 
     /// <summary>
     /// 自身がホストか。部屋を立てたプレイヤーならtrueとなる。
@@ -80,7 +86,9 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// </summary>
     private static void Init()
     {
-        _players    = new Dictionary<string, GameObject>();
+        _players          = new Dictionary<string, GameObject>();
+        _networkedObjects = new Dictionary<string, GameObject>();
+
         _client     = null;
         _thread     = null;
         IsConnected = false;
@@ -120,7 +128,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <summary>
     /// サーバーから切断する
     /// </summary>
-    private static void Disconnect()
+    public static void Disconnect()
     {
         if (!IsConnected) return;
 
@@ -176,6 +184,111 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         string msg      = SendData.ParseSendData(data);
         byte[] sendData = Encoding.ASCII.GetBytes(msg);
         _client.Send(sendData, sendData.Length);
+    }
+
+    /// <summary>
+    /// ネットワーク化されたGameObjectをプレハブパスから生成する
+    /// </summary>
+    /// <param name="prefabPath">生成するプレハブのパス</param>
+    /// <param name="position">生成位置</param>
+    /// <param name="rotation">回転</param>
+    /// <returns>生成されたGameObject</returns>
+    public static GameObject Instantiate(string prefabPath, Vector3 position, Quaternion rotation)
+    {
+        var        prefab = Resources.Load<GameObject>(prefabPath);
+        GameObject result = GameObject.Instantiate(prefab, position, rotation);
+        string     guid   = Guid.NewGuid().ToString("N");
+
+        result.OnDestroyAsObservable()
+              .Subscribe(_ => OnTargetDestroyed(guid))
+              .AddTo(result);
+
+        _networkedObjects.Add(guid, result);
+
+        // 生成されたことを他クライアントに通知
+        var data = new SendData(EventType.Instantiate)
+        {
+            prefabName     = prefabPath,
+            objectGuid     = guid,
+            instantiatePos = position,
+            instantiateRot = rotation
+        };
+
+        Emit(data);
+
+        return result;
+    }
+
+    private static void OnTargetDestroyed(string guid)
+    {
+        _networkedObjects.Remove(guid);
+
+        var data = new SendData(EventType.Destroy)
+        {
+            objectGuid = guid
+        };
+
+        Emit(data);
+    }
+
+    /// <summary>
+    /// ネットワーク化されたGameObjectをローカルで生成する（受信時用）
+    /// </summary>
+    /// <param name="prefabPath">生成するプレハブのパス</param>
+    /// <param name="position">生成位置</param>
+    /// <param name="rotation">回転</param>
+    /// <param name="guid"></param>
+    /// <returns>生成されたGameObject</returns>
+    public static GameObject SyncInstantiate(string prefabPath, Vector3 position, Quaternion rotation, string guid)
+    {
+        var        prefab = Resources.Load<GameObject>(prefabPath);
+        GameObject result = GameObject.Instantiate(prefab, position, rotation);
+
+        _networkedObjects.Add(guid, result);
+
+        return result;
+    }
+
+    /// <summary>
+    /// ネットワーク化されたGameObjectをローカルで破棄する（受信時用）
+    /// </summary>
+    /// <param name="guid"></param>
+    public static void SyncDestroy(string guid)
+    {
+        KeyValuePair<string, GameObject> target;
+
+        foreach (KeyValuePair<string, GameObject> networkedObject in _networkedObjects)
+        {
+            if (networkedObject.Key != guid) continue;
+
+            target = networkedObject;
+
+            break;
+        }
+
+        _networkedObjects.Remove(target.Key);
+        Destroy(target.Value);
+    }
+
+    /// <summary>
+    /// 指定したGameObjectのネットワークGUIDを取得する。ネットワーク化されていなければnullが返る。
+    /// </summary>
+    /// <param name="target"></param>
+    /// <returns>GUID</returns>
+    public static string GetGuid(GameObject target)
+    {
+        string result = null;
+
+        foreach (KeyValuePair<string, GameObject> networkedObject in _networkedObjects)
+        {
+            if (networkedObject.Value != target) continue;
+
+            result = networkedObject.Key;
+
+            break;
+        }
+
+        return result;
     }
 
     /// <summary>

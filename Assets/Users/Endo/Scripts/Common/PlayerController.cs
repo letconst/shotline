@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -70,6 +70,9 @@ public class PlayerController : MonoBehaviour
         {
             data.Self.isLose = true;
             _roundText.text  = "Lose!";
+            _statusText.text = "タップでタイトルに戻る";
+
+            MainGameController.isChangeableSceneToTitle = true;
             NetworkManager.Emit(data);
 
             await FadeTransition.FadeIn(_roundText, .1f);
@@ -82,7 +85,7 @@ public class PlayerController : MonoBehaviour
         NetworkManager.Emit(data);
 
         await FadeTransition.FadeIn(_roundText, .1f);
-        await UniTask.Delay(TimeSpan.FromSeconds(.5f), true);
+        await UniTask.Delay(TimeSpan.FromSeconds(1), true);
         await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
 
         _roundText.text = "";
@@ -96,6 +99,8 @@ public class PlayerController : MonoBehaviour
 
         // 描画中かもしれない射線を開放
         ShotLineUtil.FreeLineData(ShotLineDrawer.DrawingData);
+
+        Projectile.DestroyAllBullets();
 
         _roundText.text = $"Round {RoundManager.CurrentRound.ToString()}";
 

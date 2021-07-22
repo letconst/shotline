@@ -88,5 +88,8 @@ public class Thruster : ActiveItem
     public override void Terminate()
     {
         base.Terminate();
+
+        Chara.speedRatio = 1;
+        Chara.Thruster   = false;
     }
 }
