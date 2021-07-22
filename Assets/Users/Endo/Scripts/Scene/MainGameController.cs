@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 public class MainGameController : SingletonMonoBehaviour<MainGameController>
 {
-    [SerializeField, Header("生成する対戦相手オブジェクト")]
+    [SerializeField, Header("生成する対戦相手プレハブ")]
     private GameObject rivalPrefab;
 
     [SerializeField, Header("初期位置用Virtual CameraのTransform")]
@@ -19,6 +19,9 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
 
     [SerializeField, Header("プレイヤー追従用Virtual Camera")]
     private CinemachineVirtualCamera vcam2;
+
+    [SerializeField, Header("CM BlendListオブジェクト")]
+    private GameObject cmBlendListObject;
 
     private GameObject _playerObject;
     private GameObject _rivalObject;
@@ -36,14 +39,20 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
     public static GameObject bulletPrefab;   // 弾プレハブ（同上）
     public static GameObject rivalBulletPrefab;
 
-    private CinemachineTransposer _vcam2Transposer;
+    private CinemachineTransposer      _vcam2Transposer;
+    private CinemachineBlendListCamera _cmBlendList;
 
     protected override void Awake()
     {
         base.Awake();
 
+        _vcam2Transposer = vcam2.GetCinemachineComponent<CinemachineTransposer>();
+        _cmBlendList     = cmBlendListObject.GetComponent<CinemachineBlendListCamera>();
+
         if (NetworkManager.IsConnected)
         {
+            cmBlendListObject.SetActive(false);
+
             // 開始直後は操作不能に（他プレイヤー待機のため）
             isControllable = false;
             MainGameProperty.InputBlocker.SetActive(true);
@@ -54,8 +63,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             isControllable = true;
         }
 
-        _vcam2Transposer = vcam2.GetCinemachineComponent<CinemachineTransposer>();
-        _playerObject    = GameObject.FindGameObjectWithTag("Player");
+        _playerObject = GameObject.FindGameObjectWithTag("Player");
         _playerObject.SetActive(false);
 
         // 1P設定
@@ -82,6 +90,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         else
         {
             // 初期位置用カメラおよび追従用カメラのオフセット値を反転
+            Camera.main.transform.RotateAround(_playerObject.transform.position, Vector3.up, 180);
             vcam1Trf.RotateAround(_playerObject.transform.position, Vector3.up, 180);
             _vcam2Transposer.m_FollowOffset.z *= -1;
 
@@ -145,11 +154,27 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
 
         switch (type)
         {
+            // 全プレイヤー参加時
             case EventType.Joined:
             {
+                _statusText.text = "";
+                _roundText.text  = "Game Start";
+                cmBlendListObject.SetActive(true);
+
+                // カメラ演出が始まるまで待機
+                await UniTask.WaitUntil(() => _cmBlendList.IsBlending);
+
+                UniTask fade           = FadeTransition.FadeIn(_roundText, .5f);
+                UniTask cameraBlending = UniTask.WaitWhile(() => _cmBlendList.IsBlending);
+
+                // ラウンドテキスト表示とカメラ演出完了を待機
+                await UniTask.WhenAll(fade, cameraBlending);
+
+                // ラウンドテキストフェードアウトと同時に操作可能にするため、並列で
+                FadeTransition.FadeOut(_roundText, .5f);
+
                 isControllable = true;
                 MainGameProperty.InputBlocker.SetActive(false);
-                _statusText.text = "";
 
                 // ホストならラウンド開始通知
                 if (NetworkManager.IsOwner)
@@ -236,7 +261,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
 
                     // フェード処理
                     await FadeTransition.FadeIn(_roundText, .1f);
-                    await UniTask.Delay(TimeSpan.FromSeconds(.5f), true);
+                    await UniTask.Delay(TimeSpan.FromSeconds(1), true);
                     await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
 
                     _roundText.text = "";
@@ -250,7 +275,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     _roundText.text  = $"Round {RoundManager.CurrentRound.ToString()}";
                     _statusText.text = "待機中…";
 
-                    await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, 5f);
+                    await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
 
                     // 攻撃者準備完了を送信
                     var attackerData = new SendData(EventType.RoundUpdate)

@@ -14,11 +14,9 @@ GameObject:
   - component: {fileID: 9222306879767961867}
   - component: {fileID: 9222306879767961878}
   - component: {fileID: 9222306879767961864}
-  - component: {fileID: 9222306879767961872}
   - component: {fileID: 5208753602153834419}
-  - component: {fileID: 4435972218642477936}
   m_Layer: 0
-  m_Name: PL1
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -145,22 +143,6 @@ MonoBehaviour:
   _speed: 5
   speedRatio: 1
   Thruster: 0
---- !u!114 &9222306879767961872
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9222306879767961865}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1465209106, guid: c8d0ad23af520fe46aabe2b1fecf6462, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _json: '{"declarations":{"collection":{"$content":[{"name":"Target","value":{"$content":0,"$type":"UnityEngine.Object"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
-    _objectReferences:
-    - {fileID: 9222306879767961865}
 --- !u!114 &5208753602153834419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,22 +155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5e3790605b2452abb2426eb1285b5e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4435972218642477936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9222306879767961865}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -57143145, guid: a040fb66244a7f54289914d98ea4ef7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _json: '{"nest":{"source":"Macro","macro":0,"embed":null}}'
-    _objectReferences:
-    - {fileID: 11400000, guid: 20e0809c603c0a64a9f1585e081c3514, type: 2}
 --- !u!1001 &3031385466434068688
 PrefabInstance:
   m_ObjectHideFlags: 0
