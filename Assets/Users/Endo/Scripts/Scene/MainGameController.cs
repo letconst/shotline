@@ -1,4 +1,5 @@
 ﻿using System;
+using Cinemachine;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -7,8 +8,20 @@ using Random = UnityEngine.Random;
 
 public class MainGameController : SingletonMonoBehaviour<MainGameController>
 {
-    [SerializeField, Header("生成する対戦相手オブジェクト")]
+    [SerializeField, Header("生成する対戦相手プレハブ")]
     private GameObject rivalPrefab;
+
+    [SerializeField, Header("初期位置用Virtual CameraのTransform")]
+    private Transform vcam1Trf;
+
+    [SerializeField, Header("プレイヤー追従用Virtual CameraのTransform")]
+    private Transform vcam2Trf;
+
+    [SerializeField, Header("プレイヤー追従用Virtual Camera")]
+    private CinemachineVirtualCamera vcam2;
+
+    [SerializeField, Header("CM BlendListオブジェクト")]
+    private GameObject cmBlendListObject;
 
     private GameObject _playerObject;
     private GameObject _rivalObject;
@@ -26,10 +39,20 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
     public static GameObject bulletPrefab;   // 弾プレハブ（同上）
     public static GameObject rivalBulletPrefab;
 
-    private void Awake()
+    private CinemachineTransposer      _vcam2Transposer;
+    private CinemachineBlendListCamera _cmBlendList;
+
+    protected override void Awake()
     {
+        base.Awake();
+
+        _vcam2Transposer = vcam2.GetCinemachineComponent<CinemachineTransposer>();
+        _cmBlendList     = cmBlendListObject.GetComponent<CinemachineBlendListCamera>();
+
         if (NetworkManager.IsConnected)
         {
+            cmBlendListObject.SetActive(false);
+
             // 開始直後は操作不能に（他プレイヤー待機のため）
             isControllable = false;
             MainGameProperty.InputBlocker.SetActive(true);
@@ -46,10 +69,21 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         // 1P設定
         if (NetworkManager.IsOwner)
         {
+            // プレイヤー追従用カメラを反転
+            vcam2Trf.RotateAround(_playerObject.transform.position, Vector3.up, 180);
+
+            // 射線ゲージも逆になるため反転
+            MainGameProperty.Instance.LineGaugeObject.transform.Rotate(Vector3.forward, 180);
+
+            // 初期位置設定
             _playerObject.transform.position = MainGameProperty.Instance.startPos1P.position;
 
+            // 相手オブジェクト生成
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos2P.position, Quaternion.identity);
-            _rivalObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Bullet_PL2");
+
+            // 表示オブジェクト選択
+            _playerObject.transform.Find("player_2").gameObject.SetActive(false);
+            _rivalObject.transform.Find("player_1").gameObject.SetActive(false);
 
             linePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL1");
             bulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
@@ -58,12 +92,20 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         // 2P設定
         else
         {
-            // 2Pはカメラ反転
+            // 初期位置用カメラおよび追従用カメラのオフセット値を反転
             Camera.main.transform.RotateAround(_playerObject.transform.position, Vector3.up, 180);
+            vcam1Trf.RotateAround(_playerObject.transform.position, Vector3.up, 180);
+            _vcam2Transposer.m_FollowOffset.z *= -1;
+
+            // 初期位置設定
             _playerObject.transform.position = MainGameProperty.Instance.startPos2P.position;
 
+            // 相手オブジェクト生成
             _rivalObject = Instantiate(rivalPrefab, MainGameProperty.Instance.startPos1P.position, Quaternion.identity);
-            _rivalObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Bullet_PL1");
+
+            // 表示オブジェクト選択
+            _playerObject.transform.Find("player_1").gameObject.SetActive(false);
+            _rivalObject.transform.Find("player_2").gameObject.SetActive(false);
 
             linePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL2");
             bulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
@@ -115,11 +157,27 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
 
         switch (type)
         {
+            // 全プレイヤー参加時
             case EventType.Joined:
             {
+                _statusText.text = "";
+                _roundText.text  = "Game Start";
+                cmBlendListObject.SetActive(true);
+
+                // カメラ演出が始まるまで待機
+                await UniTask.WaitUntil(() => _cmBlendList.IsBlending);
+
+                UniTask fade           = FadeTransition.FadeIn(_roundText, .5f);
+                UniTask cameraBlending = UniTask.WaitWhile(() => _cmBlendList.IsBlending);
+
+                // ラウンドテキスト表示とカメラ演出完了を待機
+                await UniTask.WhenAll(fade, cameraBlending);
+
+                // ラウンドテキストフェードアウトと同時に操作可能にするため、並列で
+                FadeTransition.FadeOut(_roundText, .5f);
+
                 isControllable = true;
                 MainGameProperty.InputBlocker.SetActive(false);
-                _statusText.text = "";
 
                 // ホストならラウンド開始通知
                 if (NetworkManager.IsOwner)
@@ -206,7 +264,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
 
                     // フェード処理
                     await FadeTransition.FadeIn(_roundText, .1f);
-                    await UniTask.Delay(TimeSpan.FromSeconds(.5f), true);
+                    await UniTask.Delay(TimeSpan.FromSeconds(1), true);
                     await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
 
                     _roundText.text = "";
@@ -220,7 +278,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     _roundText.text  = $"Round {RoundManager.CurrentRound.ToString()}";
                     _statusText.text = "待機中…";
 
-                    await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, 5f);
+                    await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
 
                     // 攻撃者準備完了を送信
                     var attackerData = new SendData(EventType.RoundUpdate)
@@ -245,6 +303,10 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         }
     }
 
+    /// <summary>
+    /// 各プレイヤーの座標をリセットする
+    /// TODO: ランダムな対角位置に設定する
+    /// </summary>
     public void ResetPlayersPosition()
     {
         _playerObject.SetActive(false);

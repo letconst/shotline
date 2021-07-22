@@ -19,10 +19,14 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
     [SerializeField]
     private GameObject[] itemSpawnPoints;
 
+    [SerializeField]
+    private GameObject lineGaugeObject;
+
     private List<ItemPositionData> _itemSpawnPoints;
 
-    public static GameObject InputBlocker => Instance.inputBlocker;
-    public static Text       StatusText   => Instance.statusText;
+    public static GameObject InputBlocker    => Instance.inputBlocker;
+    public static Text       StatusText      => Instance.statusText;
+    public        GameObject LineGaugeObject => lineGaugeObject;
 
     public static List<ItemPositionData> ItemSpawnPoints
     {
@@ -32,6 +36,8 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
 
     protected override void Awake()
     {
+        base.Awake();
+
         ItemSpawnPoints ??= new List<ItemPositionData>();
         ItemSpawnPoints.Clear();
 
