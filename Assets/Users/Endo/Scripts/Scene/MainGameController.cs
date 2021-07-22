@@ -222,6 +222,23 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 break;
             }
 
+            // 相手のオブジェクト生成時
+            case EventType.Instantiate:
+            {
+                NetworkManager.SyncInstantiate(data.prefabName, data.instantiatePos, data.instantiateRot,
+                                               data.objectGuid);
+
+                break;
+            }
+
+            // 相手のオブジェクト破棄時
+            case EventType.Destroy:
+            {
+                NetworkManager.SyncDestroy(data.objectGuid);
+
+                break;
+            }
+
             case EventType.RoundUpdate:
             {
                 // 相手の敗北なら勝利表示

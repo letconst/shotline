@@ -13,6 +13,12 @@ public class SendData
     public PlayerData Self;
     public PlayerData Rival;
 
+    public string prefabName;
+    public string objectGuid;
+
+    public Vector3    instantiatePos;
+    public Quaternion instantiateRot;
+
     public bool  isReadyAttacker;
     public int   seed;
     public sbyte generatedPointIndex;

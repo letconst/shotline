@@ -40,8 +40,14 @@ public class Shield : ActiveItem
         Vector3 pos;
         pos = Player.transform.position;
 
-
-        GameObject ShieldObj = Instantiate(ShieldPrefab, pos + vec * 1, Player.transform.rotation);
+        if (NetworkManager.IsConnected)
+        {
+            NetworkManager.Instantiate("Prefabs/OriginShield", pos + vec * 1, Player.transform.rotation);
+        }
+        else
+        {
+            GameObject ShieldObj = Instantiate(ShieldPrefab, pos + vec * 1, Player.transform.rotation);
+        }
 
         if (ItemManager.currentNum == maxNumShield)
         {
