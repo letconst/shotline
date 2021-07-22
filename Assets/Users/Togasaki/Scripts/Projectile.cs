@@ -158,9 +158,8 @@ public class Projectile : MonoBehaviour
                 }
 
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
-                if (BulletList[i].index == BulletList[i].FP.Length - 1||BM.BBOn)
+                if (BulletList[i].index == BulletList[i].FP.Length - 1 || BM.BBOn)
                 {
-
                     ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
@@ -202,10 +201,10 @@ public class Projectile : MonoBehaviour
             //ゲージを消費
             LineGaugeController.Clicked();
 
-            //リニアドローならもう一度射線を真ん中からひかせる
-            if (!LinearDraw._linearDrawOn)
+            //リニアドロー
+            if (LinearDraw._isLinearDraw)
             {
-                LinearDraw._islinearDraw = true;
+                ShotLineDrawer._firstLinearDraw = true;
             }
         }
 

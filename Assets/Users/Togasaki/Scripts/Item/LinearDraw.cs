@@ -6,19 +6,19 @@ public class LinearDraw : ActiveItem
     public static bool _linearDrawOn = true;
 
     //ライナードローで射線をひくときにtrueになるブール
-    public static bool _islinearDraw = false;
+    public static bool _isLinearDraw = false;
 
     protected override void Init()
     {
         base.Init();
         _linearDrawOn = true;
-        _islinearDraw = false;
+        _isLinearDraw = false;
     }
 
     public override void Terminate()
     {
         _linearDrawOn = true;
-        _islinearDraw = false;
+        _isLinearDraw = false;
         base.Terminate();
     }
 
@@ -26,7 +26,7 @@ public class LinearDraw : ActiveItem
     {
         if (_linearDrawOn)
         {
-            _islinearDraw = true;
+            _isLinearDraw = true;
             NumQuantity.CulLinear(_linearDrawOn);
             _linearDrawOn = false;
         }

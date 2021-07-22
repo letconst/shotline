@@ -27,9 +27,6 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     //ラインをひけるかどうか
     public static bool AbleDraw;
 
-    //presliderを回復できるかどうか
-    public static bool _isHeal;
-
     private void Start()
     {
         preslider.fillAmount = 1;
@@ -37,12 +34,10 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
         AbleDraw = true;
         holdAmount = 0;
         _isHold = false;
-        _isHeal = false;
     }
 
     private void Update()
     {
-        
         HealGauge();
         DealSlider();
     }
@@ -50,23 +45,32 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     //描けるかどうかを返す
     public static bool LineGauge(float dis, ref float rdis)
     {
-
         bool result = true;
-        //もし引数disが範囲内だったらtrueを返す（shotlinedrawerで変数へ）
-        if (Instance.preslider.fillAmount > dis)
+
+        if (ShotLineDrawer.currentDis < 1)
         {
-            //ここにdisが範囲内の場合
-            result = true;
-            Instance.preslider.fillAmount -= dis / Instance.MaxLinePower;
+            //もし引数disが範囲内だったらtrueを返す（shotlinedrawerで変数へ）
+            if (Instance.preslider.fillAmount > dis / Instance.MaxLinePower)
+            {
+                //ここにdisが範囲内の場合
+                result = true;
+                AbleDraw = true;
+                if (dis < 0) dis = 0;
+                Instance.preslider.fillAmount -= dis / Instance.MaxLinePower;
+            }
+            else
+            {
+                AbleDraw = false;
+                result = false;
+                rdis = Instance.preslider.fillAmount - (dis / Instance.MaxLinePower);
+                if (rdis < 0) rdis = 0;
+                Instance.preslider.fillAmount -= rdis / Instance.MaxLinePower;
+            }
         }
         else
         {
-            AbleDraw = false;
             result = false;
-            rdis = dis - Instance.preslider.fillAmount;
-            Instance.preslider.fillAmount -= rdis / Instance.MaxLinePower;
         }
-
         return result;
     }
 
@@ -80,28 +84,18 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
         }
 
         //sliderの回復処理
-        //if (Instance.slider.fillAmount < 1)
-        //{
-        //    Instance.slider.fillAmount += Instance.HealingGauge;
-        //}
-
-        //presliderの回復処理
-        if (holdAmount < Instance.preslider.fillAmount || ShotLineDrawer.currentDis == 0)
+        if (Instance.slider.fillAmount < 1 && !ShotLineDrawer.DrawingData.Renderer.enabled)
         {
             Instance.slider.fillAmount += Instance.HealingGauge;
+        }
+
+        //presliderの回復処理
+        if (Instance.preslider.fillAmount < 1 && !ShotLineDrawer.DrawingData.Renderer.enabled)
+        {
             Instance.preslider.fillAmount += Instance.HealingGauge;
         }
-        //if(ShotLineDrawer.currentDis == 0)
-        //{
-        //    _isHeal = true;
-        //}
 
-        //if (_isHeal)
-        //{
-        //    Instance.preslider.fillAmount += Instance.HealingGauge;
-        //}
-
-        if (!(Instance.preslider.fillAmount >= 1) && Instance.preslider.fillAmount > 0)
+        if (Instance.preslider.fillAmount > 0)
         {
             AbleDraw = true;
         }
@@ -113,16 +107,18 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     public static void Clicked()
     {
         _isHold = true;
-        _isHeal = true;
         holdAmount = 0;
     }
+
     void DealSlider()
     {
+        //sliderをどこまで減らすか
         if (Instance.slider.fillAmount <= Instance.preslider.fillAmount)
         {
             _isHold = false;
         }
 
+        //sliderをpresliderの消費量分消す
         if (_isHold)
         {
             ShotLineDrawer.currentDis = 0;
