@@ -110,11 +110,14 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
             switch (touch.phase)
             {
                 case TouchPhase.Began:
-                    // UIをクリックした際は反応させない
-                    if (EventSystem.current.IsPointerOverGameObject(touch.fingerId)) return;
-
                     // 画面中央からのドローのみ受け付ける
                     if (Vector2.Distance(_screenCenterPos, touchPos) > drawableAreaRadius) return;
+
+                    // 移動中は反応させない（暫定）
+                    if (CharaMove.IsMoving) return;
+
+                    // UIをクリックした際は反応させない
+                    if (EventSystem.current.IsPointerOverGameObject(touch.fingerId)) return;
 
                     if (_currentFingerId == -1)
                     {
@@ -135,9 +138,10 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
                 case TouchPhase.Moved when _isHoldClicking:
                     // 射線が固定されていたら処理しない（描きながら射撃した際にも止める）
-                    if (DrawingData.IsFixed)
+                    // 移動中は処理しない（暫定）
+                    if (DrawingData.IsFixed || CharaMove.IsMoving)
                     {
-                        _isHoldClicking = false;
+                        _isHoldClicking  = false;
                         _currentFingerId = -1;
 
                         break;

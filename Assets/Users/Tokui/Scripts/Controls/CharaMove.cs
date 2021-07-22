@@ -20,7 +20,8 @@ public class CharaMove : MonoBehaviour, IManagedMethod
 
     CharacterController controller; //CharacterControllerの読み込み
 
-    public float CurrentSpeed => _speed * speedRatio;
+    public        float CurrentSpeed => _speed * speedRatio;
+    public static bool  IsMoving     { get; private set; }
 
     public void ManagedStart()
     {
@@ -31,6 +32,8 @@ public class CharaMove : MonoBehaviour, IManagedMethod
 
     public void ManagedUpdate()
     {
+        IsMoving = false;
+
         //無敵フラグが立っているとき
         //移動処理を行わない
         if (Thruster == true)
@@ -69,6 +72,8 @@ public class CharaMove : MonoBehaviour, IManagedMethod
         {
             if (_joystick.Position.x > 0.01f || _joystick.Position.x < -0.01f)
             {
+                IsMoving = true;
+
                 Vector3 direction = new Vector3(_moveX, 0, _moveZ);
                 transform.localRotation = Quaternion.LookRotation(direction);
                 controller.SimpleMove(direction);
