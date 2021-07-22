@@ -49,10 +49,12 @@ public class Shield : ActiveItem
             GameObject ShieldObj = Instantiate(ShieldPrefab, pos + vec * 1, Player.transform.rotation);
         }
 
-        if (ItemManager.currentShieldCount == maxNumShield)
-        {
-            Terminate();
-        }
+        // if (ItemManager.currentShieldCount == maxNumShield)
+        // {
+        //     Terminate();
+        // }
+
+        Terminate();
     }
 
     protected override void UpdateFunction()
