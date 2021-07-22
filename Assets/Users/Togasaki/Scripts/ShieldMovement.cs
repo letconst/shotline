@@ -11,6 +11,7 @@ public class ShieldMovement : MonoBehaviour
     private void Start()
     {
         ShieldLimit = 10;
+        ItemManager.currentShieldCount++;
 
         if (NetworkManager.IsConnected)
         {
@@ -36,6 +37,11 @@ public class ShieldMovement : MonoBehaviour
 
             DecreaseLimit();
         }
+    }
+
+    private void OnDestroy()
+    {
+        ItemManager.currentShieldCount--;
     }
 
     private void OnReceived(SendData data)

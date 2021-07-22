@@ -3,7 +3,7 @@ using UnityEngine;
 public class Shield : ActiveItem
 {
     [SerializeField, Header("シールドの最大量")]
-    private float maxNumShield = 1;
+    private int maxNumShield = 1;
 
 
     [SerializeField] private GameObject ShieldPrefab;
@@ -49,7 +49,7 @@ public class Shield : ActiveItem
             GameObject ShieldObj = Instantiate(ShieldPrefab, pos + vec * 1, Player.transform.rotation);
         }
 
-        if (ItemManager.currentNum == maxNumShield)
+        if (ItemManager.currentShieldCount == maxNumShield)
         {
             Terminate();
         }

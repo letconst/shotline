@@ -31,6 +31,8 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
 
     public static float currentNum = 0;
 
+    public static int currentShieldCount;
+
     public static Image   ItemIcon { get; private set; }
     public static Button  ItemBtn  => Instance.itemBtn;
     public static Button  ShotBtn  => Instance.shotBtn;
@@ -57,7 +59,9 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
         ItemIcon.sprite = null;
         ItemIcon.color  = Color.clear;
 
-        currentNum   = 0;
+        currentNum         = 0;
+        currentShieldCount = 0;
+
         _holdItem    = null;
         _holdItemObj = null;
 
