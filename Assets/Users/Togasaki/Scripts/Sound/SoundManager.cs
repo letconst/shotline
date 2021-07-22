@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,6 +30,8 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
 
     protected override void Awake()
     {
+        base.Awake();
+
         //オーディオソース生成
         bgmSource = gameObject.AddComponent<AudioSource>();
         seSource = gameObject.AddComponent<AudioSource>();
