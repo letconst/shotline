@@ -72,6 +72,9 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             // プレイヤー追従用カメラを反転
             vcam2Trf.RotateAround(_playerObject.transform.position, Vector3.up, 180);
 
+            // 射線ゲージも逆になるため反転
+            MainGameProperty.Instance.LineGaugeObject.transform.Rotate(Vector3.forward, 180);
+
             // 初期位置設定
             _playerObject.transform.position = MainGameProperty.Instance.startPos1P.position;
 

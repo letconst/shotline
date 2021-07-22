@@ -395,6 +395,7 @@ MonoBehaviour:
   - {fileID: 569135075}
   - {fileID: 137419579}
   - {fileID: 764642697}
+  lineGaugeObject: {fileID: 1793806918}
 --- !u!114 &268091897
 MonoBehaviour:
   m_ObjectHideFlags: 0
