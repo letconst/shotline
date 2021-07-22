@@ -128,7 +128,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <summary>
     /// サーバーから切断する
     /// </summary>
-    private static void Disconnect()
+    public static void Disconnect()
     {
         if (!IsConnected) return;
 

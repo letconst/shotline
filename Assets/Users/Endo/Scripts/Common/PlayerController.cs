@@ -70,6 +70,9 @@ public class PlayerController : MonoBehaviour
         {
             data.Self.isLose = true;
             _roundText.text  = "Lose!";
+            _statusText.text = "タップでタイトルに戻る";
+
+            MainGameController.isChangeableSceneToTitle = true;
             NetworkManager.Emit(data);
 
             await FadeTransition.FadeIn(_roundText, .1f);

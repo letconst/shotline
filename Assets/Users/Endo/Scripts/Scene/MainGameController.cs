@@ -33,10 +33,12 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
     private const string RivalDisconnected     = "対戦相手が切断しました";
 
     private IDisposable _receiver;
+    private bool        _isClicked;
 
-    public static bool       isControllable; // 操作可能状態か
-    public static GameObject linePrefab;     // 射線プレハブ（1Pか2Pかで変動）
-    public static GameObject bulletPrefab;   // 弾プレハブ（同上）
+    public static bool       isControllable;           // 操作可能状態か
+    public static bool       isChangeableSceneToTitle; // タイトルに遷移可能な状態か
+    public static GameObject linePrefab;               // 射線プレハブ（1Pか2Pかで変動）
+    public static GameObject bulletPrefab;             // 弾プレハブ（同上）
     public static GameObject rivalBulletPrefab;
 
     private CinemachineTransposer      _vcam2Transposer;
@@ -46,8 +48,9 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
     {
         base.Awake();
 
-        _vcam2Transposer = vcam2.GetCinemachineComponent<CinemachineTransposer>();
-        _cmBlendList     = cmBlendListObject.GetComponent<CinemachineBlendListCamera>();
+        _vcam2Transposer         = vcam2.GetCinemachineComponent<CinemachineTransposer>();
+        _cmBlendList             = cmBlendListObject.GetComponent<CinemachineBlendListCamera>();
+        isChangeableSceneToTitle = false;
 
         if (NetworkManager.IsConnected)
         {
@@ -151,6 +154,35 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         }
     }
 
+    private void Update()
+    {
+        _isClicked = false;
+
+        if (!isChangeableSceneToTitle) return;
+
+        if (Input.touchCount > 0)
+        {
+            if (Input.GetTouch(0).phase == TouchPhase.Began)
+            {
+                _isClicked = true;
+            }
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            _isClicked = true;
+        }
+
+        // タイトルへの遷移フラグがあり、タッチされたらタイトルへ遷移する
+        if (_isClicked)
+        {
+            NetworkManager.Disconnect();
+            SystemSceneManager.LoadNextScene("Title", SceneTransition.Fade);
+            _statusText.text         = "";
+            isChangeableSceneToTitle = false;
+        }
+    }
+
     private async void OnReceived(SendData data)
     {
         var type = (EventType) Enum.Parse(typeof(EventType), data.Type);
@@ -244,9 +276,12 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 // 相手の敗北なら勝利表示
                 if (data.Rival.isLose && data.Rival.Uuid != SelfPlayerData.Uuid)
                 {
-                    Time.timeScale  = .1f;
-                    isControllable  = false;
-                    _roundText.text = "Win!";
+                    Time.timeScale   = .1f;
+                    isControllable   = false;
+                    _roundText.text  = "Win!";
+                    _statusText.text = "タップでタイトルに戻る";
+
+                    isChangeableSceneToTitle = true;
                     _inputBlocker.SetActive(true);
 
                     await FadeTransition.FadeIn(_roundText, .1f);
@@ -314,7 +349,8 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             case EventType.Refresh:
             {
                 // TODO: UI表示 && 状況に応じてタイトルに戻る
-                _statusText.text = RivalDisconnected;
+                _statusText.text         = RivalDisconnected;
+                isChangeableSceneToTitle = true;
 
                 break;
             }
