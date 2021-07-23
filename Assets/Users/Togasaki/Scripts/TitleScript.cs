@@ -27,7 +27,8 @@ public class TitleScript : MonoBehaviour
 
     private void Awake()
     {
-        _statusText = SystemProperty.StatusText;
+        Time.timeScale = 1;
+        _statusText    = SystemProperty.StatusText;
     }
 
     private void Start()
