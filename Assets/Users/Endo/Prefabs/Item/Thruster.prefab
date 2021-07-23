@@ -98,8 +98,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: bb1ad3088825a9f42aa4d97b94a452b7, type: 2}
   isAnimate: 0
-  MoveCountDown: 1
-  FlagCountDown: 1
+  MoveCountDown: 0.3
+  FlagCountDown: 0.3
 --- !u!65 &2446721868627780946
 BoxCollider:
   m_ObjectHideFlags: 0
