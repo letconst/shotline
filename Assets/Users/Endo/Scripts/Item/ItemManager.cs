@@ -183,6 +183,8 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
         Destroy(item.itemObject);
         item.managedMethod = null;
         item.itemObject    = null;
+
+        MainGameProperty.ItemSpawnPoints[item.index].isSpawned = false;
     }
 
     /// <summary>
