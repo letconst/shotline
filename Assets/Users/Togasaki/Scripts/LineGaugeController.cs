@@ -39,11 +39,13 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
     public void ManagedStart()
     {
         preslider.fillAmount = 1;
-        slider.fillAmount    = 1;
-        AbleDraw             = true;
-        holdAmount           = 0;
-        _isHold              = false;
-        _isHeal              = false;
+        slider.fillAmount = 1;
+        AbleDraw = true;
+        holdAmount = 0;
+        _isHold = false;
+        _isHeal = false;
+        LinearDraw._linearDrawOn = true;
+        LinearDraw._isLinearDraw = false;
 
         _playerTrf = GameObject.FindGameObjectWithTag("Player").transform;
     }
@@ -58,22 +60,44 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
     //描けるかどうかを返す
     public static bool LineGauge(float dis, ref float rdis)
     {
-
         bool result = true;
 
-        //もし引数disが範囲内だったらtrueを返す（shotlinedrawerで変数へ）
-        if (Instance.preslider.fillAmount > 0)
+        if (ShotLineDrawer.currentDis < 1)
         {
-            result = true;
-            Instance.preslider.fillAmount -= dis / Instance.MaxLinePower;
-            AbleDraw = false;
+            //��������dis���͈͓���������true��Ԃ��ishotlinedrawer�ŕϐ��ցj
+            if (Instance.preslider.fillAmount > dis / Instance.MaxLinePower)
+            {
+                //������dis���͈͓��̏ꍇ
+                result = true;
+                AbleDraw = true;
+                if (dis < 0) dis = 0;
+                Instance.preslider.fillAmount -= dis / Instance.MaxLinePower;
+            }
+            else
+            {
+                AbleDraw = false;
+                result = false;
+                if (Instance.preslider.fillAmount < (dis / Instance.MaxLinePower))
+                {
+                    rdis = Instance.preslider.fillAmount * Instance.MaxLinePower;
+                }
+                else
+                {
+                    rdis = Instance.preslider.fillAmount - (dis / Instance.MaxLinePower);
+                }
+
+                if (rdis < 0)
+                {
+                    rdis = 0;
+                    Instance.preslider.fillAmount = 0;
+                }
+                Instance.preslider.fillAmount -= rdis / Instance.MaxLinePower;
+            }
         }
         else
         {
             result = false;
-            rdis = dis - Instance.preslider.fillAmount;
         }
-
         return result;
     }
 
@@ -86,29 +110,19 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
             _isHold = false;
         }
 
-        //sliderの回復処理
-        //if (Instance.slider.fillAmount < 1)
-        //{
-        //    Instance.slider.fillAmount += Instance.HealingGauge;
-        //}
-
-        //presliderの回復処理
-        if (holdAmount < Instance.preslider.fillAmount || ShotLineDrawer.currentDis == 0)
+        //slider�̉񕜏���
+        if (Instance.slider.fillAmount < 1 && !ShotLineDrawer.DrawingData.Renderer.enabled)
         {
             Instance.slider.fillAmount += Instance.HealingGauge;
+        }
+
+        //preslider�̉񕜏���
+        if (Instance.preslider.fillAmount < 1 && !ShotLineDrawer.DrawingData.Renderer.enabled)
+        {
             Instance.preslider.fillAmount += Instance.HealingGauge;
         }
-        //if(ShotLineDrawer.currentDis == 0)
-        //{
-        //    _isHeal = true;
-        //}
 
-        //if (_isHeal)
-        //{
-        //    Instance.preslider.fillAmount += Instance.HealingGauge;
-        //}
-
-        if (!(Instance.preslider.fillAmount >= 1) && Instance.preslider.fillAmount > 0)
+        if (Instance.preslider.fillAmount > 0)
         {
             AbleDraw = true;
         }
@@ -120,16 +134,18 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
     public static void Clicked()
     {
         _isHold = true;
-        _isHeal = true;
         holdAmount = 0;
     }
+
     void DealSlider()
     {
+        //slider���ǂ��܂Ō��炷��
         if (Instance.slider.fillAmount <= Instance.preslider.fillAmount)
         {
             _isHold = false;
         }
 
+        //slider��preslider�̏���ʕ�����
         if (_isHold)
         {
             ShotLineDrawer.currentDis = 0;

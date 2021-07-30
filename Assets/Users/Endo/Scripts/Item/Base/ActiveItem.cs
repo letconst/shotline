@@ -18,6 +18,9 @@ public abstract class ActiveItem : ItemBase
 
         ItemManager.ItemBtn.onClick.RemoveAllListeners();
         ItemManager.ItemBtn.onClick.AddListener(() => OnClickButton());
+        NumQuantity.FA = 0;
+        NumQuantity.Instance.im.fillAmount = NumQuantity.FA;
+        LinearDraw._isLinearDraw = false;
     }
 
     /// <summary>
