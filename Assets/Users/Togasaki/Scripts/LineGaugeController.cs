@@ -34,6 +34,8 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
         AbleDraw = true;
         holdAmount = 0;
         _isHold = false;
+        LinearDraw._linearDrawOn = true;
+        LinearDraw._isLinearDraw = false;
     }
 
     private void Update()

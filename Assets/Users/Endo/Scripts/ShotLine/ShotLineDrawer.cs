@@ -365,7 +365,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
 
                     if (!isDraw)
                     {
-                        targetDataFingerPositions[1] = Vector3.Lerp(DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1], targetDataFingerPositions[1], rdis / dis);
+                        targetDataFingerPositions[1] = Vector3.Lerp(targetDataFingerPositions[0], targetDataFingerPositions[1], rdis / dis);
                     }
 
                     targetData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
