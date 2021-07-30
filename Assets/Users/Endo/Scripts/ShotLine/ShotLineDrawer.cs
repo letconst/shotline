@@ -210,7 +210,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                 {
                     UpdateLine(tmpMousePos);
                 }
-
             }
             else
             {
@@ -399,7 +398,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         // TODO: 射線長の上限
         if (LineGaugeController.AbleDraw)
         {
-            if (DrawingData == null)
+            if (DrawingData == null && !LinearDraw._isLinearDraw)
             {
                 Debug.LogError("ドロー中の射線データがありません");
 

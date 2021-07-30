@@ -62,8 +62,20 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
             {
                 AbleDraw = false;
                 result = false;
-                rdis = Instance.preslider.fillAmount - (dis / Instance.MaxLinePower);
-                if (rdis < 0) rdis = 0;
+                if (Instance.preslider.fillAmount < (dis / Instance.MaxLinePower))
+                {
+                    rdis = Instance.preslider.fillAmount * Instance.MaxLinePower;
+                }
+                else
+                {
+                    rdis = Instance.preslider.fillAmount - (dis / Instance.MaxLinePower);
+                }
+
+                if (rdis < 0)
+                {
+                    rdis = 0;
+                    Instance.preslider.fillAmount = 0;
+                }
                 Instance.preslider.fillAmount -= rdis / Instance.MaxLinePower;
             }
         }
