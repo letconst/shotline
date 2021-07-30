@@ -24,9 +24,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
     [SerializeField, Header("ラインゲージ")]
     private GameObject Gauge;
 
-    [SerializeField, Header("自分の位置")]
-    private GameObject centerPos;
-
     private GameObject _linePrefab;
     private bool       _isHoldClicking; // 射線を描いている最中か
     private Camera     _camera;
@@ -280,7 +277,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
             if (i == 0 && LinearDraw._isLinearDraw)
             {
                 //0でリニアドローだったら
-                DrawingData.Renderer.SetPosition(0, centerPos.transform.position);
+                DrawingData.Renderer.SetPosition(0, _playerTrf.position);
                 continue;
             }
 
@@ -346,8 +343,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
             {
                 if (_firstLinearDraw)
                 {
-                    DrawingData.FingerPositions[0] = centerPos.transform.position;
-                    targetDataFingerPositions[0] = centerPos.transform.position;
+                    DrawingData.FingerPositions[0] = _playerTrf.position;
+                    targetDataFingerPositions[0] = _playerTrf.position;
 
                     float rdis = 0;
                     float dis = Vector3.Distance(targetDataFingerPositions[0], targetDataFingerPositions[1]);
@@ -404,7 +401,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
             newFingerPos.z += lineZPos;
             Vector3 worldFingerPos = _camera.ScreenToWorldPoint(newFingerPos);
 
-            float dis = Vector3.Distance(DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1], newFingerPos);
+            float dis = Vector3.Distance(DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1], worldFingerPos);
             bool isDraw = LineGaugeController.LineGauge(dis, ref rdis);
             currentDis += dis / LineGaugeController.Instance.MaxLinePower;
             LineGaugeController.holdAmount = LineGaugeController.Instance.preslider.fillAmount;
