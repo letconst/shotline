@@ -60,20 +60,17 @@ public class PlayerController : MonoBehaviour
         isDamaged                         = true;
         MainGameProperty.InputBlocker.SetActive(true);
 
-        var data = new SendData(EventType.RoundUpdate)
-        {
-            Self = new PlayerData()
-        };
+        var roundUpdateReq = new RoundUpdateRequest();
 
         // 残機ゼロ時
         if (RoundManager.CurrentPlayerLife == 0)
         {
-            data.Self.isLose = true;
-            _roundText.text  = "Lose!";
-            _statusText.text = "タップでタイトルに戻る";
+            roundUpdateReq.IsLoseRival = true;
+            _roundText.text            = "Lose!";
+            _statusText.text           = "タップでタイトルに戻る";
 
             MainGameController.isChangeableSceneToTitle = true;
-            NetworkManager.Emit(data);
+            NetworkManager.Emit(roundUpdateReq);
 
             await FadeTransition.FadeIn(_roundText, .1f);
 
@@ -82,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
         // 通常被弾時
         _roundText.text = "Damaged!";
-        NetworkManager.Emit(data);
+        NetworkManager.Emit(roundUpdateReq);
 
         await FadeTransition.FadeIn(_roundText, .1f);
         await UniTask.Delay(TimeSpan.FromSeconds(1), true);
@@ -114,15 +111,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnPositionChanged(Vector3 pos)
     {
-        var data = new SendData(EventType.PlayerMove)
-        {
-            Self = new PlayerData
-            {
-                Position = pos,
-                Rotation = transform.rotation
-            }
-        };
+        var playerMoveReq = new PlayerMoveRequest(pos, transform.rotation);
 
-        NetworkManager.Emit(data);
+        NetworkManager.Emit(playerMoveReq);
     }
 }

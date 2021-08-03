@@ -27,7 +27,12 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
 
         // ラウンド進行を受信時にラウンド数更新
         NetworkManager.OnReceived
-                      ?.Where(x => x.Type.Equals("RoundUpdate") && !x.isReadyAttacker)
+                      ?.Where(x =>
+                      {
+                          if (!(x is RoundUpdateRequest res)) return false;
+
+                          return res.Type.Equals("RoundUpdate") && !res.IsReadyAttackedRival;
+                      })
                       .Subscribe(_ => CurrentRound++)
                       .AddTo(this);
     }

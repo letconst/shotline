@@ -134,23 +134,16 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         // 2Pが参加した瞬間に始まるため、少し遅延させる
         await UniTask.Delay(TimeSpan.FromSeconds(2));
 
-        var joinedData = new SendData(EventType.Joined)
-        {
-            Self = new PlayerData()
-        };
+        var joinedReq = new JoinedRequest();
 
-        NetworkManager.Emit(joinedData);
+        NetworkManager.Emit(joinedReq);
 
         // ホストならアイテム生成情報送信
         if (NetworkManager.IsOwner)
         {
-            var itemInitData = new SendData(EventType.ItemInit)
-            {
-                maxItemGenerateCount = ItemManager.MaxGenerateCount,
-                itemGenerateInterval = ItemManager.GenerateInterval
-            };
+            var itemInitReq = new ItemInitRequest();
 
-            NetworkManager.Emit(itemInitData);
+            NetworkManager.Emit(itemInitReq);
         }
     }
 
@@ -183,9 +176,10 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         }
     }
 
-    private async void OnReceived(SendData data)
+    private async void OnReceived(object res)
     {
-        var type = (EventType) Enum.Parse(typeof(EventType), data.Type);
+        var @base = (RequestBase) res;
+        var type  = (EventType) Enum.Parse(typeof(EventType), @base.Type);
 
         switch (type)
         {
@@ -214,9 +208,9 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 // ホストならラウンド開始通知
                 if (NetworkManager.IsOwner)
                 {
-                    var roundStartData = new SendData(EventType.RoundStart);
+                    var roundStartReq = new RequestBase(EventType.RoundStart);
 
-                    NetworkManager.Emit(roundStartData);
+                    NetworkManager.Emit(roundStartReq);
                 }
 
                 break;
@@ -225,8 +219,9 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             // 相手の移動時
             case EventType.PlayerMove:
             {
-                _rivalObject.transform.position = data.Rival.Position;
-                _rivalObject.transform.rotation = data.Rival.Rotation;
+                var innerRes = (PlayerMoveRequest) res;
+                _rivalObject.transform.position = innerRes.Position;
+                _rivalObject.transform.rotation = innerRes.Rotation;
 
                 break;
             }
@@ -234,11 +229,13 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             // アイテム生成通信受信時
             case EventType.ItemGenerate:
             {
+                var innerRes = (ItemGenerateRequest) res;
+
                 // ラウンド進行中は生成しない
                 if (RoundManager.RoundMove) return;
 
                 // 乱数シードをセットし、アイテムをランダム生成
-                Random.InitState(data.seed);
+                Random.InitState(innerRes.Seed);
                 ItemManager.GenerateRandomItem();
 
                 break;
@@ -247,8 +244,10 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             // 相手のアイテム取得時
             case EventType.ItemGet:
             {
+                var innerRes = (ItemGetRequest) res;
+
                 // 対象のアイテムオブジェクトを破棄
-                GameObject target = MainGameProperty.ItemSpawnPoints[data.generatedPointIndex].itemObject;
+                GameObject target = MainGameProperty.ItemSpawnPoints[innerRes.GeneratedPointIndex].itemObject;
                 ItemManager.DestroyItem(target);
 
                 break;
@@ -257,8 +256,9 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             // 相手のオブジェクト生成時
             case EventType.Instantiate:
             {
-                NetworkManager.SyncInstantiate(data.prefabName, data.instantiatePos, data.instantiateRot,
-                                               data.objectGuid);
+                var innerRes = (InstantiateRequest) res;
+                NetworkManager.SyncInstantiate(innerRes.PrefabName, innerRes.Position, innerRes.Rotation,
+                                               innerRes.ObjectGuid);
 
                 break;
             }
@@ -266,15 +266,18 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             // 相手のオブジェクト破棄時
             case EventType.Destroy:
             {
-                NetworkManager.SyncDestroy(data.objectGuid);
+                var innerRes = (DestroyRequest) res;
+                NetworkManager.SyncDestroy(innerRes.ObjectGuid);
 
                 break;
             }
 
             case EventType.RoundUpdate:
             {
+                var innerRes = (RoundUpdateRequest) res;
+
                 // 相手の敗北なら勝利表示
-                if (data.Rival.isLose && data.Rival.Uuid != SelfPlayerData.Uuid)
+                if (innerRes.IsLoseRival && innerRes.RivalUuid != SelfPlayerData.Uuid)
                 {
                     Time.timeScale   = .1f;
                     isControllable   = false;
@@ -288,7 +291,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 }
                 // 攻撃者のラウンド進行が終わり次第、操作可能に
                 // 攻撃者側も共通に処理
-                else if (data.isReadyAttacker)
+                else if (innerRes.IsReadyAttackedRival)
                 {
                     _statusText.text = "";
 
@@ -301,9 +304,9 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     _roundText.text            = "";
                     _inputBlocker.SetActive(false);
 
-                    var sendData = new SendData(EventType.RoundStart);
+                    var roundStartReq = new RequestBase(EventType.RoundStart);
 
-                    NetworkManager.Emit(sendData);
+                    NetworkManager.Emit(roundStartReq);
                 }
                 // 攻撃者のラウンド進行
                 else if (!PlayerController.isDamaged)
@@ -334,13 +337,9 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
 
                     // 攻撃者準備完了を送信
-                    var attackerData = new SendData(EventType.RoundUpdate)
-                    {
-                        Self            = new PlayerData(),
-                        isReadyAttacker = true
-                    };
+                    var roundUpdateReq = new RoundUpdateRequest(true);
 
-                    NetworkManager.Emit(attackerData);
+                    NetworkManager.Emit(roundUpdateReq);
                 }
 
                 break;
