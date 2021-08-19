@@ -36,6 +36,7 @@ public class RivalBulletManager : MonoBehaviour
         var innerRes = (BulletMoveRequest) res;
 
         // 生成された弾なら新規生成
+        // TODO: プーリング
         if (innerRes.IsGenerated)
         {
             GameObject newBullet = Instantiate(_rivalBulletPrefab, innerRes.Position, innerRes.Rotation);
