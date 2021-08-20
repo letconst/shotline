@@ -27,6 +27,9 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     //ƒ‰ƒCƒ“‚ğ‚Ğ‚¯‚é‚©‚Ç‚¤‚©
     public static bool AbleDraw;
 
+    //‰ñ•œó‘Ô‚©‚Ç‚¤‚©
+    public static bool _isHeal;
+
     private void Start()
     {
         preslider.fillAmount = 1;
@@ -36,6 +39,7 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
         _isHold = false;
         LinearDraw._linearDrawOn = true;
         LinearDraw._isLinearDraw = false;
+        _isHeal = true;
     }
 
     private void Update()
@@ -91,27 +95,30 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     //ƒQ[ƒW‰ñ•œ
     public static void HealGauge()
     {
-        ////slider‚ª0‚Ì‚Æ‚«_isHold‚ğfalse‚É‚·‚é
-        if (Instance.slider.fillAmount == 0)
+        if (_isHeal)
         {
-            _isHold = false;
-        }
+            ////slider‚ª0‚Ì‚Æ‚«_isHold‚ğfalse‚É‚·‚é
+            if (Instance.slider.fillAmount == 0)
+            {
+                _isHold = false;
+            }
 
-        //slider‚Ì‰ñ•œˆ—
-        if (Instance.slider.fillAmount < 1 && !ShotLineDrawer.DrawingData.Renderer.enabled)
-        {
-            Instance.slider.fillAmount += Instance.HealingGauge;
-        }
+            //slider‚Ì‰ñ•œˆ—
+            if (Instance.slider.fillAmount < 1)
+            {
+                Instance.slider.fillAmount += Instance.HealingGauge;
+            }
 
-        //preslider‚Ì‰ñ•œˆ—
-        if (Instance.preslider.fillAmount < 1 && !ShotLineDrawer.DrawingData.Renderer.enabled)
-        {
-            Instance.preslider.fillAmount += Instance.HealingGauge;
-        }
+            //preslider‚Ì‰ñ•œˆ—
+            if (Instance.preslider.fillAmount < (1 - ShotLineDrawer.currentDis))
+            {
+                Instance.preslider.fillAmount += Instance.HealingGauge;
+            }
 
-        if (Instance.preslider.fillAmount > 0)
-        {
-            AbleDraw = true;
+            if (Instance.preslider.fillAmount > 0)
+            {
+                AbleDraw = true;
+            }
         }
     }
 
@@ -122,22 +129,32 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     {
         _isHold = true;
         holdAmount = 0;
+    
+        _isHold = false;
+        Instance.slider.fillAmount -= ShotLineDrawer.currentDis;
+        Instance.preslider.fillAmount = Instance.slider.fillAmount;
+        ShotLineDrawer.currentDis = 0;
+
+
     }
 
     void DealSlider()
     {
         //slider‚ğ‚Ç‚±‚Ü‚ÅŒ¸‚ç‚·‚©
-        if (Instance.slider.fillAmount <= Instance.preslider.fillAmount)
-        {
-            _isHold = false;
-        }
+        //if (_isHeal && Instance.slider.fillAmount < (1 - ShotLineDrawer.currentDis))
+        //{
+        //    _isHold = false;
+        //    ShotLineDrawer.currentDis = 0;
+        //    Instance.slider.fillAmount -= ShotLineDrawer.currentDis;
+
+        //}
 
         //slider‚ğpreslider‚ÌÁ”ï—Ê•ªÁ‚·
-        if (_isHold)
-        {
-            ShotLineDrawer.currentDis = 0;
-            Instance.slider.fillAmount -= DealSliderSpeed;
-        }
+        //if (_isHold)
+        //{
+        //    ShotLineDrawer.currentDis = 0;
+        //    Instance.slider.fillAmount -= ShotLineDrawer.currentDis;
+        //}
     }
 
 }

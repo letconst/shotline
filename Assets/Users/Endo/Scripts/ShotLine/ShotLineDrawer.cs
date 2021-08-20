@@ -216,6 +216,9 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                 // 画面中央からのドローのみ受け付ける
                 if (Vector2.Distance(_screenCenterPos, mousePos) > drawableAreaRadius) return;
 
+                //ラインゲージ回復不可
+                LineGaugeController._isHeal = false;
+
                 //リニアドローオフの場合
                 _isHoldClicking = true;
             }
@@ -246,6 +249,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
         else if (Input.GetMouseButtonUp(0))
         {
             _isHoldClicking = false;
+            //ラインゲージ回復可能
+            LineGaugeController._isHeal = true;
         }
     }
 
