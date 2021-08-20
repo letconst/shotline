@@ -169,6 +169,9 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                         break;
                     }
 
+                    //ラインゲージ回復不可
+                    LineGaugeController._isHeal = false;
+
                     List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
 
                     if (Vector2.Distance(tmpFingerPos, drawingFingerPos[drawingFingerPos.Count - 1]) > lineFineness)
@@ -181,6 +184,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>
                 case TouchPhase.Ended:
                     _isHoldClicking = false;
                     _currentFingerId = -1;
+                    //ラインゲージ回復可能
+                    LineGaugeController._isHeal = true;
 
                     break;
             }
