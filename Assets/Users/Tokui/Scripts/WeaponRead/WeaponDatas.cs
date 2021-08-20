@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponDadas
+public class WeaponDatas
 {
     public string WeaponName;
 
