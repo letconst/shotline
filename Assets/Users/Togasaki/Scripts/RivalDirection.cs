@@ -33,7 +33,10 @@ public class RivalDirection : MonoBehaviour
         float radian = Mathf.Atan2(RivalCharacter.transform.position.z - PlayerCharacter.transform.position.z, RivalCharacter.transform.position.x - PlayerCharacter.transform.position.x);
         float deg = radian * (180 / 3.14f);
         arrowRT.rotation = Quaternion.Euler(0, 0, deg - 90);
+        
 
+        //‚±‚ê‚Å–îˆó‚ÌŠp“x‚ª•ª‚©‚é
+        //Debug.Log(deg);
     }
 
 }
