@@ -88,14 +88,23 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     {
         foreach (GeneratedItem item in GeneratedItems)
         {
+            if (item.managedMethod == null)
+            {
+                _destroyQueue.Enqueue(item);
+
+                continue;
+            }
+
             item.managedMethod.ManagedUpdate();
         }
     }
 
     private void LateUpdate()
     {
+        List<GeneratedItem> tmpQueue = new List<GeneratedItem>(_destroyQueue);
+
         // 削除キューがあれば対象を管轄リストから削除
-        foreach (GeneratedItem _ in _destroyQueue)
+        foreach (GeneratedItem _ in tmpQueue)
         {
             GeneratedItems.Remove(_destroyQueue.Dequeue());
         }
@@ -223,7 +232,7 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
 
         foreach (GeneratedItem item in GeneratedItems)
         {
-            DestroyItem(item, false);
+            DestroyItem(item);
         }
 
         // シールドが出現している場合はすべて破棄
