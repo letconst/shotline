@@ -33,7 +33,7 @@ public class Thruster : ActiveItem
         base.OnClickButton();
 
         //ボタンを押したとき移動速度1.5倍
-        Chara.speedRatio = 1.5f;
+        Chara.speedRatio = 5f;
 
         //ボタンを押したら弾のフラグ処理を true にする
         Chara.Thruster = true;
@@ -88,5 +88,8 @@ public class Thruster : ActiveItem
     public override void Terminate()
     {
         base.Terminate();
+
+        Chara.speedRatio = 1;
+        Chara.Thruster   = false;
     }
 }

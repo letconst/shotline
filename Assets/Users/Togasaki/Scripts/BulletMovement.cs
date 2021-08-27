@@ -14,10 +14,10 @@ public class BulletMovement : MonoBehaviour
         _selfInstanceId = GetInstanceID();
 
         // 生成されたことを相手に通知
-        SendData data = MakeSendData();
-        data.Self.bullet.isGenerated = true;
+        BulletMoveRequest req = MakeSendData();
+        req.IsGenerated = true;
 
-        NetworkManager.Emit(data);
+        NetworkManager.Emit(req);
 
         transform.ObserveEveryValueChanged(x => x.position)
                  .Subscribe(OnPositionChanged)
@@ -37,10 +37,10 @@ public class BulletMovement : MonoBehaviour
         if (!NetworkManager.IsConnected) return;
 
         // 破棄されたことを相手に通知
-        SendData data = MakeSendData();
-        data.Self.bullet.isDestroyed = true;
+        BulletMoveRequest req = MakeSendData();
+        req.IsDestroyed = true;
 
-        NetworkManager.Emit(data);
+        NetworkManager.Emit(req);
     }
 
     /// <summary>
@@ -49,24 +49,13 @@ public class BulletMovement : MonoBehaviour
     /// <param name="_"></param>
     private void OnPositionChanged(Vector3 _)
     {
-        SendData data = MakeSendData();
+        BulletMoveRequest data = MakeSendData();
 
         NetworkManager.Emit(data);
     }
 
-    private SendData MakeSendData()
+    private BulletMoveRequest MakeSendData()
     {
-        return new SendData(EventType.BulletMove)
-        {
-            Self = new PlayerData
-            {
-                bullet = new BulletData
-                {
-                    instanceId = _selfInstanceId,
-                    position   = transform.position,
-                    scale      = transform.localScale
-                }
-            }
-        };
+        return new BulletMoveRequest(_selfInstanceId, transform.position, transform.rotation, transform.localScale);
     }
 }

@@ -1,48 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
-
-public enum EventType
-{
-    Init,
-    Match,
-    Joined,
-    PlayerMove,
-    BulletMove,
-    RoundUpdate,
-    Disconnect,
-    Refresh,
-    Error
-}
 
 public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 {
     [SerializeField, Header("サーバーアドレス")]
     private string address = "localhost";
 
-    [SerializeField, Header("サーバーポート")]
-    private int port = 6080;
+    [SerializeField, Header("サーバーポート"), Range(0, 65535)]
+    private ushort port = 6080;
 
     private static UdpClient _client;
     private static Thread    _thread;
 
     private static Dictionary<string, GameObject> _players;
 
-    private static Subject<SendData> _receiverSubject;
+    private static Subject<object> _receiverSubject;
+
+    private static Dictionary<string, GameObject> _networkedObjects;
 
     /// <summary>
     /// 自身がホストか。部屋を立てたプレイヤーならtrueとなる。
     /// </summary>
     public static bool IsOwner { get; private set; }
 
-    public static IObservable<SendData> OnReceived => _receiverSubject;
+    public static IObservable<object> OnReceived => _receiverSubject;
 
     public static bool   IsConnected  { get; private set; } // サーバーに接続中か
     public static string RivalAddress { get; private set; }
@@ -52,7 +41,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     {
         base.Awake();
 
-        _receiverSubject       = new Subject<SendData>();
+        _receiverSubject       = new Subject<object>();
         SelfPlayerData.Address = address;
         SelfPlayerData.Port    = port;
 
@@ -76,7 +65,9 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// </summary>
     private static void Init()
     {
-        _players    = new Dictionary<string, GameObject>();
+        _players          = new Dictionary<string, GameObject>();
+        _networkedObjects = new Dictionary<string, GameObject>();
+
         _client     = null;
         _thread     = null;
         IsConnected = false;
@@ -116,16 +107,13 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <summary>
     /// サーバーから切断する
     /// </summary>
-    private static void Disconnect()
+    public static void Disconnect()
     {
         if (!IsConnected) return;
 
-        var data = new SendData(EventType.Disconnect)
-        {
-            Self = new PlayerData()
-        };
+        var disconnectReq = new DisconnectRequest();
 
-        Emit(data);
+        Emit(disconnectReq);
         Init();
         _client?.Close();
         _thread?.Abort();
@@ -146,7 +134,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
                 byte[]     received = _client.Receive(ref ep);
                 string     msg      = Encoding.UTF8.GetString(received);
 
-                SendData data = SendData.MakeJsonFrom(msg);
+                object data = ParseRequest(msg);
                 _receiverSubject.OnNext(data);
             }
         }
@@ -162,70 +150,198 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     }
 
     /// <summary>
+    /// 受信メッセージから適当なリクエストのJSONインスタンスを取得する
+    /// </summary>
+    /// <param name="msg">受信メッセージ</param>
+    /// <returns>JSONインスタンス</returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    private static object ParseRequest(string msg)
+    {
+        var data = RequestBase.MakeJsonFrom<RequestBase>(msg);
+        var type = (EventType) Enum.Parse(typeof(EventType), data.Type);
+
+        return type switch
+        {
+            EventType.Init         => RequestBase.MakeJsonFrom<InitRequest>(msg),
+            EventType.Match        => RequestBase.MakeJsonFrom<MatchRequest>(msg),
+            EventType.Joined       => RequestBase.MakeJsonFrom<JoinedRequest>(msg),
+            EventType.PlayerMove   => RequestBase.MakeJsonFrom<PlayerMoveRequest>(msg),
+            EventType.BulletMove   => RequestBase.MakeJsonFrom<BulletMoveRequest>(msg),
+            EventType.ItemInit     => RequestBase.MakeJsonFrom<ItemInitRequest>(msg),
+            EventType.ItemGenerate => RequestBase.MakeJsonFrom<ItemGenerateRequest>(msg),
+            EventType.ItemGet      => RequestBase.MakeJsonFrom<ItemGetRequest>(msg),
+            EventType.Instantiate  => RequestBase.MakeJsonFrom<InstantiateRequest>(msg),
+            EventType.Destroy      => RequestBase.MakeJsonFrom<DestroyRequest>(msg),
+            EventType.ShieldUpdate => RequestBase.MakeJsonFrom<ShieldUpdateRequest>(msg),
+            EventType.RoundStart   => RequestBase.MakeJsonFrom<RequestBase>(msg),
+            EventType.RoundUpdate  => RequestBase.MakeJsonFrom<RoundUpdateRequest>(msg),
+            EventType.Disconnect   => RequestBase.MakeJsonFrom<DisconnectRequest>(msg),
+            EventType.Refresh      => RequestBase.MakeJsonFrom<RefreshRequest>(msg),
+            EventType.Error        => RequestBase.MakeJsonFrom<ErrorRequest>(msg),
+            _                      => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    /// <summary>
     /// サーバーにデータを送信する
     /// </summary>
     /// <param name="data">送信データ</param>
-    public static void Emit(SendData data)
+    public static void Emit(RequestBase data)
     {
         if (!IsConnected) return;
 
-        string msg      = SendData.ParseSendData(data);
+        string msg      = RequestBase.ParseSendData(data);
         byte[] sendData = Encoding.ASCII.GetBytes(msg);
         _client.Send(sendData, sendData.Length);
     }
 
     /// <summary>
+    /// ネットワーク化されたGameObjectをプレハブパスから生成する
+    /// </summary>
+    /// <param name="prefabPath">生成するプレハブのパス</param>
+    /// <param name="position">生成位置</param>
+    /// <param name="rotation">回転</param>
+    /// <returns>生成されたGameObject</returns>
+    public static GameObject Instantiate(string prefabPath, Vector3 position, Quaternion rotation)
+    {
+        var        prefab = Resources.Load<GameObject>(prefabPath);
+        GameObject result = GameObject.Instantiate(prefab, position, rotation);
+        string     guid   = Guid.NewGuid().ToString("N");
+
+        result.OnDestroyAsObservable()
+              .Subscribe(_ => OnTargetDestroyed(guid))
+              .AddTo(result);
+
+        _networkedObjects.Add(guid, result);
+
+        // 生成されたことを他クライアントに通知
+        var req = new InstantiateRequest(prefabPath, guid, position, rotation);
+
+        Emit(req);
+
+        return result;
+    }
+
+    private static void OnTargetDestroyed(string guid)
+    {
+        _networkedObjects.Remove(guid);
+
+        var req = new DestroyRequest(guid);
+
+        Emit(req);
+    }
+
+    /// <summary>
+    /// ネットワーク化されたGameObjectをローカルで生成する（受信時用）
+    /// </summary>
+    /// <param name="prefabPath">生成するプレハブのパス</param>
+    /// <param name="position">生成位置</param>
+    /// <param name="rotation">回転</param>
+    /// <param name="guid"></param>
+    /// <returns>生成されたGameObject</returns>
+    public static GameObject SyncInstantiate(string prefabPath, Vector3 position, Quaternion rotation, string guid)
+    {
+        var        prefab = Resources.Load<GameObject>(prefabPath);
+        GameObject result = GameObject.Instantiate(prefab, position, rotation);
+
+        _networkedObjects.Add(guid, result);
+
+        return result;
+    }
+
+    /// <summary>
+    /// ネットワーク化されたGameObjectをローカルで破棄する（受信時用）
+    /// </summary>
+    /// <param name="guid"></param>
+    public static void SyncDestroy(string guid)
+    {
+        KeyValuePair<string, GameObject> target;
+
+        foreach (KeyValuePair<string, GameObject> networkedObject in _networkedObjects)
+        {
+            if (networkedObject.Key != guid) continue;
+
+            target = networkedObject;
+
+            break;
+        }
+
+        _networkedObjects.Remove(target.Key);
+        Destroy(target.Value);
+    }
+
+    /// <summary>
+    /// 指定したGameObjectのネットワークGUIDを取得する。ネットワーク化されていなければnullが返る。
+    /// </summary>
+    /// <param name="target"></param>
+    /// <returns>GUID</returns>
+    public static string GetGuid(GameObject target)
+    {
+        string result = null;
+
+        foreach (KeyValuePair<string, GameObject> networkedObject in _networkedObjects)
+        {
+            if (networkedObject.Value != target) continue;
+
+            result = networkedObject.Key;
+
+            break;
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// サーバーからのレスポンスのイベントに応じて処理を行う
     /// </summary>
-    /// <param name="data">受信データ</param>
-    private static void EventHandler(SendData data)
+    /// <param name="res">受信データ</param>
+    private static void EventHandler(object res)
     {
-        var type = (EventType) Enum.Parse(typeof(EventType), data.Type);
+        var tmp  = (RequestBase) res;
+        var type = (EventType) Enum.Parse(typeof(EventType), tmp.Type);
 
         switch (type)
         {
             case EventType.Init:
             {
+                var innerRes = (InitRequest) res;
                 _client.Client.ReceiveTimeout = 0;
-                SelfPlayerData.Uuid           = data.Self.Uuid;
+                SelfPlayerData.Uuid           = innerRes.Uuid;
 
                 // TODO: マップへの参加時にオブジェクト代入
-                _players.Add(data.Self.Uuid, null);
+                _players.Add(innerRes.Uuid, null);
 
                 break;
             }
 
             case EventType.Match:
             {
+                var innerRes = (MatchRequest) res;
+
                 // 相手情報を格納
-                // OPTIMIZE: 後発で参加したプレイヤーのUUIDがSelfで帰ってくるため、どうにかする
-                if (data.Self.Uuid == SelfPlayerData.Uuid)
+                if (innerRes.Uuid != SelfPlayerData.Uuid)
                 {
-                    _players.Add(data.Rival.Uuid, null);
-                    RivalAddress = data.Rival.Address;
-                    RivalPort    = data.Rival.Port;
+                    _players.Add(innerRes.Uuid, null);
                 }
-                else
-                {
-                    _players.Add(data.Self.Uuid, null);
-                    RivalAddress = data.Self.Address;
-                    RivalPort    = data.Self.Port;
-                    IsOwner      = true;
-                }
+
+                IsOwner = innerRes.IsOwner;
 
                 break;
             }
 
             case EventType.Refresh:
             {
-                KeyValuePair<string, GameObject>[] players = _players.ToArray();
+                var    innerRes   = (RefreshRequest) res;
+                string targetUuid = string.Empty;
 
-                foreach (KeyValuePair<string, GameObject> player in players)
+                foreach (KeyValuePair<string, GameObject> player in _players)
                 {
-                    if (data.Rival.Uuid != player.Key) continue;
+                    if (innerRes.RivalUuid != player.Key) continue;
 
-                    _players.Remove(player.Key);
+                    targetUuid = player.Key;
                 }
+
+                _players.Remove(targetUuid);
 
                 // TODO: 対戦相手切断UI表示 && 状況に応じてタイトルに戻す
 
@@ -234,7 +350,8 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
             case EventType.Error:
             {
-                Debug.LogError(data.Message);
+                var innerRes = (ErrorRequest) res;
+                Debug.LogError(innerRes.Message);
 
                 break;
             }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -60,17 +60,17 @@ public class PlayerController : MonoBehaviour
         isDamaged                         = true;
         MainGameProperty.InputBlocker.SetActive(true);
 
-        var data = new SendData(EventType.RoundUpdate)
-        {
-            Self = new PlayerData()
-        };
+        var roundUpdateReq = new RoundUpdateRequest();
 
         // 残機ゼロ時
         if (RoundManager.CurrentPlayerLife == 0)
         {
-            data.Self.isLose = true;
-            _roundText.text  = "Lose!";
-            NetworkManager.Emit(data);
+            roundUpdateReq.IsLoseRival = true;
+            _roundText.text            = "Lose!";
+            _statusText.text           = "タップでタイトルに戻る";
+
+            MainGameController.isChangeableSceneToTitle = true;
+            NetworkManager.Emit(roundUpdateReq);
 
             await FadeTransition.FadeIn(_roundText, .1f);
 
@@ -79,36 +79,25 @@ public class PlayerController : MonoBehaviour
 
         // 通常被弾時
         _roundText.text = "Damaged!";
-        NetworkManager.Emit(data);
+        NetworkManager.Emit(roundUpdateReq);
 
         await FadeTransition.FadeIn(_roundText, .1f);
-        await UniTask.Delay(TimeSpan.FromSeconds(.5f), true);
+        await UniTask.Delay(TimeSpan.FromSeconds(1), true);
         await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
 
         _roundText.text = "";
         Time.timeScale  = 1;
 
+        // 生成アイテムをリセット
+        ItemManager.ClearGeneratedItem();
+
         // 各プレイヤーを所定位置に戻す
-        // TODO: 位置はランダムにするため、本来はサーバーで計算
-        gameObject.SetActive(false);
-        _rivalObject.SetActive(false);
-
-        if (NetworkManager.IsOwner)
-        {
-            gameObject.transform.position = MainGameProperty.Instance.startPos1P.position;
-            _rivalObject.transform.position  = MainGameProperty.Instance.startPos2P.position;
-        }
-        else
-        {
-            gameObject.transform.position = MainGameProperty.Instance.startPos2P.position;
-            _rivalObject.transform.position  = MainGameProperty.Instance.startPos1P.position;
-        }
-
-        gameObject.SetActive(true);
-        _rivalObject.SetActive(true);
+        MainGameController.Instance.ResetPlayersPosition();
 
         // 描画中かもしれない射線を開放
         ShotLineUtil.FreeLineData(ShotLineDrawer.DrawingData);
+
+        Projectile.DestroyAllBullets();
 
         _roundText.text = $"Round {RoundManager.CurrentRound.ToString()}";
 
@@ -122,15 +111,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnPositionChanged(Vector3 pos)
     {
-        var data = new SendData(EventType.PlayerMove)
-        {
-            Self = new PlayerData
-            {
-                Position = pos,
-                Rotation = transform.rotation
-            }
-        };
+        var playerMoveReq = new PlayerMoveRequest(pos, transform.rotation);
 
-        NetworkManager.Emit(data);
+        NetworkManager.Emit(playerMoveReq);
     }
 }
