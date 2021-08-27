@@ -1,5 +1,4 @@
-﻿
-public class WeaponDatas
+﻿public class WeaponDatas
 {
     public string WeaponName;
 

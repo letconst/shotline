@@ -14,5 +14,4 @@ public class WeaponManager : MonoBehaviour ,IManagedMethod
     {
         
     }
-
 }
