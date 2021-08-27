@@ -1,64 +1,73 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
+public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, IManagedMethod
 {
-    [SerializeField, Header("—\ƒQ[ƒW")]
+    [SerializeField, Header("äºˆå‘Šã‚²ãƒ¼ã‚¸")]
     public Image preslider;
 
-    [SerializeField, Header("–{ƒQ[ƒW")]
+    [SerializeField, Header("æœ¬ã‚²ãƒ¼ã‚¸")]
     public Image slider;
 
-    [SerializeField, Header("ËüƒQ[ƒWÅ‘å—Ê"), Range(0, 100)]
+    [SerializeField, Header("å°„ç·šã‚²ãƒ¼ã‚¸æœ€å¤§é‡"), Range(0, 100)]
     public float MaxLinePower = 100;
 
-    [SerializeField, Header("‰ñ•œƒXƒs[ƒh")]
+    [SerializeField, Header("å›å¾©ã‚¹ãƒ”ãƒ¼ãƒ‰")]
     private float HealingGauge = 0.001f;
 
-    [SerializeField,Header("–{ƒQ[ƒW‚ÌÁ”ïƒXƒs[ƒh"),Range(0.0001f,0.8f)]
+    [SerializeField,Header("æœ¬ã‚²ãƒ¼ã‚¸ã®æ¶ˆè²»ã‚¹ãƒ”ãƒ¼ãƒ‰"),Range(0.0001f,0.8f)]
     private float DealSliderSpeed = 0.0001f;
 
-    //—\ƒQ[ƒW‚Ì—Ê
+    [SerializeField, Header("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¸ã®è¿½å¾“æ™‚ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆå€¤")]
+    private Vector3 followOffset;
+
+    //äºˆå‘Šã‚²ãƒ¼ã‚¸ã®é‡
     public static float holdAmount;
 
-    //—\ƒQ[ƒW‚Ì—Ê‚ğƒz[ƒ‹ƒh‚·‚é‚©‚Ç‚¤‚©
+    //äºˆå‘Šã‚²ãƒ¼ã‚¸ã®é‡ã‚’ãƒ›ãƒ¼ãƒ«ãƒ‰ã™ã‚‹ã‹ã©ã†ã‹
     private static bool _isHold;
 
-    //ƒ‰ƒCƒ“‚ğ‚Ğ‚¯‚é‚©‚Ç‚¤‚©
+    //ãƒ©ã‚¤ãƒ³ã‚’ã²ã‘ã‚‹ã‹ã©ã†ã‹
     public static bool AbleDraw;
 
-    //‰ñ•œó‘Ô‚©‚Ç‚¤‚©
+    //å›å¾©çŠ¶æ…‹ã‹ã©ã†ã‹
     public static bool _isHeal;
 
-    private void Start()
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Transform
+    private Transform _playerTrf;
+
+    public void ManagedStart()
     {
-        preslider.fillAmount = 1;
-        slider.fillAmount = 1;
-        AbleDraw = true;
-        holdAmount = 0;
-        _isHold = false;
+        preslider.fillAmount     = 1;
+        slider.fillAmount        = 1;
+        AbleDraw                 = true;
+        holdAmount               = 0;
+        _isHold                  = false;
         LinearDraw._linearDrawOn = true;
         LinearDraw._isLinearDraw = false;
-        _isHeal = true;
+        _isHeal                  = true;
+        
+        _playerTrf = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    private void Update()
+    public void ManagedUpdate()
     {
         HealGauge();
         DealSlider();
+        FollowToPlayer();
     }
 
-    //•`‚¯‚é‚©‚Ç‚¤‚©‚ğ•Ô‚·
+    //æã‘ã‚‹ã‹ã©ã†ã‹ã‚’è¿”ã™
     public static bool LineGauge(float dis, ref float rdis)
     {
         bool result = true;
 
         if (ShotLineDrawer.currentDis < 1)
         {
-            //‚à‚µˆø”dis‚ª”ÍˆÍ“à‚¾‚Á‚½‚çtrue‚ğ•Ô‚·ishotlinedrawer‚Å•Ï”‚Öj
+            //ã‚‚ã—å¼•æ•°disãŒç¯„å›²å†…ã ã£ãŸã‚‰trueã‚’è¿”ã™ï¼ˆshotlinedrawerã§å¤‰æ•°ã¸ï¼‰
             if (Instance.preslider.fillAmount > dis / Instance.MaxLinePower)
             {
-                //‚±‚±‚Édis‚ª”ÍˆÍ“à‚Ìê‡
+                //ã“ã“ã«disãŒç¯„å›²å†…ã®å ´åˆ
                 result = true;
                 AbleDraw = true;
                 if (dis < 0) dis = 0;
@@ -92,24 +101,24 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
         return result;
     }
 
-    //ƒQ[ƒW‰ñ•œ
+    //ã‚²ãƒ¼ã‚¸å›å¾©
     public static void HealGauge()
     {
         if (_isHeal)
         {
-            ////slider‚ª0‚Ì‚Æ‚«_isHold‚ğfalse‚É‚·‚é
+            ////sliderãŒ0ã®ã¨ã_isHoldã‚’falseã«ã™ã‚‹
             if (Instance.slider.fillAmount == 0)
             {
                 _isHold = false;
             }
 
-            //slider‚Ì‰ñ•œˆ—
+            //sliderã®å›å¾©å‡¦ç†
             if (Instance.slider.fillAmount < 1)
             {
                 Instance.slider.fillAmount += Instance.HealingGauge;
             }
 
-            //preslider‚Ì‰ñ•œˆ—
+            //presliderã®å›å¾©å‡¦ç†
             if (Instance.preslider.fillAmount < (1 - ShotLineDrawer.currentDis))
             {
                 Instance.preslider.fillAmount += Instance.HealingGauge;
@@ -123,8 +132,8 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
     }
 
 
-    //ËŒ‚‚ªs‚í‚ê‚½‚ç–{ƒQ[ƒW‚ğŒ¸‚ç‚·ˆ—
-    //ƒrƒbƒOƒoƒŒƒbƒg‚Å‚ÌËŒ‚‚ªs‚í‚ê‚½‚ç–{ƒQ[ƒW‚ğŒ¸‚ç‚·ˆ—
+    //å°„æ’ƒãŒè¡Œã‚ã‚ŒãŸã‚‰æœ¬ã‚²ãƒ¼ã‚¸ã‚’æ¸›ã‚‰ã™å‡¦ç†
+    //ãƒ“ãƒƒã‚°ãƒãƒ¬ãƒƒãƒˆã§ã®å°„æ’ƒãŒè¡Œã‚ã‚ŒãŸã‚‰æœ¬ã‚²ãƒ¼ã‚¸ã‚’æ¸›ã‚‰ã™å‡¦ç†
     public static void Clicked()
     {
         _isHold = true;
@@ -140,7 +149,7 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
 
     void DealSlider()
     {
-        //slider‚ğ‚Ç‚±‚Ü‚ÅŒ¸‚ç‚·‚©
+        //sliderã‚’ã©ã“ã¾ã§æ¸›ã‚‰ã™ã‹
         //if (_isHeal && Instance.slider.fillAmount < (1 - ShotLineDrawer.currentDis))
         //{
         //    _isHold = false;
@@ -149,7 +158,7 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
 
         //}
 
-        //slider‚ğpreslider‚ÌÁ”ï—Ê•ªÁ‚·
+        //sliderã‚’presliderã®æ¶ˆè²»é‡åˆ†æ¶ˆã™
         //if (_isHold)
         //{
         //    ShotLineDrawer.currentDis = 0;
@@ -157,4 +166,11 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
         //}
     }
 
+    /// <summary>
+    /// ã‚²ãƒ¼ã‚¸UIã®ä½ç½®ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«è¿½å¾“ã•ã›ã‚‹
+    /// </summary>
+    private void FollowToPlayer()
+    {
+        transform.position = _playerTrf.position + followOffset;
+    }
 }

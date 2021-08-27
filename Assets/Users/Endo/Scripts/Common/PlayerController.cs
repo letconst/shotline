@@ -115,4 +115,56 @@ public class PlayerController : MonoBehaviour
 
         NetworkManager.Emit(playerMoveReq);
     }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+         
+
+        if (hit.gameObject.tag == "Wall")
+        {
+            // どちらに当たったかの方向を取得
+
+            // xとzの値を絶対値に変換
+            // その後、xとzどちらの値が大きいか判別
+            // 大きい方の方向の値をプラスかマイナスで判別
+
+            // X方向の絶対値
+            float AbsX = Mathf.Abs(hit.point.normalized.x);
+            // Z方向の絶対値
+            float AbsZ = Mathf.Abs(hit.point.normalized.z);
+
+
+            // XとZを比較
+
+            // Xが大きい場合
+            bool Xpoint = AbsX > AbsZ;
+            // Zが大きい場合
+            bool Zpoint = AbsZ > AbsX;
+
+
+            if (hit.point.normalized.x >= 0.1 & Xpoint)
+            {
+                Debug.Log("Left");
+            }
+
+            else if (hit.point.normalized.x <= -0.1 & Xpoint)
+            {
+                Debug.Log("Right");
+            }
+
+            else if (hit.point.normalized.z >= 0.1 & Zpoint)
+            {
+                Debug.Log("Botom");
+            }
+
+            else if (hit.point.normalized.z <= -0.1 & Zpoint)
+            {
+                Debug.Log("Top");
+            }
+
+            // ↓この情報で斜めの場合は絶対値にする
+            // どちらもまったく同じ場合は一旦無視
+            //Debug.Log(hit.point.normalized);
+        }
+    }
 }
