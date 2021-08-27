@@ -17,12 +17,13 @@ public class ShotLineAnimation : MonoBehaviour
     {
         if (Projectile.One)
         {
-            animator.SetBool("Walk", true);
+            animator.Play("Player@Firing Rifle", 0, 0);
         }
-        else
+
+        if(CharaMove.IsMoving)
         {
-            animator.SetBool("Walk", false);
-            
+            animator.Play("Player@Walk Forward", 0, 0);
         }
+
     }
 }
