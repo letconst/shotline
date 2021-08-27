@@ -12,6 +12,12 @@ public class RivalDirection : MonoBehaviour
     [SerializeField, Header("MAX位置Y")]
     private float maxPosY = 640;
 
+    //メインカメラ参照
+    private Camera targetCamera;
+
+    //画面内判定用Rect
+    Rect rect = new Rect(0, 0, 1, 1);
+
     //プレイヤー格納変数
     GameObject PlayerCharacter;
 
@@ -21,10 +27,6 @@ public class RivalDirection : MonoBehaviour
     //イメージのrectTransform
     RectTransform arrowRT;
 
-    //rectTransform位置
-    float posX;
-    float posY;
-
     //位置の割合
     float ratio;
 
@@ -33,15 +35,16 @@ public class RivalDirection : MonoBehaviour
         PlayerCharacter = GameObject.FindGameObjectWithTag("Player");
         RivalCharacter = GameObject.FindGameObjectWithTag("Rival");
         arrowRT = Arrow.rectTransform;
-
+        targetCamera = Camera.main;
     }
 
     void Update()
     {
         Direction();
+        CheckInScreen();
     }
 
-    private void Direction()
+    void Direction()
     {
         float radian = Mathf.Atan2(RivalCharacter.transform.position.z - PlayerCharacter.transform.position.z, RivalCharacter.transform.position.x - PlayerCharacter.transform.position.x);
         float deg = radian * (180 / 3.14f);
@@ -90,5 +93,18 @@ public class RivalDirection : MonoBehaviour
 
     }
 
-    
+    void CheckInScreen()
+    {
+        var viewportPos = targetCamera.WorldToViewportPoint(RivalCharacter.transform.position);
+
+        if (rect.Contains(viewportPos))
+        {
+            Arrow.enabled = false;
+        }
+        else
+        {
+            Arrow.enabled = true;
+        }
+    }
+
 }
