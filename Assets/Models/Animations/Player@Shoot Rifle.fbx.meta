@@ -1,24 +1,15 @@
 fileFormatVersion: 2
-guid: 28e62b13461c9aa47861e2725843f526
+guid: 6131d5612ce1fa24f96fc65ab9675380
 ModelImporter:
   serializedVersion: 20200
-  internalIDToNameTable: []
-  externalObjects:
+  internalIDToNameTable:
   - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: lambert4
-    second: {fileID: 2100000, guid: d5301f3d0f21f15479c6be982b2a3599, type: 2}
+      74: 1827226128182048838
+    second: Take 001
   - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: player_tex
-    second: {fileID: 2100000, guid: cfbd64acbc3a12448986bf2e9d9a546a, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: player_tex_02
-    second: {fileID: 2100000, guid: ee4fc90377c12d341a4078aee86baae8, type: 2}
+      74: -203655887218126122
+    second: mixamo.com
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0

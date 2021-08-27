@@ -179,6 +179,9 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
                         break;
                     }
 
+                    //ラインゲージ回復不可
+                    LineGaugeController._isHeal = false;
+
                     List<Vector3> drawingFingerPos = DrawingData.FingerPositions;
                     Vector3       tmpTouchPos      = touchPos;
                     tmpTouchPos.z += lineZPos;
@@ -200,6 +203,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
                 case TouchPhase.Ended:
                     _isHoldClicking  = false;
                     _currentFingerId = -1;
+                    //ラインゲージ回復可能
+                    LineGaugeController._isHeal = true;
 
                     break;
             }
@@ -237,6 +242,9 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
             {
                 // 画面中央からのドローのみ受け付ける
                 if (Vector2.Distance(_screenCenterPos, mousePos) > drawableAreaRadius) return;
+
+                //ラインゲージ回復不可
+                LineGaugeController._isHeal = false;
 
                 //リニアドローオフの場合
                 _isHoldClicking = true;
@@ -276,6 +284,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
         else if (Input.GetMouseButtonUp(0))
         {
             _isHoldClicking = false;
+            //ラインゲージ回復可能
+            LineGaugeController._isHeal = true;
         }
     }
 

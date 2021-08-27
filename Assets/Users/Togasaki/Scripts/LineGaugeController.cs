@@ -1,73 +1,64 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, IManagedMethod
+public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>
 {
-    [SerializeField, Header("äºˆå‘Šã‚²ãƒ¼ã‚¸")]
+    [SerializeField, Header("—\ƒQ[ƒW")]
     public Image preslider;
 
-    [SerializeField, Header("æœ¬ã‚²ãƒ¼ã‚¸")]
+    [SerializeField, Header("–{ƒQ[ƒW")]
     public Image slider;
 
-    [SerializeField, Header("å°„ç·šã‚²ãƒ¼ã‚¸æœ€å¤§é‡"), Range(0, 100)]
+    [SerializeField, Header("ËüƒQ[ƒWÅ‘å—Ê"), Range(0, 100)]
     public float MaxLinePower = 100;
 
-    [SerializeField, Header("å›å¾©ã‚¹ãƒ”ãƒ¼ãƒ‰")]
+    [SerializeField, Header("‰ñ•œƒXƒs[ƒh")]
     private float HealingGauge = 0.001f;
 
-    [SerializeField,Header("æœ¬ã‚²ãƒ¼ã‚¸ã®æ¶ˆè²»ã‚¹ãƒ”ãƒ¼ãƒ‰"),Range(0.0001f,0.8f)]
+    [SerializeField,Header("–{ƒQ[ƒW‚ÌÁ”ïƒXƒs[ƒh"),Range(0.0001f,0.8f)]
     private float DealSliderSpeed = 0.0001f;
 
-    [SerializeField, Header("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¸ã®è¿½å¾“æ™‚ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆå€¤")]
-    private Vector3 followOffset;
-
-    //äºˆå‘Šã‚²ãƒ¼ã‚¸ã®é‡
+    //—\ƒQ[ƒW‚Ì—Ê
     public static float holdAmount;
 
-    //äºˆå‘Šã‚²ãƒ¼ã‚¸ã®é‡ã‚’ãƒ›ãƒ¼ãƒ«ãƒ‰ã™ã‚‹ã‹ã©ã†ã‹
+    //—\ƒQ[ƒW‚Ì—Ê‚ğƒz[ƒ‹ƒh‚·‚é‚©‚Ç‚¤‚©
     private static bool _isHold;
 
-    //ãƒ©ã‚¤ãƒ³ã‚’ã²ã‘ã‚‹ã‹ã©ã†ã‹
+    //ƒ‰ƒCƒ“‚ğ‚Ğ‚¯‚é‚©‚Ç‚¤‚©
     public static bool AbleDraw;
 
-    //presliderã‚’å›å¾©ã§ãã‚‹ã‹ã©ã†ã‹
+    //‰ñ•œó‘Ô‚©‚Ç‚¤‚©
     public static bool _isHeal;
 
-    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Transform
-    private Transform _playerTrf;
-
-    public void ManagedStart()
+    private void Start()
     {
         preslider.fillAmount = 1;
         slider.fillAmount = 1;
         AbleDraw = true;
         holdAmount = 0;
         _isHold = false;
-        _isHeal = false;
         LinearDraw._linearDrawOn = true;
         LinearDraw._isLinearDraw = false;
-
-        _playerTrf = GameObject.FindGameObjectWithTag("Player").transform;
+        _isHeal = true;
     }
 
-    public void ManagedUpdate()
+    private void Update()
     {
         HealGauge();
         DealSlider();
-        FollowToPlayer();
     }
 
-    //æã‘ã‚‹ã‹ã©ã†ã‹ã‚’è¿”ã™
+    //•`‚¯‚é‚©‚Ç‚¤‚©‚ğ•Ô‚·
     public static bool LineGauge(float dis, ref float rdis)
     {
         bool result = true;
 
         if (ShotLineDrawer.currentDis < 1)
         {
-            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½disï¿½ï¿½ï¿½ÍˆÍ“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½trueï¿½ï¿½Ô‚ï¿½ï¿½ishotlinedrawerï¿½Å•Ïï¿½ï¿½Öj
+            //‚à‚µˆø”dis‚ª”ÍˆÍ“à‚¾‚Á‚½‚çtrue‚ğ•Ô‚·ishotlinedrawer‚Å•Ï”‚Öj
             if (Instance.preslider.fillAmount > dis / Instance.MaxLinePower)
             {
-                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½disï¿½ï¿½ï¿½ÍˆÍ“ï¿½ï¿½Ìê‡
+                //‚±‚±‚Édis‚ª”ÍˆÍ“à‚Ìê‡
                 result = true;
                 AbleDraw = true;
                 if (dis < 0) dis = 0;
@@ -101,63 +92,69 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
         return result;
     }
 
-    //ã‚²ãƒ¼ã‚¸å›å¾©
+    //ƒQ[ƒW‰ñ•œ
     public static void HealGauge()
     {
-        ////sliderãŒ0ã®ã¨ã_isHoldã‚’falseã«ã™ã‚‹
-        if (Instance.slider.fillAmount == 0)
+        if (_isHeal)
         {
-            _isHold = false;
-        }
+            ////slider‚ª0‚Ì‚Æ‚«_isHold‚ğfalse‚É‚·‚é
+            if (Instance.slider.fillAmount == 0)
+            {
+                _isHold = false;
+            }
 
-        //sliderï¿½Ì‰ñ•œï¿½ï¿½ï¿½
-        if (Instance.slider.fillAmount < 1 && !ShotLineDrawer.DrawingData.Renderer.enabled)
-        {
-            Instance.slider.fillAmount += Instance.HealingGauge;
-        }
+            //slider‚Ì‰ñ•œˆ—
+            if (Instance.slider.fillAmount < 1)
+            {
+                Instance.slider.fillAmount += Instance.HealingGauge;
+            }
 
-        //presliderï¿½Ì‰ñ•œï¿½ï¿½ï¿½
-        if (Instance.preslider.fillAmount < 1 && !ShotLineDrawer.DrawingData.Renderer.enabled)
-        {
-            Instance.preslider.fillAmount += Instance.HealingGauge;
-        }
+            //preslider‚Ì‰ñ•œˆ—
+            if (Instance.preslider.fillAmount < (1 - ShotLineDrawer.currentDis))
+            {
+                Instance.preslider.fillAmount += Instance.HealingGauge;
+            }
 
-        if (Instance.preslider.fillAmount > 0)
-        {
-            AbleDraw = true;
+            if (Instance.preslider.fillAmount > 0)
+            {
+                AbleDraw = true;
+            }
         }
     }
 
 
-    //å°„æ’ƒãŒè¡Œã‚ã‚ŒãŸã‚‰æœ¬ã‚²ãƒ¼ã‚¸ã‚’æ¸›ã‚‰ã™å‡¦ç†
-    //ãƒ“ãƒƒã‚°ãƒãƒ¬ãƒƒãƒˆã§ã®å°„æ’ƒãŒè¡Œã‚ã‚ŒãŸã‚‰æœ¬ã‚²ãƒ¼ã‚¸ã‚’æ¸›ã‚‰ã™å‡¦ç†
+    //ËŒ‚‚ªs‚í‚ê‚½‚ç–{ƒQ[ƒW‚ğŒ¸‚ç‚·ˆ—
+    //ƒrƒbƒOƒoƒŒƒbƒg‚Å‚ÌËŒ‚‚ªs‚í‚ê‚½‚ç–{ƒQ[ƒW‚ğŒ¸‚ç‚·ˆ—
     public static void Clicked()
     {
         _isHold = true;
         holdAmount = 0;
+    
+        _isHold = false;
+        Instance.slider.fillAmount -= ShotLineDrawer.currentDis;
+        Instance.preslider.fillAmount = Instance.slider.fillAmount;
+        ShotLineDrawer.currentDis = 0;
+
+
     }
 
     void DealSlider()
     {
-        //sliderï¿½ï¿½ï¿½Ç‚ï¿½ï¿½Ü‚ÅŒï¿½ï¿½ç‚·ï¿½ï¿½
-        if (Instance.slider.fillAmount <= Instance.preslider.fillAmount)
-        {
-            _isHold = false;
-        }
+        //slider‚ğ‚Ç‚±‚Ü‚ÅŒ¸‚ç‚·‚©
+        //if (_isHeal && Instance.slider.fillAmount < (1 - ShotLineDrawer.currentDis))
+        //{
+        //    _isHold = false;
+        //    ShotLineDrawer.currentDis = 0;
+        //    Instance.slider.fillAmount -= ShotLineDrawer.currentDis;
 
-        //sliderï¿½ï¿½presliderï¿½Ìï¿½ï¿½ï¿½Ê•ï¿½ï¿½ï¿½ï¿½ï¿½
-        if (_isHold)
-        {
-            ShotLineDrawer.currentDis = 0;
-            Instance.slider.fillAmount -= DealSliderSpeed;
-        }
+        //}
+
+        //slider‚ğpreslider‚ÌÁ”ï—Ê•ªÁ‚·
+        //if (_isHold)
+        //{
+        //    ShotLineDrawer.currentDis = 0;
+        //    Instance.slider.fillAmount -= ShotLineDrawer.currentDis;
+        //}
     }
 
-    /// <summary>
-    /// ã‚²ãƒ¼ã‚¸UIã®ä½ç½®ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«è¿½å¾“ã•ã›ã‚‹
-    /// </summary>
-    private void FollowToPlayer()
-    {
-        transform.position = _playerTrf.position + followOffset;
-    }
 }
