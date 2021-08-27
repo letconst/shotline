@@ -52,8 +52,12 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         CurrentPlayerLife = PlayerLife;
         CurrentRound      = 1;
 
-        SuddenDeathFlag = true;
-        SuddenDeathStartText.SetActive(false);
+        SuddenDeathFlag = false;
+
+        if (SuddenDeathStartText != null)
+        {
+            SuddenDeathStartText.SetActive(false);
+        }
 
         // ラウンド進行を受信時にラウンド数更新
         NetworkManager.OnReceived
