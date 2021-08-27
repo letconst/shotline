@@ -12,7 +12,7 @@ public class RivalDirection : MonoBehaviour
     [SerializeField, Header("MAX位置Y")]
     private float maxPosY = 640;
 
-    //メインカメラ参照
+    [SerializeField,Header("追従カメラ取得")]
     private Camera targetCamera;
 
     //画面内判定用Rect
@@ -35,7 +35,6 @@ public class RivalDirection : MonoBehaviour
         PlayerCharacter = GameObject.FindGameObjectWithTag("Player");
         RivalCharacter = GameObject.FindGameObjectWithTag("Rival");
         arrowRT = Arrow.rectTransform;
-        targetCamera = Camera.main;
     }
 
     void Update()
