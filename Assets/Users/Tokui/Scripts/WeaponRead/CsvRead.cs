@@ -2,12 +2,12 @@
 using UnityEngine;
 using System.IO;
 
-public class CsvRead : MonoBehaviour
+public class CsvRead : MonoBehaviour ,IManagedMethod
 {
     TextAsset csvFile; // CSVファイル
     List<string[]> csvDatas = new List<string[]>(); // CSVの中身を入れるリスト;
 
-    public void Start()
+    public void ManagedStart()
     {
         csvFile = Resources.Load("Data/WeaponData") as TextAsset; // Resouces下のCSV読み込み
         StringReader reader = new StringReader(csvFile.text);
@@ -21,20 +21,26 @@ public class CsvRead : MonoBehaviour
             csvDatas.Add(line.Split(',')); // , 区切りでリストに追加
         }
 
-        foreach(string[] Row in csvDatas)
+        foreach (string[] Row in csvDatas)
         {
-            WeaponManager.weaponDatas.Add(new WeaponDatas {
+            WeaponManager.weaponDatas.Add(new WeaponDatas
+            {
                 WeaponName = Row[0],
                 PrefabsName = Row[1],
                 BulletSpeed = float.Parse(Row[2]),
                 GaugeMax = float.Parse(Row[3]),
                 GaugeRecovery = float.Parse(Row[4])
             });
-        }                                                                                               
+        }
 
         // csvDatas[行][列]を指定して値を自由に取り出せる
         Debug.Log(csvDatas/*行*/[0]/*列*/[0]);
         Debug.Log(csvDatas/*行*/[1]/*列*/[0]);
         Debug.Log(csvDatas/*行*/[2]/*列*/[0]);
+    }
+
+    public void ManagedUpdate()
+    {
+        
     }
 }
