@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6614d32fb5c2a9648a7394a0ed97f297, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: a60059fb822863c4bb846b392a7a9f6d, type: 2}
+  itemData: {fileID: 11400000, guid: a60059fb822863c4bb846b392a7a9f6d, type: 2}
   isAnimate: 0
   maxNumBigBullet: 3
 --- !u!54 &6963153752702855567

@@ -27,7 +27,8 @@ public class TitleScript : MonoBehaviour
 
     private void Awake()
     {
-        _statusText = SystemProperty.StatusText;
+        Time.timeScale = 1;
+        _statusText    = SystemProperty.StatusText;
     }
 
     private void Start()
@@ -72,8 +73,8 @@ public class TitleScript : MonoBehaviour
                 await NetworkManager.Connect();
 
                 // 初期接続
-                var data = new SendData(EventType.Init);
-                NetworkManager.Emit(data);
+                var req = new InitRequest();
+                NetworkManager.Emit(req);
 
                 _isInitConnected = true;
             }
@@ -89,21 +90,19 @@ public class TitleScript : MonoBehaviour
         }
     }
 
-    private async void OnReceived(SendData res)
+    private async void OnReceived(object res)
     {
-        var type = (EventType) Enum.Parse(typeof(EventType), res.Type);
+        var @base = (RequestBase) res;
+        var type  = (EventType) Enum.Parse(typeof(EventType), @base.Type);
 
         switch (type)
         {
             // 初期接続完了時
             case EventType.Init:
             {
-                var data = new SendData(EventType.Match)
-                {
-                    Self = new PlayerData()
-                };
+                var req = new MatchRequest();
 
-                NetworkManager.Emit(data);
+                NetworkManager.Emit(req);
                 _statusText.text = MatchingText;
 
                 break;
@@ -127,8 +126,10 @@ public class TitleScript : MonoBehaviour
 
             case EventType.Error:
             {
+                var innerRes = (ErrorRequest) res;
+
                 // TODO: UIでエラー表示
-                _statusText.text = res.Message;
+                _statusText.text = innerRes.Message;
 
                 break;
             }

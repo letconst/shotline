@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class LinearDraw : ActiveItem
 {
-    //���C�i�[�h���[���擾�����Ƃ��̃u�[��
+    //ライナードローを取得したときのブール
     public static bool _linearDrawOn = true;
 
-    //���C�i�[�h���[�Ŏː����Ђ��Ƃ���true�ɂȂ�u�[��
+    //ライナードローで射線をひくときにtrueになるブール
     public static bool _isLinearDraw = false;
 
     protected override void Init()

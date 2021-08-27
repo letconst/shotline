@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UniRx;
 
-public class CharaMove : MonoBehaviour
+public class CharaMove : MonoBehaviour, IManagedMethod
 {
     //Joystickプレハブ
     private Joystick _joystick = null;
@@ -19,21 +18,22 @@ public class CharaMove : MonoBehaviour
     private float _moveX = 0f; //キャラクターのX方向への移動速度
     private float _moveZ = 0f; //キャラクターのY方向への移動速度
 
-    private Vector3 _latestPos; //前回のPosition
-
     CharacterController controller; //CharacterControllerの読み込み
 
-    public float CurrentSpeed => _speed * speedRatio;
+    public        float CurrentSpeed => _speed * speedRatio;
+    public static bool  IsMoving     { get; private set; }
 
-    void Start()
+    public void ManagedStart()
     {
         speedRatio = 1;
         _joystick  = GameObject.FindGameObjectWithTag("Joystick").GetComponent<Joystick>();
         controller = GetComponent<CharacterController>(); //CharacterControllerの取得
     }
 
-    void Update()
+    public void ManagedUpdate()
     {
+        IsMoving = false;
+
         //無敵フラグが立っているとき
         //移動処理を行わない
         if (Thruster == true)
@@ -45,6 +45,9 @@ public class CharaMove : MonoBehaviour
         {
             return; //RoundMoveがtrueになると操作不能に
         }
+
+        _moveX = _joystick.Position.x * _speed; //JoystickのPositionに_speedをかけて、_moveXに代入
+        _moveZ = _joystick.Position.y * _speed; //JoystickのPositionに_speedをかけて、_moveYに代入
 
         if (!MainGameController.isControllable)
         {
@@ -63,29 +66,18 @@ public class CharaMove : MonoBehaviour
             _moveZ = -_moveZ;
         }
 
-        Vector3 direction = new Vector3(_moveX, 0, _moveZ);
-
-        controller.SimpleMove(direction);
-
         // 移動方向にキャラクターが向くようにする
-        Vector3 diff = transform.position - _latestPos; //前回からどこに進んだかをベクトルで取得
-        _latestPos = transform.position;                //前回のPositionの更新
 
-        //ベクトルの大きさが0.01以上の時に向きを変える処理をする
-        if (diff.magnitude > 0.01f && diff.y == 0)
+        if (_joystick.Position.y > 0.01f || _joystick.Position.y < -0.01f)
         {
-            transform.rotation = Quaternion.LookRotation(diff); //向きを変更する
-        }
-    }
+            if (_joystick.Position.x > 0.01f || _joystick.Position.x < -0.01f)
+            {
+                IsMoving = true;
 
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Wall") //特定のTagの付いたオブジェクトを判別
-        {
-            // 一時的に無効化
-            // Debug.Log("Hit");
-            // RoundManager.RoundMove = true;
-            // StartCoroutine(Move());
+                Vector3 direction = new Vector3(_moveX, 0, _moveZ);
+                transform.localRotation = Quaternion.LookRotation(direction);
+                controller.SimpleMove(direction);
+            }
         }
     }
 
