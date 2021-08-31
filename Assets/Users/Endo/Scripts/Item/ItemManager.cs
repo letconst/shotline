@@ -48,8 +48,9 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
 
     public static List<GeneratedItem> GeneratedItems { get; private set; }
 
-    private static ItemBase   _holdItem;
-    private static GameObject _holdItemObj;
+    private static ItemBase             _holdItem;
+    private static GameObject           _holdItemObj;
+    private        Queue<GeneratedItem> _destroyQueue;
 
     public void ManagedStart()
     {
@@ -62,8 +63,9 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
         currentNum         = 0;
         currentShieldCount = 0;
 
-        _holdItem    = null;
-        _holdItemObj = null;
+        _holdItem     = null;
+        _holdItemObj  = null;
+        _destroyQueue = new Queue<GeneratedItem>();
 
         // 初期配置されたアイテムがあればStartを呼ぶ
         GameObject[] defaultSpawnItems = GameObject.FindGameObjectsWithTag("Item");
@@ -86,7 +88,25 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     {
         foreach (GeneratedItem item in GeneratedItems)
         {
+            if (item.managedMethod == null)
+            {
+                _destroyQueue.Enqueue(item);
+
+                continue;
+            }
+
             item.managedMethod.ManagedUpdate();
+        }
+    }
+
+    private void LateUpdate()
+    {
+        List<GeneratedItem> tmpQueue = new List<GeneratedItem>(_destroyQueue);
+
+        // 削除キューがあれば対象を管轄リストから削除
+        foreach (GeneratedItem _ in tmpQueue)
+        {
+            GeneratedItems.Remove(_destroyQueue.Dequeue());
         }
     }
 
@@ -117,7 +137,7 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
         // 未生成位置が出るまで選出
         while (spawnPoint == null || spawnPoint.isSpawned)
         {
-            GeneratedPointIndex = (sbyte) Random.Range(0, spawnPoints.Count);
+            GeneratedPointIndex = (sbyte)Random.Range(0, spawnPoints.Count);
             spawnPoint          = spawnPoints[GeneratedPointIndex];
         }
 
@@ -177,13 +197,14 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     {
         if (isRemoveFromList)
         {
-            GeneratedItems.Remove(item);
+            Instance._destroyQueue.Enqueue(item);
         }
 
         Destroy(item.itemObject);
         item.managedMethod = null;
         item.itemObject    = null;
 
+        // 生成位置の状態をfalseに
         MainGameProperty.ItemSpawnPoints[item.index].isSpawned = false;
     }
 
@@ -211,10 +232,8 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
 
         foreach (GeneratedItem item in GeneratedItems)
         {
-            DestroyItem(item, false);
+            DestroyItem(item);
         }
-
-        GeneratedItems.Clear();
 
         // シールドが出現している場合はすべて破棄
         GameObject[] shields = GameObject.FindGameObjectsWithTag("Shield");

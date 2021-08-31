@@ -30,7 +30,7 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
     //ラインをひけるかどうか
     public static bool AbleDraw;
 
-    //presliderを回復できるかどうか
+    //回復状態かどうか
     public static bool _isHeal;
 
     // プレイヤーのTransform
@@ -38,13 +38,15 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
 
     public void ManagedStart()
     {
-        preslider.fillAmount = 1;
-        slider.fillAmount    = 1;
-        AbleDraw             = true;
-        holdAmount           = 0;
-        _isHold              = false;
-        _isHeal              = false;
-
+        preslider.fillAmount     = 1;
+        slider.fillAmount        = 1;
+        AbleDraw                 = true;
+        holdAmount               = 0;
+        _isHold                  = false;
+        LinearDraw._linearDrawOn = true;
+        LinearDraw._isLinearDraw = false;
+        _isHeal                  = true;
+        
         _playerTrf = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
@@ -58,59 +60,74 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
     //描けるかどうかを返す
     public static bool LineGauge(float dis, ref float rdis)
     {
-
         bool result = true;
 
-        //もし引数disが範囲内だったらtrueを返す（shotlinedrawerで変数へ）
-        if (Instance.preslider.fillAmount > 0)
+        if (ShotLineDrawer.currentDis < 1)
         {
-            result = true;
-            Instance.preslider.fillAmount -= dis / Instance.MaxLinePower;
-            AbleDraw = false;
+            //もし引数disが範囲内だったらtrueを返す（shotlinedrawerで変数へ）
+            if (Instance.preslider.fillAmount > dis / Instance.MaxLinePower)
+            {
+                //ここにdisが範囲内の場合
+                result = true;
+                AbleDraw = true;
+                if (dis < 0) dis = 0;
+                Instance.preslider.fillAmount -= dis / Instance.MaxLinePower;
+            }
+            else
+            {
+                AbleDraw = false;
+                result = false;
+                if (Instance.preslider.fillAmount < (dis / Instance.MaxLinePower))
+                {
+                    rdis = Instance.preslider.fillAmount * Instance.MaxLinePower;
+                }
+                else
+                {
+                    rdis = Instance.preslider.fillAmount - (dis / Instance.MaxLinePower);
+                }
+
+                if (rdis < 0)
+                {
+                    rdis = 0;
+                    Instance.preslider.fillAmount = 0;
+                }
+                Instance.preslider.fillAmount -= rdis / Instance.MaxLinePower;
+            }
         }
         else
         {
             result = false;
-            rdis = dis - Instance.preslider.fillAmount;
         }
-
         return result;
     }
 
     //ゲージ回復
     public static void HealGauge()
     {
-        ////sliderが0のとき_isHoldをfalseにする
-        if (Instance.slider.fillAmount == 0)
+        if (_isHeal)
         {
-            _isHold = false;
-        }
+            ////sliderが0のとき_isHoldをfalseにする
+            if (Instance.slider.fillAmount == 0)
+            {
+                _isHold = false;
+            }
 
-        //sliderの回復処理
-        //if (Instance.slider.fillAmount < 1)
-        //{
-        //    Instance.slider.fillAmount += Instance.HealingGauge;
-        //}
+            //sliderの回復処理
+            if (Instance.slider.fillAmount < 1)
+            {
+                Instance.slider.fillAmount += Instance.HealingGauge;
+            }
 
-        //presliderの回復処理
-        if (holdAmount < Instance.preslider.fillAmount || ShotLineDrawer.currentDis == 0)
-        {
-            Instance.slider.fillAmount += Instance.HealingGauge;
-            Instance.preslider.fillAmount += Instance.HealingGauge;
-        }
-        //if(ShotLineDrawer.currentDis == 0)
-        //{
-        //    _isHeal = true;
-        //}
+            //presliderの回復処理
+            if (Instance.preslider.fillAmount < (1 - ShotLineDrawer.currentDis))
+            {
+                Instance.preslider.fillAmount += Instance.HealingGauge;
+            }
 
-        //if (_isHeal)
-        //{
-        //    Instance.preslider.fillAmount += Instance.HealingGauge;
-        //}
-
-        if (!(Instance.preslider.fillAmount >= 1) && Instance.preslider.fillAmount > 0)
-        {
-            AbleDraw = true;
+            if (Instance.preslider.fillAmount > 0)
+            {
+                AbleDraw = true;
+            }
         }
     }
 
@@ -120,21 +137,33 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
     public static void Clicked()
     {
         _isHold = true;
-        _isHeal = true;
         holdAmount = 0;
+    
+        _isHold = false;
+        Instance.slider.fillAmount -= ShotLineDrawer.currentDis;
+        Instance.preslider.fillAmount = Instance.slider.fillAmount;
+        ShotLineDrawer.currentDis = 0;
+
+
     }
+
     void DealSlider()
     {
-        if (Instance.slider.fillAmount <= Instance.preslider.fillAmount)
-        {
-            _isHold = false;
-        }
+        //sliderをどこまで減らすか
+        //if (_isHeal && Instance.slider.fillAmount < (1 - ShotLineDrawer.currentDis))
+        //{
+        //    _isHold = false;
+        //    ShotLineDrawer.currentDis = 0;
+        //    Instance.slider.fillAmount -= ShotLineDrawer.currentDis;
 
-        if (_isHold)
-        {
-            ShotLineDrawer.currentDis = 0;
-            Instance.slider.fillAmount -= DealSliderSpeed;
-        }
+        //}
+
+        //sliderをpresliderの消費量分消す
+        //if (_isHold)
+        //{
+        //    ShotLineDrawer.currentDis = 0;
+        //    Instance.slider.fillAmount -= ShotLineDrawer.currentDis;
+        //}
     }
 
     /// <summary>

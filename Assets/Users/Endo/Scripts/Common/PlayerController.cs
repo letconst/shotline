@@ -60,20 +60,17 @@ public class PlayerController : MonoBehaviour
         isDamaged                         = true;
         MainGameProperty.InputBlocker.SetActive(true);
 
-        var data = new SendData(EventType.RoundUpdate)
-        {
-            Self = new PlayerData()
-        };
+        var roundUpdateReq = new RoundUpdateRequest();
 
         // 残機ゼロ時
         if (RoundManager.CurrentPlayerLife == 0)
         {
-            data.Self.isLose = true;
-            _roundText.text  = "Lose!";
-            _statusText.text = "タップでタイトルに戻る";
+            roundUpdateReq.IsLoseRival = true;
+            _roundText.text            = "Lose!";
+            _statusText.text           = "タップでタイトルに戻る";
 
             MainGameController.isChangeableSceneToTitle = true;
-            NetworkManager.Emit(data);
+            NetworkManager.Emit(roundUpdateReq);
 
             await FadeTransition.FadeIn(_roundText, .1f);
 
@@ -82,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
         // 通常被弾時
         _roundText.text = "Damaged!";
-        NetworkManager.Emit(data);
+        NetworkManager.Emit(roundUpdateReq);
 
         await FadeTransition.FadeIn(_roundText, .1f);
         await UniTask.Delay(TimeSpan.FromSeconds(1), true);
@@ -114,15 +111,60 @@ public class PlayerController : MonoBehaviour
 
     private void OnPositionChanged(Vector3 pos)
     {
-        var data = new SendData(EventType.PlayerMove)
-        {
-            Self = new PlayerData
-            {
-                Position = pos,
-                Rotation = transform.rotation
-            }
-        };
+        var playerMoveReq = new PlayerMoveRequest(pos, transform.rotation);
 
-        NetworkManager.Emit(data);
+        NetworkManager.Emit(playerMoveReq);
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+         
+
+        if (hit.gameObject.tag == "Wall")
+        {
+            // どちらに当たったかの方向を取得
+
+            // xとzの値を絶対値に変換
+            // その後、xとzどちらの値が大きいか判別
+            // 大きい方の方向の値をプラスかマイナスで判別
+
+            // X方向の絶対値
+            float AbsX = Mathf.Abs(hit.point.normalized.x);
+            // Z方向の絶対値
+            float AbsZ = Mathf.Abs(hit.point.normalized.z);
+
+
+            // XとZを比較
+
+            // Xが大きい場合
+            bool Xpoint = AbsX > AbsZ;
+            // Zが大きい場合
+            bool Zpoint = AbsZ > AbsX;
+
+
+            if (hit.point.normalized.x >= 0.1 & Xpoint)
+            {
+                Debug.Log("Left");
+            }
+
+            else if (hit.point.normalized.x <= -0.1 & Xpoint)
+            {
+                Debug.Log("Right");
+            }
+
+            else if (hit.point.normalized.z >= 0.1 & Zpoint)
+            {
+                Debug.Log("Botom");
+            }
+
+            else if (hit.point.normalized.z <= -0.1 & Zpoint)
+            {
+                Debug.Log("Top");
+            }
+
+            // ↓この情報で斜めの場合は絶対値にする
+            // どちらもまったく同じ場合は一旦無視
+            //Debug.Log(hit.point.normalized);
+        }
     }
 }

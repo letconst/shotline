@@ -2147,6 +2147,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7786787842790724801, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
+      propertyPath: _shouldResetPosition
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7786787842790724815, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
       propertyPath: m_TagString
       value: Joystick
@@ -3412,6 +3416,14 @@ PrefabInstance:
     - target: {fileID: 2731392235678969338, guid: 18c4f7e8e4863b4408160d1e07702f87, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2731392235678969338, guid: 18c4f7e8e4863b4408160d1e07702f87, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -543.1094
+      objectReference: {fileID: 0}
+    - target: {fileID: 2731392235678969338, guid: 18c4f7e8e4863b4408160d1e07702f87, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -485.98047
       objectReference: {fileID: 0}
     - target: {fileID: 2731392235678969338, guid: 18c4f7e8e4863b4408160d1e07702f87, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

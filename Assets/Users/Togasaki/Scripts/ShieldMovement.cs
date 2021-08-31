@@ -27,12 +27,9 @@ public class ShieldMovement : MonoBehaviour
         {
             if (NetworkManager.IsConnected)
             {
-                var data = new SendData(EventType.ShieldUpdate)
-                {
-                    objectGuid = _guid
-                };
+                var shieldUpdateReq = new ShieldUpdateRequest(_guid);
 
-                NetworkManager.Emit(data);
+                NetworkManager.Emit(shieldUpdateReq);
             }
 
             DecreaseLimit();
@@ -44,15 +41,18 @@ public class ShieldMovement : MonoBehaviour
         ItemManager.currentShieldCount--;
     }
 
-    private void OnReceived(SendData data)
+    private void OnReceived(object res)
     {
-        var type = (EventType) Enum.Parse(typeof(EventType), data.Type);
+        var @base = (RequestBase) res;
+        var type  = (EventType) Enum.Parse(typeof(EventType), @base.Type);
 
         // シールド通信のみ処理
         if (type != EventType.ShieldUpdate) return;
 
+        var innerRes = (ShieldUpdateRequest) res;
+
         // 同一シールドのみ処理
-        if (data.objectGuid != _guid) return;
+        if (innerRes.ObjectGuid != _guid) return;
 
         DecreaseLimit();
     }

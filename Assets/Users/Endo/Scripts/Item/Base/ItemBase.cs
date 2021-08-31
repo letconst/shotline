@@ -54,12 +54,9 @@ public abstract class ItemBase : MonoBehaviour, IManagedMethod
             // アニメーション停止
             isAnimate = false;
 
-            var data = new SendData(EventType.ItemGet)
-            {
-                generatedPointIndex = ItemManager.GetItemIndex(gameObject)
-            };
+            var itemGetReq = new ItemGetRequest(ItemManager.GetItemIndex(gameObject));
 
-            NetworkManager.Emit(data);
+            NetworkManager.Emit(itemGetReq);
         }
     }
 

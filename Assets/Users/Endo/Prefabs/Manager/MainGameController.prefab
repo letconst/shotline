@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6881295056185150370
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6881295056185150383}
+  - component: {fileID: 6881295056185150380}
+  - component: {fileID: 6881295056185150381}
+  m_Layer: 0
+  m_Name: MainGameController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6881295056185150383
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6881295056185150370}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6881295056185150380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6881295056185150370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecbffccc1d2f43a9bb23913b9ec664a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rivalPrefab: {fileID: 9222306879767961865, guid: 47a45b504b1ca9245ad477d0903effe9, type: 3}
+  vcam1Trf: {fileID: 0}
+  vcam2Trf: {fileID: 0}
+  vcam2: {fileID: 0}
+  cmBlendListObject: {fileID: 0}
+--- !u!114 &6881295056185150381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6881295056185150370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c207cf08ee5643b1a86f3ea4a377df46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputBlocker: {fileID: 0}
+  statusText: {fileID: 0}
+  startPos1P: {fileID: 0}
+  startPos2P: {fileID: 0}
+  itemSpawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  lineGaugeObject: {fileID: 0}
