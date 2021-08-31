@@ -17,12 +17,17 @@ public class ShotLineAnimation : MonoBehaviour
     {
         if (Projectile.One)
         {
+            animator.SetTrigger("Shot");
+        }
+
+        if(CharaMove.IsMoving)
+        {
             animator.SetBool("Walk", true);
         }
         else
         {
             animator.SetBool("Walk", false);
-            
         }
+
     }
 }
