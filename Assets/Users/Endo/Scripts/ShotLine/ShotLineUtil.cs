@@ -33,6 +33,7 @@ public static class ShotLineUtil
     public static void ClearLineData(LineData data)
     {
         if (data == null) return;
+
         data.Renderer.positionCount = 2;
         data.Renderer.enabled       = false;
         data.IsFixed                = false;

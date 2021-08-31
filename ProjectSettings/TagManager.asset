@@ -17,6 +17,7 @@ TagManager:
   - Rival
   - Joystick
   - RivalBullet
+  - FollowCamera
   layers:
   - Default
   - TransparentFX
@@ -26,7 +27,7 @@ TagManager:
   - UI
   - ShotLine
   - ch
-  - 
+  - DrawLine
   - 
   - 
   - 
