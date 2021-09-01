@@ -5,6 +5,6 @@
     public JoinedRequest()
     {
         SetType(EventType.Joined);
-        Uuid = SelfPlayerData.Uuid;
+        Uuid = SelfPlayerData.PlayerUuid;
     }
 }

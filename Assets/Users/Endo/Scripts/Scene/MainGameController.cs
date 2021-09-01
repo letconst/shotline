@@ -277,7 +277,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 var innerRes = (RoundUpdateRequest) res;
 
                 // 相手の敗北なら勝利表示
-                if (innerRes.IsLoseRival && innerRes.RivalUuid != SelfPlayerData.Uuid)
+                if (innerRes.IsLoseRival && innerRes.RivalUuid != SelfPlayerData.PlayerUuid)
                 {
                     Time.timeScale   = .1f;
                     isControllable   = false;

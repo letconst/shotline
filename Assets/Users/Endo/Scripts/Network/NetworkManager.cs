@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -163,6 +163,8 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         return type switch
         {
             EventType.Init         => RequestBase.MakeJsonFrom<InitRequest>(msg),
+            EventType.GetAllRoom   => RequestBase.MakeJsonFrom<GetAllRoomRequest>(msg),
+            EventType.JoinRoom     => RequestBase.MakeJsonFrom<JoinRoomRequest>(msg),
             EventType.Match        => RequestBase.MakeJsonFrom<MatchRequest>(msg),
             EventType.Joined       => RequestBase.MakeJsonFrom<JoinedRequest>(msg),
             EventType.PlayerMove   => RequestBase.MakeJsonFrom<PlayerMoveRequest>(msg),
@@ -188,7 +190,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <param name="data">送信データ</param>
     public static void Emit(RequestBase data)
     {
-        if (!IsConnected) return;
+        // if (!IsConnected) return;
 
         string msg      = RequestBase.ParseSendData(data);
         byte[] sendData = Encoding.ASCII.GetBytes(msg);
@@ -306,7 +308,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             {
                 var innerRes = (InitRequest) res;
                 _client.Client.ReceiveTimeout = 0;
-                SelfPlayerData.Uuid           = innerRes.Uuid;
+                SelfPlayerData.PlayerUuid     = innerRes.Uuid;
 
                 // TODO: マップへの参加時にオブジェクト代入
                 _players.Add(innerRes.Uuid, null);
@@ -319,7 +321,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
                 var innerRes = (MatchRequest) res;
 
                 // 相手情報を格納
-                if (innerRes.Uuid != SelfPlayerData.Uuid)
+                if (innerRes.Uuid != SelfPlayerData.PlayerUuid)
                 {
                     _players.Add(innerRes.Uuid, null);
                 }

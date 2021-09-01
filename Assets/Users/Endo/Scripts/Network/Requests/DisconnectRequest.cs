@@ -5,6 +5,6 @@
     public DisconnectRequest()
     {
         SetType(EventType.Disconnect);
-        Uuid = SelfPlayerData.Uuid;
+        Uuid = SelfPlayerData.PlayerUuid;
     }
 }

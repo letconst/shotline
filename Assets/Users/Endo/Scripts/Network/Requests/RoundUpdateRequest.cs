@@ -7,7 +7,7 @@
     public RoundUpdateRequest(bool isReadyAttackedRival = false)
     {
         SetType(EventType.RoundUpdate);
-        RivalUuid            = SelfPlayerData.Uuid;
+        RivalUuid            = SelfPlayerData.PlayerUuid;
         IsReadyAttackedRival = isReadyAttackedRival;
     }
 }

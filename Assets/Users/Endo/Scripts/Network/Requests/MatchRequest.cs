@@ -6,6 +6,6 @@
     public MatchRequest()
     {
         SetType(EventType.Match);
-        Uuid = SelfPlayerData.Uuid;
+        Uuid = SelfPlayerData.PlayerUuid;
     }
 }
