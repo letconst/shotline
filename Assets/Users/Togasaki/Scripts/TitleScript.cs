@@ -116,6 +116,7 @@ public class TitleScript : MonoBehaviour
                 _statusText.text = MatchingCompleteText;
 
                 await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
+                await UniTask.SwitchToMainThread();
 
                 _statusText.text = LoadingText;
 
