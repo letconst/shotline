@@ -41,6 +41,7 @@ public class RoomEntryButton : MonoBehaviour
 
         var req = new JoinRoomRequest
         {
+            Client   = new Client(),
             RoomUuid = roomData.RoomUuid
         };
 

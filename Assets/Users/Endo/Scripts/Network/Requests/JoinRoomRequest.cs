@@ -3,6 +3,7 @@
     public bool   IsJoinable;
     public Client Client;
     public string Message;
+    public bool   IsOwner;
 
     public JoinRoomRequest()
     {

@@ -20,8 +20,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     private static UdpClient _client;
     private static Thread    _thread;
 
-    private static Dictionary<string, GameObject> _players;
-
     private static Subject<object> _receiverSubject;
 
     private static Dictionary<string, GameObject> _networkedObjects;
@@ -65,7 +63,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// </summary>
     private static void Init()
     {
-        _players          = new Dictionary<string, GameObject>();
         _networkedObjects = new Dictionary<string, GameObject>();
 
         _client     = null;
@@ -162,7 +159,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
         return type switch
         {
-            EventType.Init         => RequestBase.MakeJsonFrom<InitRequest>(msg),
             EventType.GetAllRoom   => RequestBase.MakeJsonFrom<GetAllRoomRequest>(msg),
             EventType.JoinRoom     => RequestBase.MakeJsonFrom<JoinRoomRequest>(msg),
             EventType.Match        => RequestBase.MakeJsonFrom<MatchRequest>(msg),
@@ -301,51 +297,15 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     {
         var tmp  = (RequestBase) res;
         var type = (EventType) Enum.Parse(typeof(EventType), tmp.Type);
+        _client.Client.ReceiveTimeout = 0;
 
         switch (type)
         {
-            case EventType.Init:
+            case EventType.JoinRoom:
             {
-                var innerRes = (InitRequest) res;
-                _client.Client.ReceiveTimeout = 0;
-                SelfPlayerData.PlayerUuid     = innerRes.Uuid;
-
-                // TODO: マップへの参加時にオブジェクト代入
-                _players.Add(innerRes.Uuid, null);
-
-                break;
-            }
-
-            case EventType.Match:
-            {
-                var innerRes = (MatchRequest) res;
-
-                // 相手情報を格納
-                if (innerRes.Uuid != SelfPlayerData.PlayerUuid)
-                {
-                    _players.Add(innerRes.Uuid, null);
-                }
+                var innerRes = (JoinRoomRequest) res;
 
                 IsOwner = innerRes.IsOwner;
-
-                break;
-            }
-
-            case EventType.Refresh:
-            {
-                var    innerRes   = (RefreshRequest) res;
-                string targetUuid = string.Empty;
-
-                foreach (KeyValuePair<string, GameObject> player in _players)
-                {
-                    if (innerRes.RivalUuid != player.Key) continue;
-
-                    targetUuid = player.Key;
-                }
-
-                _players.Remove(targetUuid);
-
-                // TODO: 対戦相手切断UI表示 && 状況に応じてタイトルに戻す
 
                 break;
             }
