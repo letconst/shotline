@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class BulletMoveRequest : RequestBase
+public class BulletMoveRequest : InRoomRequestBase
 {
     public int  InstanceId;
     public bool IsGenerated;
@@ -11,9 +11,8 @@ public class BulletMoveRequest : RequestBase
     public Vector3    Scale;
 
     public BulletMoveRequest(int  instanceId,          Vector3 position, Quaternion rotation, Vector3 scale,
-                             bool isGenerated = false, bool    isDestroyed = false)
+                             bool isGenerated = false, bool    isDestroyed = false) : base(EventType.BulletMove)
     {
-        SetType(EventType.BulletMove);
         InstanceId  = instanceId;
         IsGenerated = isGenerated;
         IsDestroyed = isDestroyed;

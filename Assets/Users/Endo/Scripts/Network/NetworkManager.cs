@@ -171,7 +171,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             EventType.Instantiate  => RequestBase.MakeJsonFrom<InstantiateRequest>(msg),
             EventType.Destroy      => RequestBase.MakeJsonFrom<DestroyRequest>(msg),
             EventType.ShieldUpdate => RequestBase.MakeJsonFrom<ShieldUpdateRequest>(msg),
-            EventType.RoundStart   => RequestBase.MakeJsonFrom<RequestBase>(msg),
+            EventType.RoundStart   => RequestBase.MakeJsonFrom<RoundStartRequest>(msg),
             EventType.RoundUpdate  => RequestBase.MakeJsonFrom<RoundUpdateRequest>(msg),
             EventType.Disconnect   => RequestBase.MakeJsonFrom<DisconnectRequest>(msg),
             EventType.Refresh      => RequestBase.MakeJsonFrom<RefreshRequest>(msg),

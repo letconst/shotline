@@ -208,7 +208,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 // ホストならラウンド開始通知
                 if (NetworkManager.IsOwner)
                 {
-                    var roundStartReq = new RequestBase(EventType.RoundStart);
+                    var roundStartReq = new RoundStartRequest();
 
                     NetworkManager.Emit(roundStartReq);
                 }
@@ -304,7 +304,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     _roundText.text            = "";
                     _inputBlocker.SetActive(false);
 
-                    var roundStartReq = new RequestBase(EventType.RoundStart);
+                    var roundStartReq = new RoundStartRequest();
 
                     NetworkManager.Emit(roundStartReq);
                 }

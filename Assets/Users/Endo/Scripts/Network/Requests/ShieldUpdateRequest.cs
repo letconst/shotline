@@ -1,10 +1,9 @@
-﻿public class ShieldUpdateRequest : RequestBase
+﻿public class ShieldUpdateRequest : InRoomRequestBase
 {
     public string ObjectGuid;
 
-    public ShieldUpdateRequest(string objectGuid)
+    public ShieldUpdateRequest(string objectGuid) : base(EventType.ShieldUpdate)
     {
-        SetType(EventType.ShieldUpdate);
         ObjectGuid = objectGuid;
     }
 }

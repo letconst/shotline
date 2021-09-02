@@ -1,10 +1,9 @@
-﻿public class DestroyRequest : RequestBase
+﻿public class DestroyRequest : InRoomRequestBase
 {
     public string ObjectGuid;
 
-    public DestroyRequest(string objectGuid)
+    public DestroyRequest(string objectGuid) : base(EventType.Destroy)
     {
-        SetType(EventType.Destroy);
         ObjectGuid = objectGuid;
     }
 }

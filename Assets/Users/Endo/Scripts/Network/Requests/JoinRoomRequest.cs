@@ -5,8 +5,7 @@
     public string Message;
     public bool   IsOwner;
 
-    public JoinRoomRequest()
+    public JoinRoomRequest() : base(EventType.JoinRoom)
     {
-        SetType(EventType.JoinRoom);
     }
 }
