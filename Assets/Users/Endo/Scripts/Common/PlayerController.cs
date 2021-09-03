@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
         if (RoundManager.CurrentPlayerLife == 0)
         {
             roundUpdateReq.IsLoseRival = true;
-            _roundText.text            = "Lose!";
+            _roundText.text            = "LOSE!";
             _statusText.text           = "タップでタイトルに戻る";
 
             MainGameController.isChangeableSceneToTitle = true;
@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // 通常被弾時
-        _roundText.text = "Damaged!";
+        _roundText.text = "DAMAGED!";
         NetworkManager.Emit(roundUpdateReq);
 
         await FadeTransition.FadeIn(_roundText, .1f);
@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
 
         Projectile.DestroyAllBullets();
 
-        _roundText.text = $"Round {RoundManager.CurrentRound.ToString()}";
+        _roundText.text = $"ROUND {RoundManager.CurrentRound.ToString()}";
 
         await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
 
@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-         
+
 
         if (hit.gameObject.tag == "Wall")
         {

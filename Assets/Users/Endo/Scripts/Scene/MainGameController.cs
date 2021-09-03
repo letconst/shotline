@@ -187,7 +187,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             case EventType.Joined:
             {
                 _statusText.text = "";
-                _roundText.text  = "Game Start";
+                _roundText.text  = "GAME START";
                 cmBlendListObject.SetActive(true);
 
                 // カメラ演出が始まるまで待機
@@ -281,7 +281,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 {
                     Time.timeScale   = .1f;
                     isControllable   = false;
-                    _roundText.text  = "Win!";
+                    _roundText.text  = "WIN!";
                     _statusText.text = "タップでタイトルに戻る";
 
                     isChangeableSceneToTitle = true;
@@ -313,7 +313,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 {
                     // ゲーム速度を低速にし、被弾させた表示
                     Time.timeScale  = .1f;
-                    _roundText.text = "Hit!";
+                    _roundText.text = "HIT!";
                     isControllable  = false;
                     _inputBlocker.SetActive(true);
 
@@ -331,7 +331,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     ItemManager.ClearGeneratedItem();
                     Projectile.DestroyAllBullets();
 
-                    _roundText.text  = $"Round {RoundManager.CurrentRound.ToString()}";
+                    _roundText.text  = $"ROUND {RoundManager.CurrentRound.ToString()}";
                     _statusText.text = "待機中…";
 
                     await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
