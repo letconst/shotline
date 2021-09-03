@@ -36,16 +36,16 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         refreshBtn.onClick.AddListener(OnClickRefresh);
         _roomButtons = new List<RoomData>();
         _statusText  = SystemProperty.StatusText;
-
-        NetworkManager.OnReceived
-                      ?.ObserveOnMainThread()
-                      .Subscribe(OnReceived)
-                      .AddTo(this);
     }
 
     private void Start()
     {
         FetchAllRooms();
+
+        NetworkManager.OnReceived
+                      ?.ObserveOnMainThread()
+                      .Subscribe(OnReceived)
+                      .AddTo(this);
     }
 
     public RoomData GetRoomData(RoomEntryButton btn)
