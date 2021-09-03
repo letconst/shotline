@@ -1,4 +1,4 @@
-﻿public class ItemInitRequest : RequestBase
+﻿public class ItemInitRequest : InRoomRequestBase
 {
     public byte  MaxItemGenerateCount;
     public float ItemGenerateInterval;
