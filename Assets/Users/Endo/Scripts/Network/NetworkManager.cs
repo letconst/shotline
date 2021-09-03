@@ -159,24 +159,25 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
         return type switch
         {
-            EventType.GetAllRoom   => RequestBase.MakeJsonFrom<GetAllRoomRequest>(msg),
-            EventType.JoinRoom     => RequestBase.MakeJsonFrom<JoinRoomRequest>(msg),
-            EventType.Match        => RequestBase.MakeJsonFrom<MatchRequest>(msg),
-            EventType.Joined       => RequestBase.MakeJsonFrom<JoinedRequest>(msg),
-            EventType.PlayerMove   => RequestBase.MakeJsonFrom<PlayerMoveRequest>(msg),
-            EventType.BulletMove   => RequestBase.MakeJsonFrom<BulletMoveRequest>(msg),
-            EventType.ItemInit     => RequestBase.MakeJsonFrom<ItemInitRequest>(msg),
-            EventType.ItemGenerate => RequestBase.MakeJsonFrom<ItemGenerateRequest>(msg),
-            EventType.ItemGet      => RequestBase.MakeJsonFrom<ItemGetRequest>(msg),
-            EventType.Instantiate  => RequestBase.MakeJsonFrom<InstantiateRequest>(msg),
-            EventType.Destroy      => RequestBase.MakeJsonFrom<DestroyRequest>(msg),
-            EventType.ShieldUpdate => RequestBase.MakeJsonFrom<ShieldUpdateRequest>(msg),
-            EventType.RoundStart   => RequestBase.MakeJsonFrom<RoundStartRequest>(msg),
-            EventType.RoundUpdate  => RequestBase.MakeJsonFrom<RoundUpdateRequest>(msg),
-            EventType.Disconnect   => RequestBase.MakeJsonFrom<DisconnectRequest>(msg),
-            EventType.Refresh      => RequestBase.MakeJsonFrom<RefreshRequest>(msg),
-            EventType.Error        => RequestBase.MakeJsonFrom<ErrorRequest>(msg),
-            _                      => throw new ArgumentOutOfRangeException()
+            EventType.GetAllRoom    => RequestBase.MakeJsonFrom<GetAllRoomRequest>(msg),
+            EventType.JoinRoom      => RequestBase.MakeJsonFrom<JoinRoomRequest>(msg),
+            EventType.MatchComplete => RequestBase.MakeJsonFrom<MatchCompleteRequest>(msg),
+            EventType.Match         => RequestBase.MakeJsonFrom<MatchRequest>(msg),
+            EventType.Joined        => RequestBase.MakeJsonFrom<JoinedRequest>(msg),
+            EventType.PlayerMove    => RequestBase.MakeJsonFrom<PlayerMoveRequest>(msg),
+            EventType.BulletMove    => RequestBase.MakeJsonFrom<BulletMoveRequest>(msg),
+            EventType.ItemInit      => RequestBase.MakeJsonFrom<ItemInitRequest>(msg),
+            EventType.ItemGenerate  => RequestBase.MakeJsonFrom<ItemGenerateRequest>(msg),
+            EventType.ItemGet       => RequestBase.MakeJsonFrom<ItemGetRequest>(msg),
+            EventType.Instantiate   => RequestBase.MakeJsonFrom<InstantiateRequest>(msg),
+            EventType.Destroy       => RequestBase.MakeJsonFrom<DestroyRequest>(msg),
+            EventType.ShieldUpdate  => RequestBase.MakeJsonFrom<ShieldUpdateRequest>(msg),
+            EventType.RoundStart    => RequestBase.MakeJsonFrom<RoundStartRequest>(msg),
+            EventType.RoundUpdate   => RequestBase.MakeJsonFrom<RoundUpdateRequest>(msg),
+            EventType.Disconnect    => RequestBase.MakeJsonFrom<DisconnectRequest>(msg),
+            EventType.Refresh       => RequestBase.MakeJsonFrom<RefreshRequest>(msg),
+            EventType.Error         => RequestBase.MakeJsonFrom<ErrorRequest>(msg),
+            _                       => throw new ArgumentOutOfRangeException()
         };
     }
 

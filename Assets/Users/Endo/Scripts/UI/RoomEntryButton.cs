@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,12 +24,14 @@ public class RoomEntryButton : MonoBehaviour
     [SerializeField]
     private Button selfButton;
 
-    private int _selfIndex;
+    private int  _selfIndex;
+    private Text _statusText;
 
     private void Awake()
     {
         selfButton.onClick.AddListener(OnClick);
-        _selfIndex = transform.GetSiblingIndex();
+        _selfIndex  = transform.GetSiblingIndex();
+        _statusText = SystemProperty.StatusText;
     }
 
     private void OnClick()
@@ -38,6 +39,9 @@ public class RoomEntryButton : MonoBehaviour
         RoomData roomData = RoomSelectionController.Instance.GetRoomData(this);
 
         if (roomData == null) return;
+
+        _statusText.text = "参加中…";
+        RoomSelectionProperty.StatusBgImage.SetActive(true);
 
         var req = new JoinRoomRequest
         {

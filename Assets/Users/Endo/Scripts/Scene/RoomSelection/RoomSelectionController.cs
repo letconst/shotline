@@ -25,6 +25,8 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
 
     private List<RoomData> _roomButtons;
 
+    private Text _statusText;
+
     protected override void Awake()
     {
         base.Awake();
@@ -33,9 +35,11 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         backBtn.onClick.AddListener(OnClickBack);
         refreshBtn.onClick.AddListener(OnClickRefresh);
         _roomButtons = new List<RoomData>();
+        _statusText  = SystemProperty.StatusText;
 
         NetworkManager.OnReceived
-                      ?.Subscribe(OnReceived)
+                      ?.ObserveOnMainThread()
+                      .Subscribe(OnReceived)
                       .AddTo(this);
     }
 
@@ -69,7 +73,6 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
     }
 
     /// <summary>
-    /// TODO: 更新ボタンクリック時の処理
     /// サーバーへ全部屋の情報取得をリクエストする
     /// </summary>
     private void OnClickRefresh()
@@ -124,21 +127,33 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
             {
                 var innerRes = (JoinRoomRequest) res;
 
-                // await UniTask.SwitchToMainThread();
+                await UniTask.SwitchToMainThread();
 
                 if (innerRes.IsJoinable)
                 {
                     SelfPlayerData.PlayerUuid = innerRes.Client.uuid;
                     SelfPlayerData.RoomUuid   = innerRes.RoomUuid;
 
+                    _statusText.text = "マッチング中…";
+
                     // TODO: 武器選択画面に遷移
-                    Debug.Log("武器選択画面へ");
                 }
                 else
                 {
                     // TODO: innerRes.Messageをウィンドウ表示 && 閉じた際にリフレッシュ
                     Debug.Log($"入れなかったよ: {innerRes.Message}");
                 }
+
+                break;
+            }
+
+            case EventType.MatchComplete:
+            {
+                await UniTask.SwitchToMainThread();
+
+                _statusText.text = "ロード中…";
+
+                SystemSceneManager.LoadNextScene("MainGameScene", SceneTransition.Fade);
 
                 break;
             }

@@ -4,6 +4,7 @@
     GetAllRoom,
     RoomRefresh,
     JoinRoom,
+    MatchComplete,
     Match,
     Joined,
     PlayerMove,
