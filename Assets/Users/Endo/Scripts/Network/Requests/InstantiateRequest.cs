@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class InstantiateRequest : RequestBase
+public class InstantiateRequest : InRoomRequestBase
 {
     public string     PrefabName;
     public string     ObjectGuid;
@@ -8,8 +8,8 @@ public class InstantiateRequest : RequestBase
     public Quaternion Rotation;
 
     public InstantiateRequest(string prefabName, string objectGuid, Vector3 position, Quaternion rotation)
+        : base(EventType.Instantiate)
     {
-        SetType(EventType.Instantiate);
         PrefabName = prefabName;
         ObjectGuid = objectGuid;
         Position   = position;

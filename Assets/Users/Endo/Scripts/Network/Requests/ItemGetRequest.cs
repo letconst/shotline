@@ -1,10 +1,9 @@
-﻿public class ItemGetRequest : RequestBase
+﻿public class ItemGetRequest : InRoomRequestBase
 {
     public sbyte GeneratedPointIndex;
 
-    public ItemGetRequest(sbyte generatedPointIndex)
+    public ItemGetRequest(sbyte generatedPointIndex) : base(EventType.ItemGet)
     {
-        SetType(EventType.ItemGet);
         GeneratedPointIndex = generatedPointIndex;
     }
 }

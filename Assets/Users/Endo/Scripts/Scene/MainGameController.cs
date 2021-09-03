@@ -208,7 +208,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 // ホストならラウンド開始通知
                 if (NetworkManager.IsOwner)
                 {
-                    var roundStartReq = new RequestBase(EventType.RoundStart);
+                    var roundStartReq = new RoundStartRequest();
 
                     NetworkManager.Emit(roundStartReq);
                 }
@@ -277,7 +277,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 var innerRes = (RoundUpdateRequest) res;
 
                 // 相手の敗北なら勝利表示
-                if (innerRes.IsLoseRival && innerRes.RivalUuid != SelfPlayerData.Uuid)
+                if (innerRes.IsLoseRival && innerRes.RivalUuid != SelfPlayerData.PlayerUuid)
                 {
                     Time.timeScale   = .1f;
                     isControllable   = false;
@@ -304,7 +304,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     _roundText.text            = "";
                     _inputBlocker.SetActive(false);
 
-                    var roundStartReq = new RequestBase(EventType.RoundStart);
+                    var roundStartReq = new RoundStartRequest();
 
                     NetworkManager.Emit(roundStartReq);
                 }

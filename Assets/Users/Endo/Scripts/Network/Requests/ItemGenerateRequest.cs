@@ -1,4 +1,4 @@
-﻿public class ItemGenerateRequest : RequestBase
+﻿public class ItemGenerateRequest : InRoomRequestBase
 {
     public int Seed;
 }

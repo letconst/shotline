@@ -1,6 +1,10 @@
 ﻿public enum EventType
 {
     Init,
+    GetAllRoom,
+    RoomRefresh,
+    JoinRoom,
+    MatchComplete,
     Match,
     Joined,
     PlayerMove,
