@@ -1,4 +1,4 @@
-﻿public class RefreshRequest : RequestBase
+﻿public class RefreshRequest : InRoomRequestBase
 {
     public string RivalUuid;
 }

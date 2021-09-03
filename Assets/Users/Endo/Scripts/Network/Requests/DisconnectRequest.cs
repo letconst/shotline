@@ -1,10 +1,6 @@
-﻿public class DisconnectRequest : RequestBase
+﻿public class DisconnectRequest : InRoomRequestBase
 {
-    public string Uuid;
-
-    public DisconnectRequest()
+    public DisconnectRequest() : base(EventType.Disconnect)
     {
-        SetType(EventType.Disconnect);
-        Uuid = SelfPlayerData.Uuid;
     }
 }

@@ -3,9 +3,8 @@
     public byte  MaxItemGenerateCount;
     public float ItemGenerateInterval;
 
-    public ItemInitRequest()
+    public ItemInitRequest() : base(EventType.ItemInit)
     {
-        SetType(EventType.ItemInit);
         MaxItemGenerateCount = ItemManager.MaxGenerateCount;
         ItemGenerateInterval = ItemManager.GenerateInterval;
     }

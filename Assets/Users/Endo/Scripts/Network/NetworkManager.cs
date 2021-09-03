@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -19,8 +19,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
     private static UdpClient _client;
     private static Thread    _thread;
-
-    private static Dictionary<string, GameObject> _players;
 
     private static Subject<object> _receiverSubject;
 
@@ -65,7 +63,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// </summary>
     private static void Init()
     {
-        _players          = new Dictionary<string, GameObject>();
         _networkedObjects = new Dictionary<string, GameObject>();
 
         _client     = null;
@@ -162,23 +159,25 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
         return type switch
         {
-            EventType.Init         => RequestBase.MakeJsonFrom<InitRequest>(msg),
-            EventType.Match        => RequestBase.MakeJsonFrom<MatchRequest>(msg),
-            EventType.Joined       => RequestBase.MakeJsonFrom<JoinedRequest>(msg),
-            EventType.PlayerMove   => RequestBase.MakeJsonFrom<PlayerMoveRequest>(msg),
-            EventType.BulletMove   => RequestBase.MakeJsonFrom<BulletMoveRequest>(msg),
-            EventType.ItemInit     => RequestBase.MakeJsonFrom<ItemInitRequest>(msg),
-            EventType.ItemGenerate => RequestBase.MakeJsonFrom<ItemGenerateRequest>(msg),
-            EventType.ItemGet      => RequestBase.MakeJsonFrom<ItemGetRequest>(msg),
-            EventType.Instantiate  => RequestBase.MakeJsonFrom<InstantiateRequest>(msg),
-            EventType.Destroy      => RequestBase.MakeJsonFrom<DestroyRequest>(msg),
-            EventType.ShieldUpdate => RequestBase.MakeJsonFrom<ShieldUpdateRequest>(msg),
-            EventType.RoundStart   => RequestBase.MakeJsonFrom<RequestBase>(msg),
-            EventType.RoundUpdate  => RequestBase.MakeJsonFrom<RoundUpdateRequest>(msg),
-            EventType.Disconnect   => RequestBase.MakeJsonFrom<DisconnectRequest>(msg),
-            EventType.Refresh      => RequestBase.MakeJsonFrom<RefreshRequest>(msg),
-            EventType.Error        => RequestBase.MakeJsonFrom<ErrorRequest>(msg),
-            _                      => throw new ArgumentOutOfRangeException()
+            EventType.GetAllRoom    => RequestBase.MakeJsonFrom<GetAllRoomRequest>(msg),
+            EventType.JoinRoom      => RequestBase.MakeJsonFrom<JoinRoomRequest>(msg),
+            EventType.MatchComplete => RequestBase.MakeJsonFrom<MatchCompleteRequest>(msg),
+            EventType.Match         => RequestBase.MakeJsonFrom<MatchRequest>(msg),
+            EventType.Joined        => RequestBase.MakeJsonFrom<JoinedRequest>(msg),
+            EventType.PlayerMove    => RequestBase.MakeJsonFrom<PlayerMoveRequest>(msg),
+            EventType.BulletMove    => RequestBase.MakeJsonFrom<BulletMoveRequest>(msg),
+            EventType.ItemInit      => RequestBase.MakeJsonFrom<ItemInitRequest>(msg),
+            EventType.ItemGenerate  => RequestBase.MakeJsonFrom<ItemGenerateRequest>(msg),
+            EventType.ItemGet       => RequestBase.MakeJsonFrom<ItemGetRequest>(msg),
+            EventType.Instantiate   => RequestBase.MakeJsonFrom<InstantiateRequest>(msg),
+            EventType.Destroy       => RequestBase.MakeJsonFrom<DestroyRequest>(msg),
+            EventType.ShieldUpdate  => RequestBase.MakeJsonFrom<ShieldUpdateRequest>(msg),
+            EventType.RoundStart    => RequestBase.MakeJsonFrom<RoundStartRequest>(msg),
+            EventType.RoundUpdate   => RequestBase.MakeJsonFrom<RoundUpdateRequest>(msg),
+            EventType.Disconnect    => RequestBase.MakeJsonFrom<DisconnectRequest>(msg),
+            EventType.Refresh       => RequestBase.MakeJsonFrom<RefreshRequest>(msg),
+            EventType.Error         => RequestBase.MakeJsonFrom<ErrorRequest>(msg),
+            _                       => throw new ArgumentOutOfRangeException()
         };
     }
 
@@ -188,7 +187,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <param name="data">送信データ</param>
     public static void Emit(RequestBase data)
     {
-        if (!IsConnected) return;
+        // if (!IsConnected) return;
 
         string msg      = RequestBase.ParseSendData(data);
         byte[] sendData = Encoding.ASCII.GetBytes(msg);
@@ -299,51 +298,15 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     {
         var tmp  = (RequestBase) res;
         var type = (EventType) Enum.Parse(typeof(EventType), tmp.Type);
+        _client.Client.ReceiveTimeout = 0;
 
         switch (type)
         {
-            case EventType.Init:
+            case EventType.JoinRoom:
             {
-                var innerRes = (InitRequest) res;
-                _client.Client.ReceiveTimeout = 0;
-                SelfPlayerData.Uuid           = innerRes.Uuid;
-
-                // TODO: マップへの参加時にオブジェクト代入
-                _players.Add(innerRes.Uuid, null);
-
-                break;
-            }
-
-            case EventType.Match:
-            {
-                var innerRes = (MatchRequest) res;
-
-                // 相手情報を格納
-                if (innerRes.Uuid != SelfPlayerData.Uuid)
-                {
-                    _players.Add(innerRes.Uuid, null);
-                }
+                var innerRes = (JoinRoomRequest) res;
 
                 IsOwner = innerRes.IsOwner;
-
-                break;
-            }
-
-            case EventType.Refresh:
-            {
-                var    innerRes   = (RefreshRequest) res;
-                string targetUuid = string.Empty;
-
-                foreach (KeyValuePair<string, GameObject> player in _players)
-                {
-                    if (innerRes.RivalUuid != player.Key) continue;
-
-                    targetUuid = player.Key;
-                }
-
-                _players.Remove(targetUuid);
-
-                // TODO: 対戦相手切断UI表示 && 状況に応じてタイトルに戻す
 
                 break;
             }

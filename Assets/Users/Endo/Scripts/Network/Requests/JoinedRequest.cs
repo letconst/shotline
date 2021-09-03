@@ -1,10 +1,6 @@
-﻿public class JoinedRequest : RequestBase
+﻿public class JoinedRequest : InRoomRequestBase
 {
-    public string Uuid;
-
-    public JoinedRequest()
+    public JoinedRequest() : base(EventType.Joined)
     {
-        SetType(EventType.Joined);
-        Uuid = SelfPlayerData.Uuid;
     }
 }
