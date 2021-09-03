@@ -345,7 +345,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Tap to start
+  m_Text: TAP TO START
 --- !u!222 &385656359
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1062,7 +1062,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75a89495144c9b24ab29d991af9469bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isDebug: 1
 --- !u!114 &1792908755
 MonoBehaviour:
   m_ObjectHideFlags: 0
