@@ -27,7 +27,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <summary>
     /// 自身がホストか。部屋を立てたプレイヤーならtrueとなる。
     /// </summary>
-    public static bool IsOwner { get; private set; } = false;
+    public static bool IsOwner { get; private set; }
 
     public static IObservable<object> OnReceived => _receiverSubject;
 
