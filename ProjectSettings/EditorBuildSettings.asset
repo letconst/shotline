@@ -17,7 +17,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/WeaponSelection.unity
     guid: 10e6fcd849704d44f9bdd218f4583860
-  - enabled: 0
-    path: Assets/Users/Togasaki/Scenes/Title.unity
-    guid: 9fa75a9ce25629d4590518dd979193e5
   m_configObjects: {}
