@@ -202,7 +202,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
             LineGaugeController.Clicked();
 
             //プレイヤーが射線の方向を向く
-            PlayerCharacter.transform.LookAt(currentLineData.FingerPositions[0],Vector3.up);
+            PlayerCharacter.transform.LookAt(currentLineData.FingerPositions[1],Vector3.up);
             PlayerCharacter.transform.rotation = new Quaternion(0, PlayerCharacter.transform.rotation.y, 0, PlayerCharacter.transform.rotation.w);
 
             //射撃エフェクト
