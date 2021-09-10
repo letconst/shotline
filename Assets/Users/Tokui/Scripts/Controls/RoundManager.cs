@@ -52,7 +52,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         CurrentPlayerLife = PlayerLife;
         CurrentRound      = 1;
 
-        SuddenDeathFlag = false;
+        SuddenDeathFlag = true;
 
         if (SuddenDeathStartText != null)
         {
@@ -81,7 +81,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         if (SuddenDeathFlag == true)
         {
             //サドンデス開始用テキスト表示
-            SuddenDeathStartText.SetActive(true);
+            //SuddenDeathStartText.SetActive(true);
 
             //外壁の縮小
             Transform sotoWallTransform = sotowall.transform;
@@ -96,9 +96,9 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
 
             if (CountDown <= -3)
             {
-                SuddenDeathStartText.SetActive(false);
+                //SuddenDeathStartText.SetActive(false);
             }
-            /*
+            
             if (CountDown <= WallCount)
             {
                 WallSpeed = WallSpeedReset;
@@ -107,7 +107,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
 
                 CountDown = CountDownReset;
             }
-            */
+            
         }
 	}
 

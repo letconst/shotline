@@ -109,6 +109,7 @@ public class PlayerController : MonoBehaviour
         _statusText.text = "待機中…";
     }
 
+    
     private void OnPositionChanged(Vector3 pos)
     {
         var playerMoveReq = new PlayerMoveRequest(pos, transform.rotation);
@@ -116,6 +117,7 @@ public class PlayerController : MonoBehaviour
         NetworkManager.Emit(playerMoveReq);
     }
 
+    /*
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
 
@@ -167,4 +169,5 @@ public class PlayerController : MonoBehaviour
             //Debug.Log(hit.point.normalized);
         }
     }
+    */
 }
