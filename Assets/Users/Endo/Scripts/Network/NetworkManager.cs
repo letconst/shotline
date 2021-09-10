@@ -202,7 +202,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// <param name="data">送信データ</param>
     public static void Emit(RequestBase data)
     {
-        // if (!IsConnected) return;
+        if (!IsConnected) return;
 
         string msg      = RequestBase.ParseSendData(data);
         byte[] sendData = Encoding.ASCII.GetBytes(msg);

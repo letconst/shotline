@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.UI;
 
 public class BulletInfo
 {
@@ -65,11 +64,16 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
 
     private bool _isQueuedDestroyAll;
 
+    //プレイヤー格納変数
+    GameObject PlayerCharacter;
+
+
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     private void Start()
     {
+        PlayerCharacter = GameObject.FindGameObjectWithTag("Player");
         ItemManager.ShotBtn.onClick.AddListener(() => Fire());
         BulletList      = new List<BulletInfo>();
         ActSpeed        = OriginSpeed;
@@ -131,30 +135,8 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
 
                 BM = BulletList[i].Bullet.GetComponent<BulletMovement>();
 
-                ////使ったラインパワーを入れる
-                //usedLinePower[i] = BulletList[i].FP.Length;
-
                 //現在の座標を変更できるように変数化
                 BulletInfo currentP = BulletList[i];
-
-                //もし射線の長さが最後だったら
-                //if (BulletList[i].index == BulletList[i].FP.Length - 1)
-                //{
-                //    BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].FP[BulletList[i].FP.Length - 2], BulletList[i].FP[BulletList[i].FP.Length - 1], BulletList[i].Speed * Time.deltaTime);
-                //    //slider.value += usedLinePower[i];
-                //}
-                //else
-                //{
-
-
-                //射線の最初
-                //if (BulletList[i].index == 0)
-                //{
-                //    BulletList[i].Bullet.transform.position = BulletList[i].FP[0];
-
-                //}
-
-
 
                 //現在の射線の位置から次の射線の位置まで移動
                 BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], BulletList[i].Speed * Time.deltaTime);
@@ -212,6 +194,9 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
 
             //ゲージを消費
             LineGaugeController.Clicked();
+
+            PlayerCharacter.transform.LookAt(currentLineData.FingerPositions[0],Vector3.up);
+            PlayerCharacter.transform.rotation = new Quaternion(0, PlayerCharacter.transform.rotation.y, 0, PlayerCharacter.transform.rotation.w);
 
             //リニアドロー
             if (LinearDraw._isLinearDraw)
