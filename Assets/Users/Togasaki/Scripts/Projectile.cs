@@ -67,6 +67,11 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
     //プレイヤー格納変数
     GameObject PlayerCharacter;
 
+    [SerializeField, Header("マズル位置")]
+    private Transform muzzleFlashPoint;
+
+    [SerializeField, Header("エフェクト")]
+    private GameObject muzzleFlashEffect;
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -93,6 +98,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
 
             return;
         }
+        Debug.Log(PlayerCharacter.transform.rotation.y);
 
         LineAppear();
     }
@@ -195,8 +201,12 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
             //ゲージを消費
             LineGaugeController.Clicked();
 
+            //プレイヤーが射線の方向を向く
             PlayerCharacter.transform.LookAt(currentLineData.FingerPositions[0],Vector3.up);
             PlayerCharacter.transform.rotation = new Quaternion(0, PlayerCharacter.transform.rotation.y, 0, PlayerCharacter.transform.rotation.w);
+
+            //射撃エフェクト
+            Instantiate(muzzleFlashEffect, muzzleFlashPoint.position, PlayerCharacter.transform.rotation);
 
             //リニアドロー
             if (LinearDraw._isLinearDraw)

@@ -1274,6 +1274,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93c8b02ec8728a248ba9720b429c3af1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  muzzleFlashPoint: {fileID: 0}
+  muzzleFlashEffect: {fileID: 0}
 --- !u!114 &730796519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1967,6 +1969,11 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -656107368928481374, guid: a8149bece77fb80478d28ac9838acd71, type: 3}
+--- !u!4 &1142123021 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1667725238548288249, guid: 0e333b36772710f498f143d75c15f6cc, type: 3}
+  m_PrefabInstance: {fileID: 363031160}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1148745545
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2849,6 +2856,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3083273097689700320, guid: 56ed80a580becb84c9a573196df74d57, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3083273097689700320, guid: 56ed80a580becb84c9a573196df74d57, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 75
       objectReference: {fileID: 0}
@@ -3666,6 +3677,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93c8b02ec8728a248ba9720b429c3af1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  muzzleFlashPoint: {fileID: 1142123021}
+  muzzleFlashEffect: {fileID: 5971587786026297012, guid: 980980dfbf9997b4fad264667bcd5c94, type: 3}
 --- !u!1 &2025405727
 GameObject:
   m_ObjectHideFlags: 0
