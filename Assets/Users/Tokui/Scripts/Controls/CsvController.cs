@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class CsvController : MonoBehaviour ,IManagedMethod
@@ -13,21 +13,21 @@ public class CsvController : MonoBehaviour ,IManagedMethod
     Text WeaponStatusText = null;
 
     [SerializeField]
-    GameObject ButtonPrefab = null;
+    GameObject WeaponPunel = null;
 
     public void ManagedStart()
     {
         foreach (WeaponDatas datas in WeaponManager.weaponDatas)
         {
-            GameObject ButtonObj = Instantiate(ButtonPrefab, CanvasTransform);
+            GameObject ButtonObj = Instantiate(WeaponPunel, CanvasTransform);
             Button button = ButtonObj.GetComponent<Button>();
             button.onClick.AddListener(() =>
             {
-                WeaponNameText.text = "WeaponName\n" + datas.WeaponName;
+                WeaponNameText.text = "武器名\n" + datas.WeaponName;
                 WeaponStatusText.text =
-                    "BulletSpeed:" + datas.BulletSpeed +
-                    "\nGaugeMax:" + datas.GaugeMax +
-                    "\nGaugeRecovery" + datas.GaugeRecovery;
+                    "　　　　弾速:" + datas.BulletSpeed +
+                    "\nゲージ最大値:" + datas.GaugeMax +
+                    "\nゲージ回復量;" + datas.GaugeRecovery;
             });
         }
     }
