@@ -2090,12 +2090,20 @@ PrefabInstance:
       value: 0.003
       objectReference: {fileID: 0}
     - target: {fileID: 5127748151414251971, guid: 678513f4952208046a549183bfcdf7af, type: 3}
+      propertyPath: MaxLinePower
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 5127748151414251971, guid: 678513f4952208046a549183bfcdf7af, type: 3}
       propertyPath: DealSliderSpeed
       value: 0.045
       objectReference: {fileID: 0}
     - target: {fileID: 5127748151414251973, guid: 678513f4952208046a549183bfcdf7af, type: 3}
       propertyPath: m_Name
       value: LineGauge
+      objectReference: {fileID: 0}
+    - target: {fileID: 5127748151414251973, guid: 678513f4952208046a549183bfcdf7af, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 678513f4952208046a549183bfcdf7af, type: 3}

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class BulletInfo
 {
@@ -73,6 +74,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
     [SerializeField, Header("エフェクト")]
     private GameObject muzzleFlashEffect;
 
+
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -98,7 +100,6 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
 
             return;
         }
-        Debug.Log(PlayerCharacter.transform.rotation.y);
 
         LineAppear();
     }
@@ -135,10 +136,9 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
         //弾を実際に動かす部分
         if (BulletList.Count > 0)
         {
-
             for (int i = 0; i < BulletList.Count; i++)
             {
-
+                //BulletMovement取得
                 BM = BulletList[i].Bullet.GetComponent<BulletMovement>();
 
                 //現在の座標を変更できるように変数化
@@ -147,9 +147,6 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
                 //現在の射線の位置から次の射線の位置まで移動
                 BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], BulletList[i].Speed * Time.deltaTime);
                 
-
-                //}
-
                 //もし弾が次の位置まで到達したら、その次の位置を読み込む
                 if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
                 {
@@ -164,10 +161,9 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
                     BulletList.RemoveAt(i);
+
                 }
-
             }
-
         }
     }
 
