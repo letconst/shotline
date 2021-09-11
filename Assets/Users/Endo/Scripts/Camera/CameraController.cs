@@ -20,9 +20,8 @@ namespace Endo
             foreach (Camera cam in followCameras)
             {
                 Transform targetTrf = cam.transform;
-
-                targetTrf.position = transform.position;
-                targetTrf.rotation = transform.rotation;
+                
+                targetTrf.SetPositionAndRotation(transform.position, transform.rotation);
             }
         }
     }
