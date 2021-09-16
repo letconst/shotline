@@ -26,19 +26,20 @@ result=$(curl \
   -F "file=@$2/build.ipa" \
   -F "message=Auto upload from Unity Cloud Build" \
   -F "distribution_key=${dist_key}" \
-  "http://deploygate.com/api/users/${owner}/apps" | jq .)
+  "https://deploygate.com/api/users/${owner}/apps")
 
 is_error=$(echo "${result}" | jq -r .error)
 
 if [ "$is_error" == 'false' ]; then
   echo 'Deployed successfully'
 
-  version=$(echo "${result}" | jq -r .results.version_code)
+  version=$(echo "${result}" | jq -r .results.revision)
+  dist=$(echo "${result}" | jq -r .results.distribution.url)
   curl \
     -m 5 \
     -H "Content-Type: application/json" \
     -X POST "${baseSelfUrl}/notify" \
-    -d "{\"type\":\"success\",\"version\":\"${version}\"}"
+    -d "{\"type\":\"success\",\"version\":\"#${version}\",\"device\":\"iOS\",\"dist\":\"${file}\"}"
 else
   echo 'Deployment failed'
 
