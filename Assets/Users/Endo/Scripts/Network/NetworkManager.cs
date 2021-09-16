@@ -17,6 +17,9 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     [SerializeField, Header("サーバーポート"), Range(0, 65535)]
     private ushort port = 6080;
 
+    [SerializeField, Header("第二サーバーポート"), Range(0, 65535)]
+    private ushort secondaryPort = 6081;
+
     private static UdpClient _client;
     private static Thread    _thread;
 
@@ -48,10 +51,17 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         OnReceived.Subscribe(EventHandler);
     }
 
-    private void OnDestroy()
+    #if UNITY_ANDROID
+    private void OnApplicationPause(bool pauseStatus)
     {
-        Disconnect();
+        // Android限定
+        // アプリを一時的に閉じた際、サーバーからの切断処理をしたいためゲームを終了。本来はタスクキル時に実行したい
+        if (pauseStatus)
+        {
+            Application.Quit();
+        }
     }
+    #endif
 
     private void OnApplicationQuit()
     {
@@ -87,7 +97,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         try
         {
             // 接続完了まで待機
-            await UniTask.Run(() => _client.Connect(Instance.address, Instance.port));
+            await UniTask.Run(() => _client.Connect(Instance.address, SelfPlayerData.Port));
 
             UniTask.Run(ReceiveData);
 
@@ -137,6 +147,18 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         }
         catch (SocketException e)
         {
+            IsConnected = false;
+
+            // 接続できなかったらデバッグサーバーも試みる
+            if (SelfPlayerData.Port == Instance.port)
+            {
+                SelfPlayerData.Port = Instance.secondaryPort;
+
+                await Connect();
+
+                return;
+            }
+
             // UIを書き換えるためメインスレッドに戻す（暫定）
             await UniTask.SwitchToMainThread();
 
