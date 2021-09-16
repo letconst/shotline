@@ -51,10 +51,17 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         OnReceived.Subscribe(EventHandler);
     }
 
-    private void OnDestroy()
+    #if UNITY_ANDROID
+    private void OnApplicationPause(bool pauseStatus)
     {
-        Disconnect();
+        // Android限定
+        // アプリを一時的に閉じた際、サーバーからの切断処理をしたいためゲームを終了。本来はタスクキル時に実行したい
+        if (pauseStatus)
+        {
+            Application.Quit();
+        }
     }
+    #endif
 
     private void OnApplicationQuit()
     {
