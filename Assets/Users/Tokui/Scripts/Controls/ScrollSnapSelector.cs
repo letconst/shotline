@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
@@ -20,7 +19,13 @@ public class ScrollSnapSelector : ScrollRect
 	private bool dragging;
 	private bool forcePositionUpdate = false;
 
-	public SwipeManager swipeManager;
+	[SerializeField]
+	private int hPageMax = 3;
+	private int hPageMin = 1;
+
+	[SerializeField]
+	private int hPageMaxLimit = 4;
+	private int hPageMinLimit = 0;
 
 	public void ScrollTo(int x, int y)
 	{
@@ -92,6 +97,15 @@ public class ScrollSnapSelector : ScrollRect
 			{
 				hIndex--;
 			}
+
+			if(hIndex == hPageMinLimit)
+            {
+				hIndex = hPageMax;
+            }
+			if(hIndex == hPageMaxLimit)
+            {
+				hIndex = hPageMin;
+            }
 		}
 
 		if (vertical && vPageNum > 0)

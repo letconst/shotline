@@ -4,31 +4,32 @@ using UnityEngine.UI;
 public class CsvController : MonoBehaviour ,IManagedMethod
 {
     [SerializeField]
-    Transform CanvasTransform = null;
+    public Transform CanvasTransform = null;
 
     [SerializeField]
-    Text WeaponNameText = null;
-
-    [SerializeField]
-    Text WeaponStatusText = null;
-
-    [SerializeField]
-    GameObject WeaponPunel = null;
+    public GameObject WeaponPanel = null;
 
     public void ManagedStart()
     {
         foreach (WeaponDatas datas in WeaponManager.weaponDatas)
         {
-            GameObject ButtonObj = Instantiate(WeaponPunel, CanvasTransform);
+            GameObject ButtonObj = Instantiate(WeaponPanel, CanvasTransform);
             Button button = ButtonObj.GetComponent<Button>();
-            button.onClick.AddListener(() =>
+
+            button.transform.Find("WeaponNameText").GetComponent<Text>().text = 
+                "武器名\n" + datas.WeaponName+
+                "\n\n　　　　弾速:" +datas.BulletSpeed +
+                "\nゲージ最大値:" + datas.GaugeMax +
+                "\nゲージ回復量;" + datas.GaugeRecovery;
+
+            /*button.onClick.AddListener(() =>
             {
                 WeaponNameText.text = "武器名\n" + datas.WeaponName;
                 WeaponStatusText.text =
                     "　　　　弾速:" + datas.BulletSpeed +
                     "\nゲージ最大値:" + datas.GaugeMax +
                     "\nゲージ回復量;" + datas.GaugeRecovery;
-            });
+            });*/
         }
     }
 
