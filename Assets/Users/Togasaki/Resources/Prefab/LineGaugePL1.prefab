@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 28eedcd5078979b4faf2c51c4dad01b1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 42811fb9dd44f33418f65ed1cc7f0b37, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -133,14 +133,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.55372715, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 72535c66690b3554daa4a96d9580b06f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cfaf197e37563ea4a8bd0f61fea9e59b, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 5127748151414251969}
   - component: {fileID: 5127748151414251971}
   m_Layer: 5
-  m_Name: LineGauge
+  m_Name: LineGaugePL1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -274,14 +274,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.31770968, b: 0, a: 1}
+  m_Color: {r: 0.6792453, g: 0.6792453, b: 0.6792453, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 72535c66690b3554daa4a96d9580b06f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8e7572b77c7342a43897d06e1699e6f4, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
