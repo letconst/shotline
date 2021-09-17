@@ -69,6 +69,9 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
     [SerializeField, Header("エフェクト")]
     private GameObject muzzleFlashEffect;
 
+    //省略する距離
+    float refTime = 0.05f;
+
 
     private void Start()
     {
@@ -145,14 +148,47 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
                     BulletList[i].Bullet.transform.rotation = Quaternion.LookRotation(diff);
                 }
 
-                //現在の射線の位置から次の射線の位置まで移動
-                float ratio = BulletList[i].Speed * Time.deltaTime;
-                BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], ratio);
-
-                //もし弾が次の位置まで到達したら、その次の位置を読み込む
-                if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
+                //次の座標が指定の距離以下なら省略
+                if (diff.magnitude < refTime && BulletList[i].index < BulletList[i].FP.Length - 5)
                 {
-                    BulletList[i].index++;
+                    while(true)
+                    {
+                        Vector3 diffp2 = BulletList[i].FP[BulletList[i].index + 1] - BulletList[i].Bullet.transform.position;
+                        if (diffp2.magnitude < refTime)
+                        {
+                            BulletList[i].Bullet.transform.position = BulletList[i].FP[BulletList[i].index + 1];
+                            //もし弾が次の位置まで到達したら、その次の位置を読み込む
+                            if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
+                            {
+                                BulletList[i].index++;
+                            }
+                        }
+                        else
+                        {
+                            //現在の射線の位置から次の射線の位置まで移動
+                            float ratio = BulletList[i].Speed * Time.deltaTime;
+                            BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], ratio);
+
+                            //もし弾が次の位置まで到達したら、その次の位置を読み込む
+                            if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
+                            {
+                                BulletList[i].index++;
+                            }
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    //現在の射線の位置から次の射線の位置まで移動
+                    float ratio = BulletList[i].Speed * Time.deltaTime;
+                    BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], ratio);
+
+                    //もし弾が次の位置まで到達したら、その次の位置を読み込む
+                    if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
+                    {
+                        BulletList[i].index++;
+                    }
                 }
 
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
@@ -162,7 +198,6 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
                     //BulletList.RemoveAt(i);
-
                 }
             }
         }
