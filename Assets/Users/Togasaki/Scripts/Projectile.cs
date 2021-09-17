@@ -36,11 +36,9 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
     "Projectile"クラスの概要
 
     もしボタンが押されたらShotLineDrawerクラスの座標を取得し、その座標をなぞるように弾丸を発射する。
-    変数"Speed"に弾丸の速さを指定できる。
+    変数"ActSpeed"に弾丸の速さを指定できる。
 
      */
-
-    //変数ゾーン///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //リストに弾の情報を
     List<BulletInfo> BulletList = new List<BulletInfo>();
@@ -70,9 +68,6 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
 
     [SerializeField, Header("エフェクト")]
     private GameObject muzzleFlashEffect;
-
-
-    /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     private void Start()
@@ -143,24 +138,21 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
                 //BulletMovement取得
                 BulletMovement BM = BulletList[i].Bullet.GetComponent<BulletMovement>();
 
-                //現在の座標を変更できるように変数化
-                BulletInfo currentP = BulletList[i];
-
                 //現在の座標から次の座標の方向を向く
                 Vector3 diff = BulletList[i].FP[BulletList[i].index + 1] - BulletList[i].Bullet.transform.position;
-                if(diff != new Vector3(0,0,0))
+                if (diff != new Vector3(0, 0, 0))
                 {
                     BulletList[i].Bullet.transform.rotation = Quaternion.LookRotation(diff);
                 }
 
                 //現在の射線の位置から次の射線の位置まで移動
-                BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], BulletList[i].Speed * Time.deltaTime);
-                
+                float ratio = BulletList[i].Speed * Time.deltaTime;
+                BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], ratio);
+
                 //もし弾が次の位置まで到達したら、その次の位置を読み込む
                 if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
                 {
-                    currentP.index++;
-                    BulletList[i] = currentP;
+                    BulletList[i].index++;
                 }
 
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
