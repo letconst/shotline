@@ -40,13 +40,13 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 415344327356856911}
   serializedVersion: 7
-  lengthInSec: 3
+  lengthInSec: 1
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -1379,8 +1379,8 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.33490568, g: 0.5963957, b: 1, a: 1}
-        key1: {r: 0.25231397, g: 0.53042626, b: 0.8490566, a: 1}
+        key0: {r: 1, g: 0.9048885, b: 0, a: 1}
+        key1: {r: 1, g: 0.9922749, b: 0.7688679, a: 1}
         key2: {r: 0.3679245, g: 0.1487799, b: 0.08503916, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}

@@ -31,7 +31,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 6928663193215901770}
+  - {fileID: 6549300031644289003}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -90,28 +90,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c4daed344107af42b715c0c1b622df3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &7818330113795410068
+--- !u!1001 &6216108828365827893
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 8240023773710551049}
     m_Modifications:
-    - target: {fileID: 911916966142811409, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.7676
+    - target: {fileID: 911916966142811407, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 911916966142811409, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.7676
+    - target: {fileID: 911916966142811407, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.4406838
       objectReference: {fileID: 0}
-    - target: {fileID: 911916966142811409, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.7676
+    - target: {fileID: 911916966142811407, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 911916966716148242, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 911916966716148242, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.31193793
+      objectReference: {fileID: 0}
+    - target: {fileID: 911916966716148242, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 911916966847219003, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 911916966847219003, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.68073237
+      objectReference: {fileID: 0}
+    - target: {fileID: 911916966847219003, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 911916966929164451, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
       propertyPath: m_Name
-      value: eff_bullet 0917
+      value: eff_bullet_PL2
       objectReference: {fileID: 0}
     - target: {fileID: 911916966929164510, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
       propertyPath: m_RootOrder
@@ -157,18 +181,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 911916966972543319, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.02
-      objectReference: {fileID: 0}
-    - target: {fileID: 911916966972543319, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.53
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
---- !u!4 &6928663193215901770 stripped
+--- !u!4 &6549300031644289003 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 911916966929164510, guid: 9c656dbe0c67a4b45b338b77f4f57dc5, type: 3}
-  m_PrefabInstance: {fileID: 7818330113795410068}
+  m_PrefabInstance: {fileID: 6216108828365827893}
   m_PrefabAsset: {fileID: 0}
