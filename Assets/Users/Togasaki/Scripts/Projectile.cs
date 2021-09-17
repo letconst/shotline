@@ -60,8 +60,6 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
     //一回だけ射線の座標を取得
     public static bool One = false;
 
-    private BulletMovement BM;
-
     private bool _isQueuedDestroyAll;
 
     //プレイヤー格納変数
@@ -137,8 +135,13 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
         {
             for (int i = 0; i < BulletList.Count; i++)
             {
+                if (BulletList[i].Bullet == null)
+                {
+                    continue;
+                }
+
                 //BulletMovement取得
-                BM = BulletList[i].Bullet.GetComponent<BulletMovement>();
+                BulletMovement BM = BulletList[i].Bullet.GetComponent<BulletMovement>();
 
                 //現在の座標を変更できるように変数化
                 BulletInfo currentP = BulletList[i];
@@ -166,7 +169,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
                     ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
-                    BulletList.RemoveAt(i);
+                    //BulletList.RemoveAt(i);
 
                 }
             }
