@@ -15,11 +15,13 @@ public class ShotLineAnimation : MonoBehaviour
 
     void Update()
     {
+        //射撃アニメーション
         if (Projectile.One)
         {
             animator.SetTrigger("Shot");
         }
 
+        //歩行アニメーション
         if(CharaMove.IsMoving)
         {
             animator.SetBool("Walk", true);
@@ -27,6 +29,12 @@ public class ShotLineAnimation : MonoBehaviour
         else
         {
             animator.SetBool("Walk", false);
+        }
+
+        //スラスターアニメーション
+        if (Thruster.ClickButton)
+        {
+            animator.SetTrigger("Dash");
         }
 
     }

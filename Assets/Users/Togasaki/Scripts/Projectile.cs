@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.UI;
 
 public class BulletInfo
 {
@@ -61,15 +60,24 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
     //一回だけ射線の座標を取得
     public static bool One = false;
 
-    private BulletMovement BM;
-
     private bool _isQueuedDestroyAll;
+
+    //プレイヤー格納変数
+    GameObject PlayerCharacter;
+
+    [SerializeField, Header("マズル位置")]
+    private Transform muzzleFlashPoint;
+
+    [SerializeField, Header("エフェクト")]
+    private GameObject muzzleFlashEffect;
+
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     private void Start()
     {
+        PlayerCharacter = GameObject.FindGameObjectWithTag("Player");
         ItemManager.ShotBtn.onClick.AddListener(() => Fire());
         BulletList      = new List<BulletInfo>();
         ActSpeed        = OriginSpeed;
@@ -125,43 +133,29 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
         //弾を実際に動かす部分
         if (BulletList.Count > 0)
         {
-
             for (int i = 0; i < BulletList.Count; i++)
             {
+                if (BulletList[i].Bullet == null)
+                {
+                    continue;
+                }
 
-                BM = BulletList[i].Bullet.GetComponent<BulletMovement>();
-
-                ////使ったラインパワーを入れる
-                //usedLinePower[i] = BulletList[i].FP.Length;
+                //BulletMovement取得
+                BulletMovement BM = BulletList[i].Bullet.GetComponent<BulletMovement>();
 
                 //現在の座標を変更できるように変数化
                 BulletInfo currentP = BulletList[i];
 
-                //もし射線の長さが最後だったら
-                //if (BulletList[i].index == BulletList[i].FP.Length - 1)
-                //{
-                //    BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].FP[BulletList[i].FP.Length - 2], BulletList[i].FP[BulletList[i].FP.Length - 1], BulletList[i].Speed * Time.deltaTime);
-                //    //slider.value += usedLinePower[i];
-                //}
-                //else
-                //{
-
-
-                //射線の最初
-                //if (BulletList[i].index == 0)
-                //{
-                //    BulletList[i].Bullet.transform.position = BulletList[i].FP[0];
-
-                //}
-
-
+                //現在の座標から次の座標の方向を向く
+                Vector3 diff = BulletList[i].FP[BulletList[i].index + 1] - BulletList[i].Bullet.transform.position;
+                if(diff != new Vector3(0,0,0))
+                {
+                    BulletList[i].Bullet.transform.rotation = Quaternion.LookRotation(diff);
+                }
 
                 //現在の射線の位置から次の射線の位置まで移動
                 BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], BulletList[i].Speed * Time.deltaTime);
                 
-
-                //}
-
                 //もし弾が次の位置まで到達したら、その次の位置を読み込む
                 if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
                 {
@@ -175,11 +169,10 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
                     ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     BM.BBOn = false;
                     Destroy(BulletList[i].Bullet);
-                    BulletList.RemoveAt(i);
+                    //BulletList.RemoveAt(i);
+
                 }
-
             }
-
         }
     }
 
@@ -212,6 +205,13 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
 
             //ゲージを消費
             LineGaugeController.Clicked();
+
+            //プレイヤーが射線の方向を向く
+            PlayerCharacter.transform.LookAt(currentLineData.FingerPositions[1],Vector3.up);
+            PlayerCharacter.transform.rotation = new Quaternion(0, PlayerCharacter.transform.rotation.y, 0, PlayerCharacter.transform.rotation.w);
+
+            //射撃エフェクト
+            Instantiate(muzzleFlashEffect, muzzleFlashPoint.position, PlayerCharacter.transform.rotation);
 
             //リニアドロー
             if (LinearDraw._isLinearDraw)
