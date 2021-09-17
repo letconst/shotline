@@ -76,6 +76,9 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+# Unity Recorder folder
+/[Rr]ecordings
+
 ## Bolt
 
 # Always exclude these files, because they are part of the plugin
