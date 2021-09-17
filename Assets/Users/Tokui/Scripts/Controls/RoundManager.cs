@@ -92,22 +92,23 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
 
             
             // カウントダウン
-            CountDown -= Time.deltaTime;
+            CountDown += Time.deltaTime;
 
-            if (CountDown <= -3)
+            if (CountDown >= 3)
             {
                 //SuddenDeathStartText.SetActive(false);
             }
             
-            if (CountDown <= WallCount)
+            if (CountDown >= WallCount)
             {
                 WallSpeed = WallSpeedReset;
 
                 SuddenDeathFlag = false;
 
                 CountDown = CountDownReset;
+
             }
-            
+            Debug.Log(0.0f + Time.time);
         }
 	}
 

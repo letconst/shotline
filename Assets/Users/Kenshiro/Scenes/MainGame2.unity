@@ -2829,7 +2829,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2921307770144575726, guid: 4c0ea9e720f8f2e4db1a92199c2ef19a, type: 3}
       propertyPath: m_TagString
-      value: Wall
+      value: SotoWall
       objectReference: {fileID: 0}
     - target: {fileID: 2921307770144575726, guid: 4c0ea9e720f8f2e4db1a92199c2ef19a, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -2880,6 +2880,10 @@ PrefabInstance:
       value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 6014176400059389848, guid: 4c0ea9e720f8f2e4db1a92199c2ef19a, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 6014176400059389848, guid: 4c0ea9e720f8f2e4db1a92199c2ef19a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
@@ -2922,6 +2926,10 @@ PrefabInstance:
     - target: {fileID: 7573824458523783875, guid: 4c0ea9e720f8f2e4db1a92199c2ef19a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 7924537262296802830, guid: 4c0ea9e720f8f2e4db1a92199c2ef19a, type: 3}
+      propertyPath: m_TagString
+      value: SotoWall
       objectReference: {fileID: 0}
     - target: {fileID: 7924537262296802830, guid: 4c0ea9e720f8f2e4db1a92199c2ef19a, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3716,7 +3724,7 @@ PrefabInstance:
       objectReference: {fileID: 1904367998}
     - target: {fileID: 3167375634653241226, guid: e16a8caa8157d334a8172f736788f9b8, type: 3}
       propertyPath: WallCount
-      value: -30
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3167375634653241226, guid: e16a8caa8157d334a8172f736788f9b8, type: 3}
       propertyPath: WallSpeed
