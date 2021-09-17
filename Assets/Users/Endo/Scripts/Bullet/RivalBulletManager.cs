@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 
@@ -82,8 +81,8 @@ public class RivalBulletManager : MonoBehaviour
                 continue;
             }
 
-            // 5フレーム移動していなかったら自動的に破棄
-            if (bullet.StuckFrames == 5)
+            // 0.5秒移動していなかったら自動的に破棄
+            if (bullet.StuckFrames == Application.targetFrameRate / 2)
             {
                 _bulletDestroyQueue.Enqueue(bullet.InstanceId);
             }
@@ -104,13 +103,15 @@ public class RivalBulletManager : MonoBehaviour
 
                 break;
             }
+
+            Debug.LogWarning($"{nameof(RivalBulletManager)}: 移動対象の弾が見つかりません");
         }
     }
 
     private void OnReceived(object res)
     {
         var @base = (RequestBase) res;
-        var type  = (EventType) Enum.Parse(typeof(EventType), @base.Type);
+        var type  = (EventType) System.Enum.Parse(typeof(EventType), @base.Type);
 
         if (type != EventType.BulletMove) return;
 
