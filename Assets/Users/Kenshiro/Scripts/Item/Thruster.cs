@@ -9,7 +9,7 @@ public class Thruster : ActiveItem
     Vector3 Direction;
     //移動速度カウントダウン用変数
     public float MoveCountDown;
-    bool ClickButton;
+    public static bool ClickButton;
 
 
     //無敵時間カウントダウン用変数
@@ -18,6 +18,8 @@ public class Thruster : ActiveItem
     protected override void Init()
     {
         base.Init();
+
+        ClickButton = false;
 
         //スラスターの所持確認
         Player = GameObject.FindGameObjectWithTag("Player");
@@ -87,6 +89,7 @@ public class Thruster : ActiveItem
 
     public override void Terminate()
     {
+        ClickButton = false;
         base.Terminate();
         Chara.speedRatio = 1;
         Chara.Thruster   = false;
