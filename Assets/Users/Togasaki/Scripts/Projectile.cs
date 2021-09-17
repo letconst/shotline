@@ -145,7 +145,10 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
 
                 //現在の座標から次の座標の方向を向く
                 Vector3 diff = BulletList[i].FP[BulletList[i].index + 1] - BulletList[i].Bullet.transform.position;
-                BulletList[i].Bullet.transform.rotation = Quaternion.LookRotation(diff);
+                if(diff != new Vector3(0,0,0))
+                {
+                    BulletList[i].Bullet.transform.rotation = Quaternion.LookRotation(diff);
+                }
 
                 //現在の射線の位置から次の射線の位置まで移動
                 BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], BulletList[i].Speed * Time.deltaTime);
