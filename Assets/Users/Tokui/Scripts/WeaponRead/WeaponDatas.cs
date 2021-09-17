@@ -9,4 +9,6 @@
     public float GaugeMax;
 
     public float GaugeRecovery;
+
+    public string Weaponinfo;
 }
