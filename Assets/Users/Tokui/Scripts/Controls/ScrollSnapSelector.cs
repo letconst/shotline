@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 
 public class ScrollSnapSelector : ScrollRect
 {
-
 	public int hIndex;
 	public int vIndex;
 
@@ -20,12 +19,12 @@ public class ScrollSnapSelector : ScrollRect
 	private bool forcePositionUpdate = false;
 
 	[SerializeField]
-	private int hPageMax = 3;
-	private int hPageMin = 1;
+	private int hContent = 3;
+	private int hContentMin = 1;
 
 	[SerializeField]
-	private int hPageMaxLimit = 4;
-	private int hPageMinLimit = 0;
+	private int hPageMax = 4;
+	private int hPageMin = 0;
 
 	public void ScrollTo(int x, int y)
 	{
@@ -98,13 +97,13 @@ public class ScrollSnapSelector : ScrollRect
 				hIndex--;
 			}
 
-			if(hIndex == hPageMinLimit)
+			if(hIndex == hPageMin)
             {
-				hIndex = hPageMax;
+				hIndex = hContent;
             }
-			if(hIndex == hPageMaxLimit)
+			if(hIndex == hPageMax)
             {
-				hIndex = hPageMin;
+				hIndex = hContentMin;
             }
 		}
 

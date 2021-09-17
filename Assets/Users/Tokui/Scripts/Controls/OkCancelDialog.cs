@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
+// 退出するかどうかの確認ボタン
 public class OkCancelDialog : MonoBehaviour
 {
-    // 退出するかどうかの確認ボタン
     public enum DialogResult
     {
         OK,

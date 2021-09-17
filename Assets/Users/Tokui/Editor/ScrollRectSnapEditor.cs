@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 
 [CustomEditor(typeof(ScrollSnapSelector))]
 public sealed class ScrollRectSnapEditor : Editor

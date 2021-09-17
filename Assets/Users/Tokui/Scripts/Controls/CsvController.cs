@@ -9,6 +9,8 @@ public class CsvController : MonoBehaviour ,IManagedMethod
     [SerializeField]
     public GameObject WeaponPanel = null;
 
+    public int Count;
+
     public void ManagedStart()
     {
         foreach (WeaponDatas datas in WeaponManager.weaponDatas)
@@ -21,16 +23,8 @@ public class CsvController : MonoBehaviour ,IManagedMethod
                 "\n\n　　　　弾速:" +datas.BulletSpeed +
                 "\nゲージ最大値:" + datas.GaugeMax +
                 "\nゲージ回復量;" + datas.GaugeRecovery;
-
-            /*button.onClick.AddListener(() =>
-            {
-                WeaponNameText.text = "武器名\n" + datas.WeaponName;
-                WeaponStatusText.text =
-                    "　　　　弾速:" + datas.BulletSpeed +
-                    "\nゲージ最大値:" + datas.GaugeMax +
-                    "\nゲージ回復量;" + datas.GaugeRecovery;
-            });*/
         }
+        Count = WeaponManager.weaponDatas.Count;
     }
 
     public void ManagedUpdate()
