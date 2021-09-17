@@ -14,12 +14,12 @@ public class RivalBulletManager : MonoBehaviour
 
     private void Awake()
     {
-        if (!NetworkManager.IsConnected) return;
-
         _rivalBullets           = new List<RivalBullet>();
         _bulletInstantiateQueue = new Queue<RivalBullet>();
         _bulletDestroyQueue     = new Queue<int>();
         _bulletMoveQueue        = new Queue<BulletMoveRequest>();
+
+        if (!NetworkManager.IsConnected) return;
 
         NetworkManager.OnReceived
                       ?.ObserveOnMainThread()
