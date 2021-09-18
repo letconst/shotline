@@ -1,14 +1,18 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Text;
 
 public class CsvRead : MonoBehaviour ,IManagedMethod
 {
     TextAsset csvFile; // CSVファイル
     List<string[]> csvDatas = new List<string[]>(); // CSVの中身を入れるリスト;
 
+    Encoding encoding;
+
     public void ManagedStart()
     {
+        this.encoding = Encoding.GetEncoding("utf-8");
         csvFile = Resources.Load("Data/WeaponData") as TextAsset; // Resouces下のCSV読み込み
         StringReader reader = new StringReader(csvFile.text);
 
@@ -29,7 +33,8 @@ public class CsvRead : MonoBehaviour ,IManagedMethod
                 PrefabsName = Row[1],
                 BulletSpeed = float.Parse(Row[2]),
                 GaugeMax = float.Parse(Row[3]),
-                GaugeRecovery = float.Parse(Row[4])
+                GaugeRecovery = float.Parse(Row[4]),
+                Weaponinfo = (Row[5])
             });
         }
 
