@@ -74,6 +74,9 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             // 射線ゲージも逆になるため反転
             MainGameProperty.Instance.LineGaugeObject.transform.Rotate(Vector3.forward, 180);
 
+            //1P用射線ゲージを表示
+            MainGameProperty.Instance.LineGaugeObject.gameObject.SetActive(true);
+
             // 初期位置設定
             _playerObject.transform.position = MainGameProperty.Instance.startPos1P.position;
 
@@ -95,6 +98,9 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             Camera.main.transform.RotateAround(_playerObject.transform.position, Vector3.up, 180);
             vcam1Trf.RotateAround(_playerObject.transform.position, Vector3.up, 180);
             _vcam2Transposer.m_FollowOffset.z *= -1;
+
+            //2P用射線ゲージを表示
+            MainGameProperty.Instance.LineGaugeObject2.gameObject.SetActive(true);
 
             // 初期位置設定
             _playerObject.transform.position = MainGameProperty.Instance.startPos2P.position;
