@@ -96,6 +96,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
 
             switch (touch.phase)
             {
+                // タッチ開始時の処理
+                // タッチ判定および射線描画を開始させ、判定中のfingerIdを保持する
                 case TouchPhase.Began:
                 {
                     // UIをクリックした際は反応させない
@@ -148,6 +150,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
                     break;
                 }
 
+                // タッチ最中の処理
+                // 射線描画の更新を行う
                 case TouchPhase.Moved when _isHoldClicking:
                 {
                     // 射線が固定されていたら処理しない（描きながら射撃した際にも止める）
@@ -186,6 +190,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
                     break;
                 }
 
+                // タッチ終了時の処理
+                // タッチ判定を破棄する
                 case TouchPhase.Ended:
                 {
                     _isHoldClicking  = false;
@@ -364,7 +370,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
             targetDataFingerPositions.Add(newFingerPosition);
         }
 
-        //リニアドローで射線をかく場合
+        // リニアドローの場合
         if (LinearDraw._isLinearDraw)
         {
             if (_firstLinearDraw)
@@ -395,6 +401,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
                 _firstLinearDraw             = false;
             }
         }
+        // 通常描画
         else
         {
             DrawingData.Renderer.SetPosition(0, newFingerPosition);
@@ -410,8 +417,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
     /// <param name="newFingerPos">追加する位置</param>
     private void UpdateLine(Vector3 newFingerPos)
     {
-        float rdis = 0;
-
         // 射線ゲージが空のときは処理しない
         if (!LineGaugeController.AbleDraw) return;
 
@@ -422,20 +427,24 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
             return;
         }
 
+        float rdis = 0;
         float dis = Vector3.Distance(DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1],
                                      newFingerPos);
 
+        // 延長予定地に描くためのゲージ残量が足りるか判定
         bool isDraw = LineGaugeController.LineGauge(dis, ref rdis);
         currentDis                     += dis / LineGaugeController.Instance.MaxLinePower;
         LineGaugeController.holdAmount =  LineGaugeController.Instance.preslider.fillAmount;
 
+        // ゲージ残量がなければ、残量分の長さとする
         if (!isDraw)
         {
             newFingerPos = Vector3.Lerp(DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1],
                                         newFingerPos, rdis / dis);
         }
 
-        if (!(DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1] == newFingerPos))
+        // 重複する位置でなければ描画延長
+        if (DrawingData.FingerPositions[DrawingData.FingerPositions.Count - 1] != newFingerPos)
         {
             DrawingData.FingerPositions.Add(newFingerPos);
             DrawingData.Renderer.positionCount++;

@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 5127748151414251969}
   - component: {fileID: 5127748151414251971}
   m_Layer: 5
-  m_Name: LineGauge
+  m_Name: LineGaugePL2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -177,7 +177,7 @@ RectTransform:
   m_GameObject: {fileID: 5127748151414251973}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 2.5, y: 2.5, z: 1}
   m_Children:
   - {fileID: 4265372369364191059}
   - {fileID: 6305983934157665689}
@@ -187,7 +187,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -111.27}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5127748151414251969
@@ -213,8 +213,8 @@ MonoBehaviour:
   preslider: {fileID: 5127748151084837608}
   slider: {fileID: 7652530197204904457}
   MaxLinePower: 40
-  HealingGauge: 0.05
-  DealSliderSpeed: 0.0001
+  HealingGauge: 0.003
+  DealSliderSpeed: 0.045
   followOffset: {x: 0, y: -1, z: 0}
 --- !u!1 &7107897668467240243
 GameObject:

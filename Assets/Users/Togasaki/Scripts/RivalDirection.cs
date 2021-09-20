@@ -43,6 +43,10 @@ public class RivalDirection : MonoBehaviour
         CheckInScreen();
     }
 
+    /// <summary>
+    /// 敵方向の表示
+    /// 自分と相手の座標から角度を算出し、矢印の角度と位置を変える。
+    /// </summary>
     void Direction()
     {
         if(NetworkManager.IsOwner)

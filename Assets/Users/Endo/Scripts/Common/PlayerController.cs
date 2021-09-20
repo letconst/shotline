@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
 {
     private GameObject _rivalObject;
     private Text       _roundText;
-    private Text       _statusText;
 
     public static bool isDamaged;
 
@@ -40,7 +39,6 @@ public class PlayerController : MonoBehaviour
     {
         _rivalObject = GameObject.FindGameObjectWithTag("Rival");
         _roundText   = RoundManager.RoundText;
-        _statusText  = SystemProperty.StatusText;
     }
 
     private async void OnTriggerEnter(Collider other)
@@ -67,7 +65,7 @@ public class PlayerController : MonoBehaviour
         {
             roundUpdateReq.IsLoseRival = true;
             _roundText.text            = "LOSE!";
-            _statusText.text           = "タップでタイトルに戻る";
+            SystemUIManager.ShowStatusText(StatusText.TapToTitle);
 
             MainGameController.isChangeableSceneToTitle = true;
             NetworkManager.Emit(roundUpdateReq);
@@ -106,7 +104,7 @@ public class PlayerController : MonoBehaviour
         RoundManager.RoundMove = false;
 
         // 相手のラウンド進行が済んでから操作可能にさせるため、ここではそれをせず待機
-        _statusText.text = "待機中…";
+        SystemUIManager.ShowStatusText(StatusText.NowWaiting);
     }
 
     private void OnPositionChanged(Vector3 pos)
@@ -118,8 +116,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-
-
         if (hit.gameObject.tag == "Wall")
         {
             // どちらに当たったかの方向を取得
@@ -133,14 +129,12 @@ public class PlayerController : MonoBehaviour
             // Z方向の絶対値
             float AbsZ = Mathf.Abs(hit.point.normalized.z);
 
-
             // XとZを比較
 
             // Xが大きい場合
             bool Xpoint = AbsX > AbsZ;
             // Zが大きい場合
             bool Zpoint = AbsZ > AbsX;
-
 
             if (hit.point.normalized.x >= 0.1 & Xpoint)
             {

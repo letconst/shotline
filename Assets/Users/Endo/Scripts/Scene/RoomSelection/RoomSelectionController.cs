@@ -25,8 +25,6 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
 
     private List<RoomData> _roomButtons;
 
-    private Text _statusText;
-
     protected override void Awake()
     {
         base.Awake();
@@ -35,7 +33,6 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         backBtn.onClick.AddListener(OnClickBack);
         refreshBtn.onClick.AddListener(OnClickRefresh);
         _roomButtons = new List<RoomData>();
-        _statusText  = SystemProperty.StatusText;
     }
 
     private void Start()
@@ -134,7 +131,7 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                     SelfPlayerData.PlayerUuid = innerRes.Client.uuid;
                     SelfPlayerData.RoomUuid   = innerRes.RoomUuid;
 
-                    _statusText.text = "マッチング中…";
+                    SystemUIManager.ShowStatusText(StatusText.NowMatching);
 
                     // TODO: 武器選択画面に遷移
                 }
@@ -151,7 +148,7 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
             {
                 await UniTask.SwitchToMainThread();
 
-                _statusText.text = "ロード中…";
+                SystemUIManager.ShowStatusText(StatusText.NowLoading);
 
                 SystemSceneManager.LoadNextScene("MainGameScene", SceneTransition.Fade);
 

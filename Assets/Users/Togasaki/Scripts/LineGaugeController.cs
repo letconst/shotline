@@ -57,7 +57,7 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
         FollowToPlayer();
     }
 
-    //描けるかどうかを返す
+    //描けるかどうかを返すbool
     public static bool LineGauge(float dis, ref float rdis)
     {
         bool result = true;

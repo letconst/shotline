@@ -1,5 +1,4 @@
-﻿
-public class WeaponDatas
+﻿public class WeaponDatas
 {
     public string WeaponName;
 
@@ -10,4 +9,6 @@ public class WeaponDatas
     public float GaugeMax;
 
     public float GaugeRecovery;
+
+    public string Weaponinfo;
 }
