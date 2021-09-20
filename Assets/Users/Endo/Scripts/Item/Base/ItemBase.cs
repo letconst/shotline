@@ -60,6 +60,9 @@ public abstract class ItemBase : MonoBehaviour, IManagedMethod
         }
     }
 
+    /// <summary>
+    /// アイテムボックスのアニメーション処理
+    /// </summary>
     private void IdleAnimation()
     {
         // 上下移動
