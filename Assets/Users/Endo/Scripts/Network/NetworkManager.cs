@@ -51,7 +51,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         OnReceived.Subscribe(EventHandler);
     }
 
-    #if UNITY_ANDROID
+#if UNITY_ANDROID
     private void OnApplicationPause(bool pauseStatus)
     {
         // Android限定
@@ -61,7 +61,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             Application.Quit();
         }
     }
-    #endif
+#endif
 
     private void OnApplicationQuit()
     {
@@ -163,8 +163,8 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             await UniTask.SwitchToMainThread();
 
             Debug.LogError(e.Message);
-            SystemProperty.StatusText.text = "サーバーに接続できませんでした";
-            IsConnected                    = false;
+            SystemUIManager.ShowStatusText(StatusText.ConnectionFailed, false);
+            IsConnected = false;
         }
     }
 

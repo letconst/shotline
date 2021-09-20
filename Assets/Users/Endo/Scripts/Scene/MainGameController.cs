@@ -26,11 +26,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
     private GameObject _playerObject;
     private GameObject _rivalObject;
     private GameObject _inputBlocker;
-    private Text       _statusText;
     private Text       _roundText;
-
-    private const string ConnectionWaitingText = "他のプレイヤーを待っています…";
-    private const string RivalDisconnected     = "対戦相手が切断しました";
 
     private IDisposable _receiver;
     private bool        _isClicked;
@@ -59,7 +55,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             // 開始直後は操作不能に（他プレイヤー待機のため）
             isControllable = false;
             MainGameProperty.InputBlocker.SetActive(true);
-            SystemProperty.StatusText.text = ConnectionWaitingText;
+            SystemUIManager.ShowStatusText(StatusText.NowWaitingOther);
         }
         else
         {
@@ -121,7 +117,6 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
     private async void Start()
     {
         _inputBlocker = MainGameProperty.InputBlocker;
-        _statusText   = SystemProperty.StatusText;
         _roundText    = RoundManager.RoundText;
 
         if (!NetworkManager.IsConnected) return;
@@ -171,7 +166,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         {
             NetworkManager.Disconnect();
             SystemSceneManager.LoadNextScene("Title", SceneTransition.Fade);
-            _statusText.text         = "";
+            SystemUIManager.HideStatusText();
             isChangeableSceneToTitle = false;
         }
     }
@@ -186,8 +181,8 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             // 全プレイヤー参加時
             case EventType.Joined:
             {
-                _statusText.text = "";
-                _roundText.text  = "GAME START";
+                SystemUIManager.HideStatusText();
+                _roundText.text = "GAME START";
                 cmBlendListObject.SetActive(true);
 
                 // カメラ演出が始まるまで待機
@@ -279,10 +274,10 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 // 相手の敗北なら勝利表示
                 if (innerRes.IsLoseRival && innerRes.RivalUuid != SelfPlayerData.PlayerUuid)
                 {
-                    Time.timeScale   = .1f;
-                    isControllable   = false;
-                    _roundText.text  = "WIN!";
-                    _statusText.text = "タップでタイトルに戻る";
+                    Time.timeScale  = .1f;
+                    isControllable  = false;
+                    _roundText.text = "WIN!";
+                    SystemUIManager.ShowStatusText(StatusText.TapToTitle, false);
 
                     isChangeableSceneToTitle = true;
                     _inputBlocker.SetActive(true);
@@ -293,7 +288,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 // 攻撃者側も共通に処理
                 else if (innerRes.IsReadyAttackedRival)
                 {
-                    _statusText.text = "";
+                    SystemUIManager.HideStatusText();
 
                     await FadeTransition.FadeOut(_roundText, .5f);
 
@@ -331,8 +326,8 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     ItemManager.ClearGeneratedItem();
                     Projectile.DestroyAllBullets();
 
-                    _roundText.text  = $"ROUND {RoundManager.CurrentRound.ToString()}";
-                    _statusText.text = "待機中…";
+                    _roundText.text = $"ROUND {RoundManager.CurrentRound.ToString()}";
+                    SystemUIManager.ShowStatusText(StatusText.NowWaiting);
 
                     await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
 
@@ -348,7 +343,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
             case EventType.Refresh:
             {
                 // TODO: UI表示 && 状況に応じてタイトルに戻る
-                _statusText.text         = RivalDisconnected;
+                SystemUIManager.ShowStatusText(StatusText.RivalDisconnected, false);
                 isChangeableSceneToTitle = true;
 
                 break;
