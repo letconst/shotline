@@ -40,7 +40,7 @@ public class RoomEntryButton : MonoBehaviour
         if (roomData == null) return;
 
         SystemUIManager.ShowStatusText(StatusText.NowJoining);
-        RoomSelectionProperty.StatusBgImage.SetActive(true);
+        SystemProperty.InputBlocker.SetActive(true);
 
         var req = new JoinRoomRequest
         {
