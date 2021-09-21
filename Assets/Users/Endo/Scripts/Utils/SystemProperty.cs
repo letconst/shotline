@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +18,11 @@ public class SystemProperty : SingletonMonoBehaviour<SystemProperty>
     private Image fadeImage;
 
     public static Image FadeImage => Instance.fadeImage;
+
+    [SerializeField]
+    private GameObject inputBlocker;
+
+    public static GameObject InputBlocker => Instance.inputBlocker;
 
     [SerializeField]
     private TextMeshProUGUI statusText;
