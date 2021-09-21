@@ -118,6 +118,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         }
 
         _playerObject.SetActive(true);
+        SystemProperty.InputBlocker.SetActive(false);
     }
 
     private async void Start()
