@@ -72,6 +72,8 @@ public static class SystemUIManager
         "サーバーに接続できませんでした", "タップでタイトルに戻る", "参加中", "ロード中", "マッチング中", "待機中", "他のプレイヤーを待っています", "対戦相手が切断しました"
     };
 
+    private const string ConnectingText = "接続中";
+
     /// <summary>
     /// 画面右下にステータステキストを表示する
     /// </summary>
@@ -100,6 +102,16 @@ public static class SystemUIManager
     {
         SystemProperty.StatusText.text = "";
         SystemProperty.StatusTextReader.SetActive(false);
+        SetInputBlockerVisibility(false);
+    }
+
+    /// <summary>
+    /// 接続中のステータステキストを表示する
+    /// </summary>
+    public static void ShowConnectingStatus()
+    {
+        ShowStatusText(ConnectingText);
+        SetInputBlockerVisibility(true, 0);
     }
 
     #endregion
@@ -108,14 +120,15 @@ public static class SystemUIManager
     /// 入力阻止オブジェクトの有効・無効を設定する
     /// </summary>
     /// <param name="isVisible">有効か</param>
-    public static async void SetInputBlockerVisibility(bool isVisible)
+    /// <param name="alpha">透明度</param>
+    public static async void SetInputBlockerVisibility(bool isVisible, float alpha = .5f)
     {
         Image inputBlockerImage = SystemProperty.InputBlockerImage;
 
         if (isVisible)
         {
             inputBlockerImage.gameObject.SetActive(true);
-            await FadeTransition.FadeOut(inputBlockerImage, .2f, inputBlockerImage.color.a, .5f);
+            await FadeTransition.FadeOut(inputBlockerImage, .2f, inputBlockerImage.color.a, alpha);
         }
         else
         {
