@@ -25,10 +25,10 @@ public class UIWindow : UIBase
     private AnimationClip _openClip;
     private AnimationClip _closeClip;
 
-    private TextMeshProUGUI _titleText;
-    private TextMeshProUGUI _bodyText;
-    private Button          _okButton;
-    private Button          _cancelButton;
+    private Text   _titleText;
+    private Text   _bodyText;
+    private Button _okButton;
+    private Button _cancelButton;
 
     private const string OpenClipName  = "Open";
     private const string CloseClipName = "Close";

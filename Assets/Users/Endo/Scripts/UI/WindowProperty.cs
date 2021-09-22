@@ -5,10 +5,10 @@ using UnityEngine.UI;
 public class WindowProperty : MonoBehaviour
 {
     [SerializeField]
-    public TextMeshProUGUI titleText;
+    public Text titleText;
 
     [SerializeField]
-    public TextMeshProUGUI bodyText;
+    public Text bodyText;
 
     [SerializeField]
     public Button okButton;
