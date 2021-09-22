@@ -43,4 +43,9 @@ public class SystemProperty : SingletonMonoBehaviour<SystemProperty>
     private GameObject statusTextReader;
 
     public static GameObject StatusTextReader => Instance.statusTextReader;
+
+    [SerializeField]
+    private Image connectingShadow;
+
+    public static Image ConnectingShadow => Instance.connectingShadow;
 }

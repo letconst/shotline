@@ -79,10 +79,16 @@ public static class SystemUIManager
     /// </summary>
     /// <param name="text">表示するテキスト</param>
     /// <param name="isReaderAnimate">テキストの直後に三点リーダーを付けるか</param>
-    public static void ShowStatusText(string text, bool isReaderAnimate = true)
+    /// <param name="withShadow">影を表示するか</param>
+    public static void ShowStatusText(string text, bool isReaderAnimate = true, bool withShadow = false)
     {
         SystemProperty.StatusText.text = text;
         SystemProperty.StatusTextReader.SetActive(isReaderAnimate);
+
+        if (withShadow)
+        {
+            SystemProperty.ConnectingShadow.enabled = true;
+        }
     }
 
     /// <summary>
@@ -90,9 +96,10 @@ public static class SystemUIManager
     /// </summary>
     /// <param name="status">表示するテキストの種類</param>
     /// <param name="isReaderAnimate">テキストの直後に三点リーダーを付けるか</param>
-    public static void ShowStatusText(StatusText status, bool isReaderAnimate = true)
+    /// <param name="withShadow">影を表示するか</param>
+    public static void ShowStatusText(StatusText status, bool isReaderAnimate = true, bool withShadow = false)
     {
-        ShowStatusText(StatusTexts[(int) status], isReaderAnimate);
+        ShowStatusText(StatusTexts[(int) status], isReaderAnimate, withShadow);
     }
 
     /// <summary>
@@ -103,6 +110,7 @@ public static class SystemUIManager
         SystemProperty.StatusText.text = "";
         SystemProperty.StatusTextReader.SetActive(false);
         SetInputBlockerVisibility(false);
+        SystemProperty.ConnectingShadow.enabled = false;
     }
 
     /// <summary>
@@ -110,7 +118,7 @@ public static class SystemUIManager
     /// </summary>
     public static void ShowConnectingStatus()
     {
-        ShowStatusText(ConnectingText);
+        ShowStatusText(ConnectingText, withShadow: true);
         SetInputBlockerVisibility(true, 0);
     }
 
