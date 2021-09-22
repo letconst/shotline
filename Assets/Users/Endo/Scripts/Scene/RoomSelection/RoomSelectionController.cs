@@ -60,12 +60,13 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         }
 
         NetworkManager.Emit(req);
-
-        // TODO: 通信中UI表示 && 操作不能
+        SystemUIManager.ShowConnectingStatus();
     }
 
     private void OnClickBack()
     {
+        NetworkManager.Disconnect();
+        SystemUIManager.HideStatusText();
         SystemSceneManager.LoadNextScene("Title", SceneTransition.Fade);
     }
 
@@ -95,8 +96,6 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                 // ルーム作成ボタンを最下部へ
                 createRoomBtnTrf.SetAsLastSibling();
 
-                // TODO: 通信中UI非表示 && 操作可能
-
                 // 受け取ったルーム情報のボタンを生成・更新する
                 void UpdateButtons()
                 {
@@ -116,6 +115,8 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                         InstantiateRoomButton(room.uuid, room.clients.Length, room.isInBattle);
                     }
                 }
+
+                SystemUIManager.HideStatusText();
 
                 break;
             }
@@ -137,8 +138,8 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                 }
                 else
                 {
-                    // TODO: innerRes.Messageをウィンドウ表示 && 閉じた際にリフレッシュ
-                    Debug.Log($"入れなかったよ: {innerRes.Message}");
+                    SystemUIManager.HideStatusText();
+                    SystemUIManager.OpenAlertWindow("エラー", innerRes.Message, FetchAllRooms);
                 }
 
                 break;
