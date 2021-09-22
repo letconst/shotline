@@ -664,9 +664,7 @@ GameObject:
   m_Component:
   - component: {fileID: 753609737}
   - component: {fileID: 753609741}
-  - component: {fileID: 753609740}
   - component: {fileID: 753609739}
-  - component: {fileID: 753609738}
   m_Layer: 5
   m_Name: ConfirmButton
   m_TagString: Untagged
@@ -695,20 +693,6 @@ RectTransform:
   m_AnchoredPosition: {x: -40, y: 40}
   m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 1, y: 0}
---- !u!114 &753609738
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 753609736}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 873ee9b006ce9744f93d2efad41a01a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parent: {fileID: 569119164}
-  dialog: {fileID: 8879747291046735215, guid: 9bea46d7b6933b2489cac2d11a004983, type: 3}
 --- !u!114 &753609739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -749,13 +733,13 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 753609740}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 753609738}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: WeaponConfirmDialogTest, Assembly-CSharp
-        m_MethodName: ShowDialog
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -765,36 +749,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &753609740
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 753609736}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &753609741
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -923,9 +877,7 @@ GameObject:
   m_Component:
   - component: {fileID: 867450715}
   - component: {fileID: 867450719}
-  - component: {fileID: 867450718}
   - component: {fileID: 867450717}
-  - component: {fileID: 867450716}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -954,20 +906,6 @@ RectTransform:
   m_AnchoredPosition: {x: 40, y: -40}
   m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 0, y: 1}
---- !u!114 &867450716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 867450714}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55627c41d11aba54b92dc0ba7a2391b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parent: {fileID: 569119164}
-  dialog: {fileID: 5841888150635644397, guid: 1d0d29074dcecce4a8fa6488ac905644, type: 3}
 --- !u!114 &867450717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1008,13 +946,13 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 867450718}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 867450716}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: OkCancelDialogTest, Assembly-CSharp
-        m_MethodName: ShowDialog
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1024,36 +962,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &867450718
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 867450714}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c4c47470eb9f8ec458a98f3fd1b2f9a0, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &867450719
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1923,3 +1831,48 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 9018884610768704699, guid: 98e7697ac7da3d8499921d8d971207f1, type: 3}
   m_PrefabInstance: {fileID: 1253265507}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2042235753
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2042235755}
+  - component: {fileID: 2042235754}
+  m_Layer: 0
+  m_Name: WeaponSelectionController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2042235754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042235753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e38812e21654466803c8c56322a3d18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exitButton: {fileID: 867450717}
+  confirmButton: {fileID: 753609739}
+--- !u!4 &2042235755
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042235753}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 69.24866, y: 43.39832, z: 114.587814}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
