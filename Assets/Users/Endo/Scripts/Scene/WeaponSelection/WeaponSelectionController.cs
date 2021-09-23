@@ -112,6 +112,14 @@ public class WeaponSelectionController : MonoBehaviour
 
                 break;
             }
+
+            // 相手切断時
+            case EventType.Refresh:
+            {
+                _timer.gameObject.SetActive(false);
+
+                break;
+            }
         }
     }
 }
