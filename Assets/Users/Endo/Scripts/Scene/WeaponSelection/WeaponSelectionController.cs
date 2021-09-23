@@ -4,10 +4,20 @@ using UnityEngine;
 
 public class WeaponSelectionController : MonoBehaviour
 {
+    private TimerScript _timer;
+
     private void Awake()
     {
+        _timer = WeaponSelectionProperty.Timer;
+
         WeaponSelectionProperty.ExitButton.onClick.AddListener(OnClickExit);
         WeaponSelectionProperty.ConfirmButton.onClick.AddListener(OnClickConfirm);
+        _timer.gameObject.SetActive(false);
+
+        // 武器選択開始リクエスト
+        var enterReq = new InRoomRequestBase(EventType.EnterRoom);
+
+        NetworkManager.Emit(enterReq);
     }
 
     private void Start()
@@ -58,6 +68,14 @@ public class WeaponSelectionController : MonoBehaviour
 
                 SystemUIManager.HideStatusText();
 
+                // 相手の退出ならタイマー非表示
+                if (innerRes.ClientUuid != SelfPlayerData.PlayerUuid)
+                {
+                    _timer.gameObject.SetActive(false);
+
+                    return;
+                }
+
                 // 正常に退出可能ならルーム選択へ
                 if (innerRes.IsExitable)
                 {
@@ -66,11 +84,25 @@ public class WeaponSelectionController : MonoBehaviour
                 // エラーがある場合は内容も表示
                 else
                 {
-                    SystemUIManager.OpenAlertWindow("エラー", innerRes.Message, () =>
-                    {
-                        SystemSceneManager.LoadNextScene("RoomSelection", SceneTransition.Fade);
-                    });
+                    SystemUIManager.OpenAlertWindow("エラー", innerRes.Message,
+                                                    () =>
+                                                    {
+                                                        SystemSceneManager.LoadNextScene(
+                                                            "RoomSelection", SceneTransition.Fade);
+                                                    });
                 }
+
+                break;
+            }
+
+            // 相手の武器選択開始レスポンス
+            case EventType.EnterRoom:
+            {
+                await UniTask.SwitchToMainThread();
+
+                // タイマー起動
+                _timer.gameObject.SetActive(true);
+                _timer.ResetTimer();
 
                 break;
             }

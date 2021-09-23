@@ -12,4 +12,9 @@ public class WeaponSelectionProperty : SingletonMonoBehaviour<WeaponSelectionPro
     private Button confirmButton;
 
     public static Button ConfirmButton => Instance.confirmButton;
+
+    [SerializeField]
+    private TimerScript timer;
+
+    public static TimerScript Timer => Instance.timer;
 }

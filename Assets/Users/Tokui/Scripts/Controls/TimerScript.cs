@@ -32,6 +32,8 @@ public class TimerScript : MonoBehaviour
 
     private void TimeCount()
     {
+        if (TimeStop) return;
+
         if (0 < NowTime)
         {
             image1.fillAmount -= 1.0f / waitTime * Time.deltaTime;
@@ -48,6 +50,8 @@ public class TimerScript : MonoBehaviour
 
     private void TimeColorChange()
     {
+        if (TimeStop) return;
+
         // Fill Amountによってゲージの色を変える
         if (image1.fillAmount > 0.5f)
         {
@@ -61,5 +65,14 @@ public class TimerScript : MonoBehaviour
         {
             image1.color = Color.red;
         }
+    }
+
+    /// <summary>
+    /// タイマーをリセットする
+    /// </summary>
+    public void ResetTimer()
+    {
+        TimeStop = false;
+        NowTime  = waitTime;
     }
 }

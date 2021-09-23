@@ -1189,18 +1189,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 569119165}
     m_Modifications:
-    - target: {fileID: 9018884609926268076, guid: 98e7697ac7da3d8499921d8d971207f1, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9018884609926268076, guid: 98e7697ac7da3d8499921d8d971207f1, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9018884609926268076, guid: 98e7697ac7da3d8499921d8d971207f1, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 9018884610768704699, guid: 98e7697ac7da3d8499921d8d971207f1, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1289,12 +1277,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: Timer
       objectReference: {fileID: 0}
-    - target: {fileID: 9018884610888499046, guid: 98e7697ac7da3d8499921d8d971207f1, type: 3}
-      propertyPath: waitTime
-      value: 60
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98e7697ac7da3d8499921d8d971207f1, type: 3}
+--- !u!114 &1253265508 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6101905768330592276, guid: 98e7697ac7da3d8499921d8d971207f1, type: 3}
+  m_PrefabInstance: {fileID: 1253265507}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfd44a4c28ce8484b95c0cbfe1bcc211, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1299591146
 GameObject:
   m_ObjectHideFlags: 0
@@ -1840,6 +1835,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2042235755}
+  - component: {fileID: 2042235756}
   - component: {fileID: 2042235754}
   m_Layer: 0
   m_Name: WeaponSelectionController
@@ -1862,6 +1858,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   exitButton: {fileID: 867450717}
   confirmButton: {fileID: 753609739}
+  timer: {fileID: 1253265508}
 --- !u!4 &2042235755
 Transform:
   m_ObjectHideFlags: 0
@@ -1876,3 +1873,15 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2042235756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042235753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 153577568aff453798e7a8c1c658509f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
