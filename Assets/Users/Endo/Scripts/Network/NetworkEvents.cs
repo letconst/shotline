@@ -6,6 +6,7 @@
     JoinRoom,
     ExitRoom,
     EnterRoom,
+    WeaponSelected,
     MatchComplete,
     Match,
     Joined,

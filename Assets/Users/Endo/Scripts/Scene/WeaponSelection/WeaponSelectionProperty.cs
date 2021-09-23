@@ -17,4 +17,9 @@ public class WeaponSelectionProperty : SingletonMonoBehaviour<WeaponSelectionPro
     private TimerScript timer;
 
     public static TimerScript Timer => Instance.timer;
+
+    [SerializeField]
+    private ScrollSnapSelector snapSelector;
+
+    public static ScrollSnapSelector SnapSelector => Instance.snapSelector;
 }

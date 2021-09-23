@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class WeaponSelectionController : MonoBehaviour
 {
-    private TimerScript _timer;
+    private TimerScript        _timer;
+    private ScrollSnapSelector _snapSelector;
 
     private void Awake()
     {
-        _timer = WeaponSelectionProperty.Timer;
+        _timer        = WeaponSelectionProperty.Timer;
+        _snapSelector = WeaponSelectionProperty.SnapSelector;
 
         WeaponSelectionProperty.ExitButton.onClick.AddListener(OnClickExit);
         WeaponSelectionProperty.ConfirmButton.onClick.AddListener(OnClickConfirm);
@@ -52,6 +54,23 @@ public class WeaponSelectionController : MonoBehaviour
     /// </summary>
     private void OnClickConfirm()
     {
+        WeaponDatas selectedWeapon = WeaponManager.weaponDatas[_snapSelector.hIndex - 1];
+
+        SystemUIManager.OpenConfirmWindow("Information", $"{selectedWeapon.WeaponName}でよろしいですか？", result =>
+        {
+            // OK押下時のみ処理
+            if (!result) return;
+
+            SystemUIManager.ShowStatusText("相手の選択を待機中", withShadow: true);
+            SystemUIManager.SetInputBlockerVisibility(true);
+            _timer.gameObject.SetActive(false);
+            _snapSelector.isScrollable = false;
+
+            // 選択完了リクエスト
+            var selectedReq = new InRoomRequestBase(EventType.WeaponSelected);
+
+            NetworkManager.Emit(selectedReq);
+        });
     }
 
     private async void OnReceived(object res)
@@ -101,7 +120,7 @@ public class WeaponSelectionController : MonoBehaviour
                 break;
             }
 
-            // 相手の武器選択開始レスポンス
+            // 全員の武器選択開始レスポンス
             case EventType.EnterRoom:
             {
                 await UniTask.SwitchToMainThread();
@@ -113,9 +132,22 @@ public class WeaponSelectionController : MonoBehaviour
                 break;
             }
 
+            // 全員の武器選択完了レスポンス
+            case EventType.WeaponSelected:
+            {
+                await UniTask.SwitchToMainThread();
+
+                SystemUIManager.HideStatusText();
+                SystemSceneManager.LoadNextScene("MainGameScene", SceneTransition.Fade, isShowStatus: true);
+
+                break;
+            }
+
             // 相手切断時
             case EventType.Refresh:
             {
+                await UniTask.SwitchToMainThread();
+
                 _timer.gameObject.SetActive(false);
 
                 break;

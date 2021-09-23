@@ -1859,6 +1859,7 @@ MonoBehaviour:
   exitButton: {fileID: 867450717}
   confirmButton: {fileID: 753609739}
   timer: {fileID: 1253265508}
+  snapSelector: {fileID: 1770015540}
 --- !u!4 &2042235755
 Transform:
   m_ObjectHideFlags: 0
