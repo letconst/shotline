@@ -5,12 +5,6 @@ using UnityEngine.UI;
 public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
 {
     [SerializeField]
-    private GameObject inputBlocker;
-
-    [SerializeField]
-    private Text statusText;
-
-    [SerializeField]
     public Transform startPos1P;
 
     [SerializeField]
@@ -27,9 +21,7 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
 
     private List<ItemPositionData> _itemSpawnPoints;
 
-    public static GameObject InputBlocker    => Instance.inputBlocker;
-    public static Text       StatusText      => Instance.statusText;
-    public        GameObject LineGaugeObject => lineGaugeObject;
+    public GameObject LineGaugeObject  => lineGaugeObject;
     public GameObject LineGaugeObject2 => lineGaugeObject2;
 
     public static List<ItemPositionData> ItemSpawnPoints

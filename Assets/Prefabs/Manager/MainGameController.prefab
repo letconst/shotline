@@ -61,8 +61,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c207cf08ee5643b1a86f3ea4a377df46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputBlocker: {fileID: 0}
-  statusText: {fileID: 0}
   startPos1P: {fileID: 0}
   startPos2P: {fileID: 0}
   itemSpawnPoints:
@@ -72,3 +70,4 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   lineGaugeObject: {fileID: 0}
+  lineGaugeObject2: {fileID: 0}

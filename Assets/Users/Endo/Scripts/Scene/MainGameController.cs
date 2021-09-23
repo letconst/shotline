@@ -25,7 +25,6 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
 
     private GameObject _playerObject;
     private GameObject _rivalObject;
-    private GameObject _inputBlocker;
     private Text       _roundText;
 
     private IDisposable _receiver;
@@ -54,7 +53,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
 
             // 開始直後は操作不能に（他プレイヤー待機のため）
             isControllable = false;
-            MainGameProperty.InputBlocker.SetActive(true);
+            SystemUIManager.SetInputBlockerVisibility(true);
             SystemUIManager.ShowStatusText(StatusText.NowWaitingOther);
         }
         else
@@ -123,8 +122,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
 
     private async void Start()
     {
-        _inputBlocker = MainGameProperty.InputBlocker;
-        _roundText    = RoundManager.RoundText;
+        _roundText = RoundManager.RoundText;
 
         if (!NetworkManager.IsConnected) return;
 
@@ -205,7 +203,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                 FadeTransition.FadeOut(_roundText, .5f);
 
                 isControllable = true;
-                MainGameProperty.InputBlocker.SetActive(false);
+                SystemUIManager.SetInputBlockerVisibility(false);
 
                 // ホストならラウンド開始通知
                 if (NetworkManager.IsOwner)
@@ -287,7 +285,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     SystemUIManager.ShowStatusText(StatusText.TapToTitle, false);
 
                     isChangeableSceneToTitle = true;
-                    _inputBlocker.SetActive(true);
+                    SystemUIManager.SetInputBlockerVisibility(true);
 
                     await FadeTransition.FadeIn(_roundText, .1f);
                 }
@@ -304,7 +302,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     PlayerController.isDamaged = false;
                     RoundManager.RoundMove     = false;
                     _roundText.text            = "";
-                    _inputBlocker.SetActive(false);
+                    SystemUIManager.SetInputBlockerVisibility(false);
 
                     var roundStartReq = new RoundStartRequest();
 
@@ -317,7 +315,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
                     Time.timeScale  = .1f;
                     _roundText.text = "HIT!";
                     isControllable  = false;
-                    _inputBlocker.SetActive(true);
+                    SystemUIManager.SetInputBlockerVisibility(true);
 
                     // フェード処理
                     await FadeTransition.FadeIn(_roundText, .1f);

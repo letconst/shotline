@@ -5,11 +5,6 @@ using UnityEngine.UI;
 public class SystemProperty : SingletonMonoBehaviour<SystemProperty>
 {
     [SerializeField]
-    private SystemSceneManager systemSceneManager;
-
-    public static SystemSceneManager SystemSceneManager => Instance.systemSceneManager;
-
-    [SerializeField]
     private CanvasGroup fadeCanvasGroup;
 
     public static CanvasGroup FadeCanvasGroup => Instance.fadeCanvasGroup;
