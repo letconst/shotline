@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Text;
@@ -39,13 +39,13 @@ public class CsvRead : MonoBehaviour ,IManagedMethod
         }
 
         // csvDatas[行][列]を指定して値を自由に取り出せる
-        Debug.Log(csvDatas/*行*/[0]/*列*/[0]);
-        Debug.Log(csvDatas/*行*/[1]/*列*/[0]);
-        Debug.Log(csvDatas/*行*/[2]/*列*/[0]);
+        // Debug.Log(csvDatas/*行*/[0]/*列*/[0]);
+        // Debug.Log(csvDatas/*行*/[1]/*列*/[0]);
+        // Debug.Log(csvDatas/*行*/[2]/*列*/[0]);
     }
 
     public void ManagedUpdate()
     {
-        
+
     }
 }
