@@ -787,10 +787,10 @@ RectTransform:
   m_Father: {fileID: 1086492929}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1024, y: -500}
+  m_SizeDelta: {x: 2048, y: 1536}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &850494065
 GameObject:
@@ -1685,7 +1685,7 @@ MonoBehaviour:
   vIndex: 0
   hPageNum: 5
   vPageNum: 0
-  smoothness: 40
+  smoothness: 10
   scrollWeight: 0.1
   hContent: 3
   hPageMax: 4
