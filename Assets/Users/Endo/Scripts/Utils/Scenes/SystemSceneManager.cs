@@ -19,8 +19,10 @@ public class SystemSceneManager : MonoBehaviour
     /// <param name="sceneName">読み込むシーン名</param>
     /// <param name="type">読み込みアニメーション</param>
     /// <param name="fadeSpeed">アニメーション時間（フェードのみ）</param>
+    /// <param name="isShowStatus">ロード中のステータステキストを表示するか</param>
     public static async UniTask LoadNextScene(string sceneName, SceneTransition type,
-                                              float  fadeSpeed = FadeTransition.DefaultFadeSpeed)
+                                              float  fadeSpeed    = FadeTransition.DefaultFadeSpeed,
+                                              bool   isShowStatus = false)
     {
         // 別のシーンをロード中は読み込まない
         if (IsLoading) return;
@@ -32,7 +34,13 @@ public class SystemSceneManager : MonoBehaviour
             case SceneTransition.Fade:
             {
                 await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, fadeSpeed);
+
+                if (isShowStatus) SystemUIManager.ShowStatusText(StatusText.NowLoading);
+
                 await UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName);
+
+                if (isShowStatus) SystemUIManager.HideStatusText();
+
                 await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, fadeSpeed);
 
                 break;
