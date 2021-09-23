@@ -61,7 +61,7 @@ public static class FadeTransition
     public static async UniTask FadeOut(Text  text, float fadeSpeed = DefaultFadeSpeed, float startAlpha = 1,
                                         float endAlpha = 0)
     {
-        await FadeIn(text, fadeSpeed, startAlpha, endAlpha);
+        await FadeIn((Graphic) text, fadeSpeed, startAlpha, endAlpha);
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public static class FadeTransition
     public static async UniTask FadeIn(Text  text, float fadeSpeed = DefaultFadeSpeed, float startAlpha = 0,
                                        float endAlpha = 1)
     {
-        await FadeOut(text, fadeSpeed, startAlpha, endAlpha);
+        await FadeOut((Graphic) text, fadeSpeed, startAlpha, endAlpha);
     }
 
     /// <summary>
