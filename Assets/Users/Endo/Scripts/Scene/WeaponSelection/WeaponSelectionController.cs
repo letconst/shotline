@@ -7,6 +7,8 @@ public class WeaponSelectionController : MonoBehaviour
     private TimerScript        _timer;
     private ScrollSnapSelector _snapSelector;
 
+    private bool _isSelected;
+
     private void Awake()
     {
         _timer        = WeaponSelectionProperty.Timer;
@@ -54,6 +56,9 @@ public class WeaponSelectionController : MonoBehaviour
     /// </summary>
     private void OnClickConfirm()
     {
+        // 選択完了後は反応させない
+        if (_isSelected) return;
+
         WeaponDatas selectedWeapon = WeaponManager.weaponDatas[_snapSelector.hIndex - 1];
 
         SystemUIManager.OpenConfirmWindow("Information", $"{selectedWeapon.WeaponName}でよろしいですか？", result =>
@@ -62,9 +67,8 @@ public class WeaponSelectionController : MonoBehaviour
             if (!result) return;
 
             SystemUIManager.ShowStatusText("相手の選択を待機中", withShadow: true);
-            SystemUIManager.SetInputBlockerVisibility(true);
             _timer.gameObject.SetActive(false);
-            _snapSelector.isScrollable = false;
+            _isSelected = true;
 
             // 選択完了リクエスト
             var selectedReq = new InRoomRequestBase(EventType.WeaponSelected);
