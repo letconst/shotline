@@ -33,12 +33,18 @@ public class WeaponSelectionController : MonoBehaviour
     /// </summary>
     private static void OnClickExit()
     {
-        SystemUIManager.ShowConnectingStatus();
+        SystemUIManager.OpenConfirmWindow("Information", "退出してもよろしいですか？", result =>
+        {
+            // OK押下時のみ処理
+            if (!result) return;
 
-        // 退出リクエスト
-        var exitReq = new ExitRoomRequest();
+            SystemUIManager.ShowConnectingStatus();
 
-        NetworkManager.Emit(exitReq);
+            // 退出リクエスト
+            var exitReq = new ExitRoomRequest();
+
+            NetworkManager.Emit(exitReq);
+        });
     }
 
     /// <summary>
