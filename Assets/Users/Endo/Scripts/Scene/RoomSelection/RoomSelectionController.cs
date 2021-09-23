@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -52,6 +52,8 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
 
     private async void FetchAllRooms()
     {
+        SystemUIManager.ShowConnectingStatus();
+
         var req = new GetAllRoomRequest();
 
         if (!NetworkManager.IsConnected)
@@ -60,7 +62,6 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         }
 
         NetworkManager.Emit(req);
-        SystemUIManager.ShowConnectingStatus();
     }
 
     private void OnClickBack()
@@ -121,6 +122,7 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                 break;
             }
 
+            // ルーム参加レスポンス
             case EventType.JoinRoom:
             {
                 var innerRes = (JoinRoomRequest) res;
@@ -132,7 +134,8 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                     SelfPlayerData.PlayerUuid = innerRes.Client.uuid;
                     SelfPlayerData.RoomUuid   = innerRes.RoomUuid;
 
-                    SystemUIManager.ShowStatusText(StatusText.NowMatching);
+                    SystemUIManager.HideStatusText();
+                    SystemSceneManager.LoadNextScene("WeaponSelection", SceneTransition.Fade);
 
                     // TODO: 武器選択画面に遷移
                 }
