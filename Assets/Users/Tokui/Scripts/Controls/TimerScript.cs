@@ -42,9 +42,14 @@ public class TimerScript : MonoBehaviour
 
             TimerText.text = NowTime.ToString("f1");
         }
+        // 時間切れ
         else if (NowTime < 0)
         {
             TimeStop = true;
+
+            // 選択中の武器で決定させる
+            WeaponSelectionController.Instance.ChoiceSelectedWeapon();
+            SystemUIManager.SetInputBlockerVisibility(true);
         }
     }
 

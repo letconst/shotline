@@ -1,8 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using UniRx;
-using UnityEngine;
 
-public class WeaponSelectionController : MonoBehaviour
+public class WeaponSelectionController : SingletonMonoBehaviour<WeaponSelectionController>
 {
     private TimerScript        _timer;
     private ScrollSnapSelector _snapSelector;
@@ -70,11 +69,23 @@ public class WeaponSelectionController : MonoBehaviour
             _timer.gameObject.SetActive(false);
             _isSelected = true;
 
-            // 選択完了リクエスト
-            var selectedReq = new InRoomRequestBase(EventType.WeaponSelected);
-
-            NetworkManager.Emit(selectedReq);
+            ChoiceSelectedWeapon();
         });
+    }
+
+    /// <summary>
+    /// 選択中の武器に決定する
+    /// </summary>
+    public void ChoiceSelectedWeapon()
+    {
+        // 選択武器を保存
+        WeaponDatas selectedWeapon = WeaponManager.weaponDatas[_snapSelector.hIndex - 1];
+        WeaponManager.SelectWeapon = selectedWeapon;
+
+        // 選択完了リクエスト
+        var selectedReq = new InRoomRequestBase(EventType.WeaponSelected);
+
+        NetworkManager.Emit(selectedReq);
     }
 
     private async void OnReceived(object res)
