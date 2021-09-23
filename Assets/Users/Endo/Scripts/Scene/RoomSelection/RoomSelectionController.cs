@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -52,6 +52,8 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
 
     private async void FetchAllRooms()
     {
+        SystemUIManager.ShowConnectingStatus();
+
         var req = new GetAllRoomRequest();
 
         if (!NetworkManager.IsConnected)
@@ -60,12 +62,12 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         }
 
         NetworkManager.Emit(req);
-
-        // TODO: 通信中UI表示 && 操作不能
     }
 
     private void OnClickBack()
     {
+        NetworkManager.Disconnect();
+        SystemUIManager.HideStatusText();
         SystemSceneManager.LoadNextScene("Title", SceneTransition.Fade);
     }
 
@@ -95,8 +97,6 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                 // ルーム作成ボタンを最下部へ
                 createRoomBtnTrf.SetAsLastSibling();
 
-                // TODO: 通信中UI非表示 && 操作可能
-
                 // 受け取ったルーム情報のボタンを生成・更新する
                 void UpdateButtons()
                 {
@@ -117,9 +117,12 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                     }
                 }
 
+                SystemUIManager.HideStatusText();
+
                 break;
             }
 
+            // ルーム参加レスポンス
             case EventType.JoinRoom:
             {
                 var innerRes = (JoinRoomRequest) res;
@@ -131,14 +134,15 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                     SelfPlayerData.PlayerUuid = innerRes.Client.uuid;
                     SelfPlayerData.RoomUuid   = innerRes.RoomUuid;
 
-                    SystemUIManager.ShowStatusText(StatusText.NowMatching);
+                    SystemUIManager.HideStatusText();
+                    SystemSceneManager.LoadNextScene("WeaponSelection", SceneTransition.Fade);
 
                     // TODO: 武器選択画面に遷移
                 }
                 else
                 {
-                    // TODO: innerRes.Messageをウィンドウ表示 && 閉じた際にリフレッシュ
-                    Debug.Log($"入れなかったよ: {innerRes.Message}");
+                    SystemUIManager.HideStatusText();
+                    SystemUIManager.OpenAlertWindow("エラー", innerRes.Message, FetchAllRooms);
                 }
 
                 break;

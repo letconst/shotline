@@ -32,22 +32,30 @@ public class TimerScript : MonoBehaviour
 
     private void TimeCount()
     {
+        if (TimeStop) return;
+
         if (0 < NowTime)
         {
             image1.fillAmount -= 1.0f / waitTime * Time.deltaTime;
 
             NowTime -= Time.deltaTime;
 
-            TimerText.text = NowTime.ToString("f1");
+            TimerText.text = NowTime.ToString(NowTime < 10 ? "F1" : "0");
         }
+        // 時間切れ
         else if (NowTime < 0)
         {
             TimeStop = true;
+
+            // 選択中の武器で決定させる
+            WeaponSelectionController.Instance.ChoiceSelectedWeapon();
         }
     }
 
     private void TimeColorChange()
     {
+        if (TimeStop) return;
+
         // Fill Amountによってゲージの色を変える
         if (image1.fillAmount > 0.5f)
         {
@@ -61,5 +69,15 @@ public class TimerScript : MonoBehaviour
         {
             image1.color = Color.red;
         }
+    }
+
+    /// <summary>
+    /// タイマーをリセットする
+    /// </summary>
+    public void ResetTimer()
+    {
+        TimeStop          = false;
+        NowTime           = waitTime;
+        image1.fillAmount = 1;
     }
 }

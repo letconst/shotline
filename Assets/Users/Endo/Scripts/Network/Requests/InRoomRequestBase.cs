@@ -1,4 +1,4 @@
-﻿public abstract class InRoomRequestBase : RequestBase
+﻿public class InRoomRequestBase : RequestBase
 {
     public string RoomUuid;
     public string ClientUuid;
