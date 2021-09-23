@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour
         Time.timeScale                    = .1f;
         MainGameController.isControllable = false;
         isDamaged                         = true;
-        MainGameProperty.InputBlocker.SetActive(true);
+        SystemUIManager.SetInputBlockerVisibility(true);
 
         var roundUpdateReq = new RoundUpdateRequest();
 

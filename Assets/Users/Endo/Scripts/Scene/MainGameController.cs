@@ -53,8 +53,6 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
 
             // 開始直後は操作不能に（他プレイヤー待機のため）
             isControllable = false;
-            SystemUIManager.SetInputBlockerVisibility(true);
-            SystemUIManager.ShowStatusText(StatusText.NowWaitingOther);
         }
         else
         {
@@ -117,7 +115,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         }
 
         _playerObject.SetActive(true);
-        SystemProperty.InputBlocker.SetActive(false);
+        SystemUIManager.SetInputBlockerVisibility(false);
     }
 
     private async void Start()
@@ -125,6 +123,9 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>
         _roundText = RoundManager.RoundText;
 
         if (!NetworkManager.IsConnected) return;
+
+        SystemUIManager.SetInputBlockerVisibility(true);
+        SystemUIManager.ShowStatusText(StatusText.NowWaitingOther);
 
         _receiver = NetworkManager.OnReceived
                                   ?.ObserveOnMainThread()

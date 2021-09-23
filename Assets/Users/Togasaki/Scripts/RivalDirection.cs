@@ -3,31 +3,31 @@ using UnityEngine.UI;
 
 public class RivalDirection : MonoBehaviour
 {
-    [SerializeField, Header("–îˆóƒCƒ[ƒW")]
+    [SerializeField, Header("çŸ¢å°ã‚¤ãƒ¡ãƒ¼ã‚¸")]
     private Image Arrow;
 
-    [SerializeField, Header("MAXˆÊ’uX")]
+    [SerializeField, Header("MAXä½ç½®X")]
     private float maxPosX = 880;
 
-    [SerializeField, Header("MAXˆÊ’uY")]
+    [SerializeField, Header("MAXä½ç½®Y")]
     private float maxPosY = 640;
 
-    [SerializeField,Header("’Ç]ƒJƒƒ‰æ“¾")]
+    [SerializeField,Header("è¿½å¾“ã‚«ãƒ¡ãƒ©å–å¾—")]
     private Camera targetCamera;
 
-    //‰æ–Ê“à”»’è—pRect
+    //ç”»é¢å†…åˆ¤å®šç”¨Rect
     Rect rect = new Rect(0, 0, 1, 1);
 
-    //ƒvƒŒƒCƒ„[Ši”[•Ï”
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ ¼ç´å¤‰æ•°
     GameObject PlayerCharacter;
 
-    //‘Îí‘ŠèŠi”[•Ï”
+    //å¯¾æˆ¦ç›¸æ‰‹æ ¼ç´å¤‰æ•°
     GameObject RivalCharacter;
 
-    //ƒCƒ[ƒW‚ÌrectTransform
+    //ã‚¤ãƒ¡ãƒ¼ã‚¸ã®rectTransform
     RectTransform arrowRT;
 
-    //ˆÊ’u‚ÌŠ„‡
+    //ä½ç½®ã®å‰²åˆ
     float ratio;
 
     void Start()
@@ -44,8 +44,8 @@ public class RivalDirection : MonoBehaviour
     }
 
     /// <summary>
-    /// “G•ûŒü‚Ì•\¦
-    /// ©•ª‚Æ‘Šè‚ÌÀ•W‚©‚çŠp“x‚ğZo‚µA–îˆó‚ÌŠp“x‚ÆˆÊ’u‚ğ•Ï‚¦‚éB
+    /// æ•µæ–¹å‘ã®è¡¨ç¤º
+    /// è‡ªåˆ†ã¨ç›¸æ‰‹ã®åº§æ¨™ã‹ã‚‰è§’åº¦ã‚’ç®—å‡ºã—ã€çŸ¢å°ã®è§’åº¦ã¨ä½ç½®ã‚’å¤‰ãˆã‚‹ã€‚
     /// </summary>
     void Direction()
     {
