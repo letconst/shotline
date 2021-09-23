@@ -26,6 +26,9 @@ public class ScrollSnapSelector : ScrollRect
 	private int hPageMax = 4;
 	private int hPageMin = 0;
 
+	[HideInInspector]
+	public bool isScrollable;
+
 	public void ScrollTo(int x, int y)
 	{
 		hIndex = x;
@@ -48,6 +51,8 @@ public class ScrollSnapSelector : ScrollRect
 
 	public override void OnBeginDrag(PointerEventData eventData)
 	{
+		if (isScrollable) return;
+
 		base.OnBeginDrag(eventData);
 		dragging = true;
 	}
