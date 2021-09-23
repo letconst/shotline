@@ -40,7 +40,7 @@ public class TimerScript : MonoBehaviour
 
             NowTime -= Time.deltaTime;
 
-            TimerText.text = NowTime.ToString("f1");
+            TimerText.text = NowTime.ToString(NowTime < 10 ? "F1" : "0");
         }
         // 時間切れ
         else if (NowTime < 0)
@@ -49,7 +49,6 @@ public class TimerScript : MonoBehaviour
 
             // 選択中の武器で決定させる
             WeaponSelectionController.Instance.ChoiceSelectedWeapon();
-            SystemUIManager.SetInputBlockerVisibility(true);
         }
     }
 
