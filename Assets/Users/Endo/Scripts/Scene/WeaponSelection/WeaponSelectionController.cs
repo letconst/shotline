@@ -35,10 +35,6 @@ public class WeaponSelectionController : MonoBehaviour
     {
         SystemUIManager.ShowConnectingStatus();
 
-        // 接続情報破棄
-        SelfPlayerData.PlayerUuid = null;
-        SelfPlayerData.RoomUuid   = null;
-
         // 退出リクエスト
         var exitReq = new ExitRoomRequest();
 
@@ -75,6 +71,10 @@ public class WeaponSelectionController : MonoBehaviour
 
                     return;
                 }
+
+                // 接続情報破棄
+                SelfPlayerData.PlayerUuid = null;
+                SelfPlayerData.RoomUuid   = null;
 
                 // 正常に退出可能ならルーム選択へ
                 if (innerRes.IsExitable)
