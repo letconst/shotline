@@ -90,7 +90,7 @@ public class WeaponSelectionController : MonoBehaviour
                 // エラーがある場合は内容も表示
                 else
                 {
-                    SystemUIManager.OpenAlertWindow("エラー", innerRes.Message,
+                    SystemUIManager.OpenAlertWindow("Error", innerRes.Message,
                                                     () =>
                                                     {
                                                         SystemSceneManager.LoadNextScene(

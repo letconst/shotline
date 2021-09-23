@@ -72,7 +72,8 @@ public class TimerScript : MonoBehaviour
     /// </summary>
     public void ResetTimer()
     {
-        TimeStop = false;
-        NowTime  = waitTime;
+        TimeStop          = false;
+        NowTime           = waitTime;
+        image1.fillAmount = 1;
     }
 }

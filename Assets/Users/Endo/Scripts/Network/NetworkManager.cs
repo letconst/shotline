@@ -183,6 +183,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         {
             EventType.GetAllRoom    => RequestBase.MakeJsonFrom<GetAllRoomRequest>(msg),
             EventType.JoinRoom      => RequestBase.MakeJsonFrom<JoinRoomRequest>(msg),
+            EventType.EnterRoom     => RequestBase.MakeJsonFrom<InRoomRequestBase>(msg),
             EventType.ExitRoom      => RequestBase.MakeJsonFrom<ExitRoomRequest>(msg),
             EventType.MatchComplete => RequestBase.MakeJsonFrom<MatchCompleteRequest>(msg),
             EventType.Match         => RequestBase.MakeJsonFrom<MatchRequest>(msg),
