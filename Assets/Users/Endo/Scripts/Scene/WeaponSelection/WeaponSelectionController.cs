@@ -127,6 +127,9 @@ public class WeaponSelectionController : MonoBehaviour
             // 全員の武器選択開始レスポンス
             case EventType.EnterRoom:
             {
+                // 武器選択済みなら処理しない
+                if (_isSelected) break;
+
                 await UniTask.SwitchToMainThread();
 
                 // タイマー起動
