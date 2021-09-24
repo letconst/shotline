@@ -1883,11 +1883,13 @@ MonoBehaviour:
   - {fileID: 1505636951}
   - {fileID: 1654955847}
   - {fileID: 1770015538}
+  - {fileID: 2042235753}
   managedUpdateObjects:
   - {fileID: 1997956132}
   - {fileID: 1505636951}
   - {fileID: 1654955847}
   - {fileID: 1770015538}
+  - {fileID: 2042235753}
 --- !u!1 &1997956132
 GameObject:
   m_ObjectHideFlags: 0
@@ -1947,6 +1949,7 @@ GameObject:
   - component: {fileID: 2042235755}
   - component: {fileID: 2042235754}
   - component: {fileID: 2042235756}
+  - component: {fileID: 2042235757}
   m_Layer: 0
   m_Name: WeaponSelectionController
   m_TagString: Untagged
@@ -1996,3 +1999,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 153577568aff453798e7a8c1c658509f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2042235757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042235753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1760043f32bd4faa9eae5cbab505643e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modelSize: 0
+  rotateDirection: 0
+  rotateSpeed: 100

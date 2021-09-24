@@ -26,16 +26,18 @@ public class CsvController : MonoBehaviour ,IManagedMethod
                 "説明\n" + datas.Weaponinfo;
 
             // モデル生成
-            var modelObject = Resources.Load<GameObject>(datas.PrefabsName);
+            var modelPrefab = Resources.Load<GameObject>(datas.PrefabsName);
 
-            if (modelObject == null)
+            if (modelPrefab == null)
             {
                 Debug.LogError($"武器「{datas.WeaponName}」のプレハブが見つかりません: {datas.PrefabsName}");
 
                 continue;
             }
 
-            Instantiate(modelObject, panelProp.ModelParentTrf);
+            GameObject modelObject = Instantiate(modelPrefab, panelProp.ModelParentTrf);
+
+            WeaponManager.weaponModels.Add(modelObject.transform);
         }
     }
 
