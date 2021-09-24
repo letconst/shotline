@@ -1,4 +1,10 @@
-﻿public class WeaponDatas
+﻿public enum ShotType
+{
+    Normal,
+    Linear
+}
+
+public class WeaponDatas
 {
     public string WeaponName;
 
@@ -11,4 +17,6 @@
     public float GaugeRecovery;
 
     public string Weaponinfo;
+
+    public ShotType ShotType;
 }

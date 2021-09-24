@@ -34,7 +34,8 @@ public class CsvRead : MonoBehaviour ,IManagedMethod
                 BulletSpeed = float.Parse(Row[2]),
                 GaugeMax = float.Parse(Row[3]),
                 GaugeRecovery = float.Parse(Row[4]),
-                Weaponinfo = (Row[5])
+                Weaponinfo = Row[5],
+                ShotType = (ShotType) int.Parse(Row[6])
             });
         }
 
