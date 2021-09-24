@@ -18,10 +18,14 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
     [SerializeField]
     private GameObject lineGaugeObject2;
 
+    [SerializeField, Header("CM BlendListオブジェクト")]
+    private GameObject cmBlendListObject;
+
     private List<ItemPositionData> _itemSpawnPoints;
 
-    public GameObject LineGaugeObject  => lineGaugeObject;
-    public GameObject LineGaugeObject2 => lineGaugeObject2;
+    public GameObject LineGaugeObject   => lineGaugeObject;
+    public GameObject LineGaugeObject2  => lineGaugeObject2;
+    public GameObject CmBlendListObject => cmBlendListObject;
 
     public static List<ItemPositionData> ItemSpawnPoints
     {

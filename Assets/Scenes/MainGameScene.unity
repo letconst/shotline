@@ -1267,6 +1267,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7786787842734930897, guid: c462d8f020a3020479238adb1c173d0b, type: 3}
   m_PrefabInstance: {fileID: 1627749207}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &407418982 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6881295056185150370, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
+  m_PrefabInstance: {fileID: 6881295056098789973}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &464239736 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4416974844288978660, guid: 4c0ea9e720f8f2e4db1a92199c2ef19a, type: 3}
@@ -3858,50 +3863,58 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedStartObjects.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedUpdateObjects.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedStartObjects.Array.data[0]
       value: 
-      objectReference: {fileID: 2141871275}
+      objectReference: {fileID: 407418982}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedStartObjects.Array.data[1]
       value: 
-      objectReference: {fileID: 889804804}
+      objectReference: {fileID: 2141871275}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedStartObjects.Array.data[2]
       value: 
-      objectReference: {fileID: 996724261}
+      objectReference: {fileID: 889804804}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedStartObjects.Array.data[3]
       value: 
-      objectReference: {fileID: 305886384}
+      objectReference: {fileID: 996724261}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedStartObjects.Array.data[4]
+      value: 
+      objectReference: {fileID: 305886384}
+    - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
+      propertyPath: managedStartObjects.Array.data[5]
       value: 
       objectReference: {fileID: 1893924712}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedUpdateObjects.Array.data[0]
       value: 
-      objectReference: {fileID: 2141871275}
+      objectReference: {fileID: 407418982}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedUpdateObjects.Array.data[1]
       value: 
-      objectReference: {fileID: 889804804}
+      objectReference: {fileID: 2141871275}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedUpdateObjects.Array.data[2]
       value: 
-      objectReference: {fileID: 996724261}
+      objectReference: {fileID: 889804804}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedUpdateObjects.Array.data[3]
       value: 
-      objectReference: {fileID: 305886384}
+      objectReference: {fileID: 996724261}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedUpdateObjects.Array.data[4]
+      value: 
+      objectReference: {fileID: 305886384}
+    - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
+      propertyPath: managedUpdateObjects.Array.data[5]
       value: 
       objectReference: {fileID: 1893924712}
     - target: {fileID: 566441633433876813, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
@@ -4051,6 +4064,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5531694532840533005, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
+      propertyPath: vcam2
+      value: 
+      objectReference: {fileID: 991753281}
+    - target: {fileID: 5531694532840533005, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
+      propertyPath: vcam1Trf
+      value: 
+      objectReference: {fileID: 1053489612}
+    - target: {fileID: 5531694532840533005, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
+      propertyPath: vcam2Trf
+      value: 
+      objectReference: {fileID: 991753282}
     - target: {fileID: 6881295056185150370, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
       propertyPath: m_Name
       value: MainGameController
@@ -4087,6 +4112,10 @@ PrefabInstance:
       propertyPath: lineGaugeObject2
       value: 
       objectReference: {fileID: 305886384}
+    - target: {fileID: 6881295056185150381, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
+      propertyPath: cmBlendListObject
+      value: 
+      objectReference: {fileID: 1176597202}
     - target: {fileID: 6881295056185150381, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
       propertyPath: itemSpawnPoints.Array.data[0]
       value: 
