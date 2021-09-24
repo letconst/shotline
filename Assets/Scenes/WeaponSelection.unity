@@ -2011,6 +2011,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1760043f32bd4faa9eae5cbab505643e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelSize: 0
   rotateDirection: 0
-  rotateSpeed: 100
+  rotateSpeed: 30
