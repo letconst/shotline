@@ -161,7 +161,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
 
                 // 乱数シードをセットし、アイテムをランダム生成
                 Random.InitState(innerRes.Seed);
-                ItemManager.GenerateRandomItem();
+                ItemManager.GenerateRandomItem(innerRes.Seed);
 
                 break;
             }
@@ -284,6 +284,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
                 SystemUIManager.OpenAlertWindow("Information", "対戦相手が切断しました。タイトルに戻ります。",
                                                 () =>
                                                 {
+                                                    NetworkManager.Disconnect();
                                                     SystemSceneManager.LoadNextScene("Title", SceneTransition.Fade);
                                                 });
 

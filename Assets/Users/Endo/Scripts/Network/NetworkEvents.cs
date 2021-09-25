@@ -2,7 +2,7 @@
 {
     Init,
     GetAllRoom,
-    RoomRefresh,
+    CreateRoom,
     JoinRoom,
     ExitRoom,
     EnterRoom,

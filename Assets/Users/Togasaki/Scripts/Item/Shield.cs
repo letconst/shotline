@@ -21,7 +21,7 @@ public class Shield : ActiveItem
     //最後に実行される
     public override void Terminate()
     {
-        base.ClearItemIcon();
+        ClearItemIcon();
         base.Terminate();
 
     }

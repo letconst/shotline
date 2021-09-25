@@ -86,17 +86,17 @@ public class UIWindow : UIBase
     public void Close()
     {
         _windowAnimation.Play(CloseClipName);
-        _onClose?.Invoke();
     }
 
     /// <summary>
     /// 閉じるアニメーション終了時の処理
     /// </summary>
-    private static void OnCloseAnimationEnd()
+    private void OnCloseAnimationEnd()
     {
         SystemProperty.WindowObject.SetActive(false);
         SystemUIManager.SetInputBlockerVisibility(false);
         SystemUIManager.ClearWindow();
+        _onClose?.Invoke();
     }
 
     /// <summary>

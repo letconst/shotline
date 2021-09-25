@@ -132,7 +132,7 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
         LinearDraw._linearDrawOn                  = isLinearDraw;
         LinearDraw._isLinearDraw                  = isLinearDraw;
         LineGaugeController.Instance.MaxLinePower = selectedWeapon.GaugeMax;
-        LineGaugeController.Instance.HealingGauge = selectedWeapon.GaugeRecovery / 1000;
+        LineGaugeController.Instance.HealingGauge = selectedWeapon.GaugeRecovery / 10000;
 
         var playerProp = _playerTrf.GetComponent<PlayerProperty>();
 

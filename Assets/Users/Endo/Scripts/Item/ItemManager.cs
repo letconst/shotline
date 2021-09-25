@@ -129,7 +129,8 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     /// <summary>
     /// ランダムな位置にランダムなアイテムを生成する
     /// </summary>
-    public static void GenerateRandomItem()
+    /// <param name="seed">乱数のシード値</param>>
+    public static void GenerateRandomItem(int seed)
     {
         List<ItemPositionData> spawnPoints = MainGameProperty.ItemSpawnPoints;
         ItemPositionData       spawnPoint  = null;
@@ -137,11 +138,11 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
         // 未生成位置が出るまで選出
         while (spawnPoint == null || spawnPoint.isSpawned)
         {
-            GeneratedPointIndex = (sbyte)Random.Range(0, spawnPoints.Count);
+            GeneratedPointIndex = (sbyte) Random.Range(0, spawnPoints.Count);
             spawnPoint          = spawnPoints[GeneratedPointIndex];
         }
 
-        ItemData item = ItemDatabase.GetRandomItem();
+        ItemData item = ItemDatabase.GetRandomItem(seed);
 
         // アイテムを生成し、初期化実行
         GameObject itemObject        = Instantiate(item.ItemObject, spawnPoint.Position, Quaternion.identity);
@@ -225,7 +226,14 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
     public static void ClearGeneratedItem()
     {
         // 所持アイテムがある場合は破棄
-        if (_holdItem != null) _holdItem.Terminate();
+        if (_holdItem != null)
+        {
+            _holdItem.Terminate();
+        }
+        else
+        {
+            ClearItemIcon();
+        }
 
         _holdItem    = null;
         _holdItemObj = null;
@@ -242,6 +250,15 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>, IManagedMethod
         {
             Destroy(shield);
         }
+    }
+
+    /// <summary>
+    /// アイテムアイコンの表示を解除する
+    /// </summary>
+    public static void ClearItemIcon()
+    {
+        ItemIcon.sprite = null;
+        ItemIcon.color  = Color.clear;
     }
 
     /// <summary>

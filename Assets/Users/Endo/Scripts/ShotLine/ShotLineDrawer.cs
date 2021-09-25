@@ -125,9 +125,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
                     }
                     else
                     {
-                        // 画面中央からのドローのみ受け付ける
-                        if (Vector2.Distance(_screenCenterPos, touchPos) > drawableAreaRadius) return;
-
                         //リニアドローオフの場合
                         _isHoldClicking = true;
                     }
@@ -147,7 +144,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
                         LineGaugeController.AbleDraw = true;
                     }
 
-                    _isHoldClicking   = true;
                     _touchedPlayerPos = _playerTrf.position;
 
                     CreateLine(hit.point);

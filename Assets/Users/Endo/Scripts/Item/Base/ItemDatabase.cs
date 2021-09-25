@@ -16,9 +16,12 @@ public class ItemDatabase : MonoBehaviour
     /// <summary>
     /// ランダムにアイテムデータを取得する
     /// </summary>
+    /// <param name="seed">乱数のシード値</param>>
     /// <returns>アイテムデータ</returns>
-    public static ItemData GetRandomItem()
+    public static ItemData GetRandomItem(int seed)
     {
+        Random.InitState(seed);
+
         return ItemList[Random.Range(0, ItemList.Count)];
     }
 

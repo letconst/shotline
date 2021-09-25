@@ -149,21 +149,35 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         {
             IsConnected = false;
 
-            // 接続できなかったらデバッグサーバーも試みる
-            if (SelfPlayerData.Port == Instance.port)
-            {
-                SelfPlayerData.Port = Instance.secondaryPort;
-
-                await Connect();
-
-                return;
-            }
-
             // UIを書き換えるためメインスレッドに戻す（暫定）
             await UniTask.SwitchToMainThread();
 
+            bool isClickOk = false;
+
+            SystemUIManager.OpenConfirmWindow("Error", "サーバーに接続できませんでした。再接続しますか？", result =>
+            {
+                isClickOk = result;
+
+                if (!result) return;
+
+                SelfPlayerData.Port = Instance.port;
+
+                Connect();
+            }, () =>
+            {
+                if (isClickOk) return;
+
+                SystemUIManager.OpenConfirmWindow("Information", "デバッグサーバーに接続しますか？", result =>
+                {
+                    if (!result) return;
+
+                    SelfPlayerData.Port = Instance.secondaryPort;
+
+                    Connect();
+                });
+            });
+
             Debug.LogError(e.Message);
-            SystemUIManager.ShowStatusText(StatusText.ConnectionFailed, false);
             IsConnected = false;
         }
     }
