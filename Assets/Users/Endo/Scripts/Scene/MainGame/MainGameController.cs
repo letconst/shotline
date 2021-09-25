@@ -256,6 +256,14 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
                     ItemManager.ClearGeneratedItem();
                     Projectile.DestroyAllBullets();
 
+                    // 外壁サイズリセット
+                    foreach (Transform wall in MainGameProperty.SotoWalls)
+                    {
+                        wall.localScale = Vector3.one;
+                    }
+
+                    RoundManager.Instance.SuddenDeathFlag = false;
+
                     _roundText.text = $"ROUND {RoundManager.CurrentRound.ToString()}";
                     SystemUIManager.ShowStatusText(StatusText.NowWaiting);
 

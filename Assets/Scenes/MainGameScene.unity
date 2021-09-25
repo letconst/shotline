@@ -4463,6 +4463,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1176597202}
     - target: {fileID: 6881295056185150381, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
+      propertyPath: sotoWalls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6881295056185150381, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
+      propertyPath: sotoWalls.Array.data[0]
+      value: 
+      objectReference: {fileID: 1906619836}
+    - target: {fileID: 6881295056185150381, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
+      propertyPath: sotoWalls.Array.data[1]
+      value: 
+      objectReference: {fileID: 120323385}
+    - target: {fileID: 6881295056185150381, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
       propertyPath: itemSpawnPoints.Array.data[0]
       value: 
       objectReference: {fileID: 2025405727}

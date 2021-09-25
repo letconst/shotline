@@ -97,6 +97,14 @@ public class PlayerController : MonoBehaviour
 
         Projectile.DestroyAllBullets();
 
+        // 外壁サイズリセット
+        foreach (Transform wall in MainGameProperty.SotoWalls)
+        {
+            wall.localScale = Vector3.one;
+        }
+
+        RoundManager.Instance.SuddenDeathFlag = false;
+
         _roundText.text = $"ROUND {RoundManager.CurrentRound.ToString()}";
 
         await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
@@ -107,7 +115,7 @@ public class PlayerController : MonoBehaviour
         SystemUIManager.ShowStatusText(StatusText.NowWaiting);
     }
 
-    
+
     private void OnPositionChanged(Vector3 pos)
     {
         var playerMoveReq = new PlayerMoveRequest(pos, transform.rotation);

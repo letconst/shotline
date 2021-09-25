@@ -31,6 +31,8 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
     [SerializeField]
     private Image suddenDeathImg;
 
+    [SerializeField]
+    private Transform[] sotoWalls;
 
     public GameObject LineGaugeObject   => lineGaugeObject;
     public GameObject LineGaugeObject2  => lineGaugeObject2;
@@ -44,9 +46,10 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
         private set => Instance._itemSpawnPoints = value;
     }
 
-    public static GameObject RivalDirection1P => Instance.rivalDirection1P;
-    public static GameObject RivalDirection2P => Instance.rivalDirection2P;
-    public static Image      SuddenDeathImg   => Instance.suddenDeathImg;
+    public static GameObject  RivalDirection1P => Instance.rivalDirection1P;
+    public static GameObject  RivalDirection2P => Instance.rivalDirection2P;
+    public static Image       SuddenDeathImg   => Instance.suddenDeathImg;
+    public static Transform[] SotoWalls        => Instance.sotoWalls;
 
     protected override void Awake()
     {
