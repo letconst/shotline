@@ -107,10 +107,9 @@ public abstract class ItemBase : MonoBehaviour, IManagedMethod
     /// <summary>
     /// UIに描画されたアイテムアイコンをクリアする
     /// </summary>
-    protected void ClearItemIcon()
+    protected static void ClearItemIcon()
     {
-        _itemIcon.sprite = null;
-        _itemIcon.color  = Color.clear;
+        ItemManager.ClearItemIcon();
         ItemManager.ItemBtn.onClick.RemoveAllListeners();
     }
 }
