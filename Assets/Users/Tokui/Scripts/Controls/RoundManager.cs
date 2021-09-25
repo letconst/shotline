@@ -20,14 +20,11 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     private float WallSpeedReset;
 
     [SerializeField]
-    private Transform[] sotowalls;
-
-    [SerializeField]
     private Text roundText;
 
     private float CountDown;
 
-    private bool SuddenDeathFlag;
+    public bool SuddenDeathFlag;
 
     public bool PlayerDeathFlag;
 
@@ -60,7 +57,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         if (SuddenDeathFlag == true)
         {
             //外壁の縮小
-            foreach (Transform wall in sotowalls)
+            foreach (Transform wall in MainGameProperty.SotoWalls)
             {
                 Vector3 sotoWallScale = wall.localScale;
                 sotoWallScale.x -= WallSpeed * Time.deltaTime;
