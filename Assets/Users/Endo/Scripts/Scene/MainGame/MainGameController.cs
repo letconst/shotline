@@ -26,6 +26,8 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
 
     public async void ManagedStart()
     {
+        SoundManager.Instance.PlayBGM(BGMLabel.MainGame);
+
         _playerObject            = GameObject.FindGameObjectWithTag("Player");
         _roundText               = RoundManager.RoundText;
         _cmBlendListObject       = MainGameProperty.Instance.CmBlendListObject;

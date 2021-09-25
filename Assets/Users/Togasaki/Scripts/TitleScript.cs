@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class TitleScript : MonoBehaviour
 {
@@ -9,6 +7,11 @@ public class TitleScript : MonoBehaviour
     private void Awake()
     {
         Time.timeScale = 1;
+    }
+
+    private void Start()
+    {
+        SoundManager.Instance.PlayBGM(BGMLabel.Title);
     }
 
     private async void Update()
