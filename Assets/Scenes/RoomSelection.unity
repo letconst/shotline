@@ -1226,6 +1226,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1279823330}
   m_CullTransparentMesh: 1
+--- !u!114 &1304104342 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5036702308151638482, guid: eb5f6a43cf02ae548bf92b483932a547, type: 3}
+  m_PrefabInstance: {fileID: 1071004604}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1378214840
 GameObject:
   m_ObjectHideFlags: 0
@@ -2087,9 +2098,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backBtn: {fileID: 1989868522}
   refreshBtn: {fileID: 530494132}
+  createRoomBtn: {fileID: 1304104342}
   roomBtnPrefab: {fileID: 7548394144629559008, guid: 27bf14d8ce74f0442838091bcad0f199, type: 3}
   layoutParentTrf: {fileID: 684809257}
-  createRoomBtnTrf: {fileID: 1071004605}
 --- !u!4 &1986987953
 Transform:
   m_ObjectHideFlags: 0

@@ -16,6 +16,8 @@ public class TitleScript : MonoBehaviour
 
     private async void Update()
     {
+        if (SystemSceneManager.IsLoading) return;
+
         bool isTouched = false;
 
         // タッチされたかの判定を取る (Mobile / Editor)
