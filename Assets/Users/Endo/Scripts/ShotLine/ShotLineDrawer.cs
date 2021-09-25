@@ -27,6 +27,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
     public static bool       _firstLinearDraw;  //二回目以降のリニアドローか
 
     private int _drawLineLayerMask;
+    private int _lineGaugeLayerMask;
 
     private Transform _playerTrf;
 
@@ -51,7 +52,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
         currentDis        = 0;
         _firstLinearDraw  = true;
 
-        _drawLineLayerMask = 1 << 8;
+        _drawLineLayerMask  = 1 << 8;
+        _lineGaugeLayerMask = 1 << 10;
     }
 
     public void ManagedStart()
@@ -100,10 +102,13 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
                 // タッチ判定および射線描画を開始させ、判定中のfingerIdを保持する
                 case TouchPhase.Began:
                 {
+                    Ray ray = _camera.ScreenPointToRay(touchPos);
+
+                    // 描画開始領域のクリックのみ反応させる。リニアガン時は無視
+                    if (!Physics.Raycast(ray, Mathf.Infinity, _lineGaugeLayerMask) && !LinearDraw._isLinearDraw) return;
+
                     // UIをクリックした際は反応させない
                     if (EventSystem.current.IsPointerOverGameObject(touch.fingerId)) return;
-
-                    Ray ray = _camera.ScreenPointToRay(touchPos);
 
                     // 射線の描画領域をタップしたときのみ処理
                     if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _drawLineLayerMask)) return;
@@ -214,10 +219,13 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
 
         if (Input.GetMouseButtonDown(0))
         {
+            Ray ray = _camera.ScreenPointToRay(mousePos);
+
+            // 描画開始領域のクリックのみ反応させる。リニアガン時は無視
+            if (!Physics.Raycast(ray, Mathf.Infinity, _lineGaugeLayerMask) && !LinearDraw._isLinearDraw) return;
+
             // UIをクリックした際は反応させない
             if (EventSystem.current.IsPointerOverGameObject()) return;
-
-            Ray ray = _camera.ScreenPointToRay(mousePos);
 
             // 射線の描画領域をクリックしたときのみ処理
             if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _drawLineLayerMask)) return;

@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ScrollSnapSelector : ScrollRect
+public class ScrollSnapSelector : ScrollRect, IManagedMethod
 {
 	public int hIndex;
 	public int vIndex;
@@ -40,27 +40,15 @@ public class ScrollSnapSelector : ScrollRect
 		vPerPage = 1f / (float)(hPageNum - 1);
 	}
 
-	protected override void Start()
+	public void ManagedStart()
 	{
 		base.Start();
 		targetPosition = GetSnapPosition();
+		hContent       = WeaponManager.weaponDatas.Count;
+		hPageMax       = hContent + 1;
 	}
 
-	public override void OnBeginDrag(PointerEventData eventData)
-	{
-		base.OnBeginDrag(eventData);
-		dragging = true;
-	}
-
-	public override void OnEndDrag(PointerEventData eventData)
-	{
-		base.OnEndDrag(eventData);
-		UpdateIndex();
-		targetPosition = GetSnapPosition();
-		dragging = false;
-	}
-
-	void Update()
+	public void ManagedUpdate()
 	{
 		if (!dragging && normalizedPosition != targetPosition)
 		{
@@ -75,8 +63,22 @@ public class ScrollSnapSelector : ScrollRect
 		if (forcePositionUpdate)
 		{
 			forcePositionUpdate = false;
-			targetPosition = GetSnapPosition();
+			targetPosition      = GetSnapPosition();
 		}
+	}
+
+	public override void OnBeginDrag(PointerEventData eventData)
+	{
+		base.OnBeginDrag(eventData);
+		dragging = true;
+	}
+
+	public override void OnEndDrag(PointerEventData eventData)
+	{
+		base.OnEndDrag(eventData);
+		UpdateIndex();
+		targetPosition = GetSnapPosition();
+		dragging = false;
 	}
 
 	void UpdateIndex()

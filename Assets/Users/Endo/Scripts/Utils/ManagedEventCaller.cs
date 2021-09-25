@@ -24,19 +24,22 @@ public class ManagedEventCaller : MonoBehaviour
         // Startを順次実行
         foreach (GameObject o in managedStartObjects)
         {
-            var component = o.GetComponent<IManagedMethod>();
+            IManagedMethod[] components = o.GetComponents<IManagedMethod>();
 
-            component?.ManagedStart();
+            foreach (IManagedMethod managedMethod in components)
+            {
+                managedMethod.ManagedStart();
+            }
         }
 
         // Update対象を格納
         foreach (GameObject o in managedUpdateObjects)
         {
-            var component = o.GetComponent<IManagedMethod>();
+            IManagedMethod[] components = o.GetComponents<IManagedMethod>();
 
-            if (component == null) continue;
+            if (components.Length == 0) continue;
 
-            _managedUpdateObjects.Add(component);
+            _managedUpdateObjects.AddRange(components);
         }
 
         // 用済みとなるため、シリアライズ側の参照を解放

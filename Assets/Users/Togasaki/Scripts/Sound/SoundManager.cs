@@ -67,8 +67,9 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
 
 
     //BGM再生
-    public void PlayBGM(BGMLabel bgmLabel)
+    public void PlayBGM(BGMLabel bgmLabel, bool isLoop = true)
     {
+        bgmSource.loop = isLoop;
         bgmSource.clip = bgmClipDic[bgmLabel.ToString()];
         bgmSource.Play();
     }
