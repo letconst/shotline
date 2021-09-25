@@ -123,6 +123,8 @@ public class UIWindow : UIBase
 
             case WindowMode.Confirm:
             {
+                _cancelButton.gameObject.SetActive(true);
+
                 // 各ボタンに処理設定
                 _okButton.onClick.RemoveAllListeners();
                 _okButton.onClick.AddListener(() => OnConfirm(true));
