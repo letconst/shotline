@@ -619,6 +619,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5127748151414251970, guid: 678513f4952208046a549183bfcdf7af, type: 3}
   m_PrefabInstance: {fileID: 305886383}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &326721948 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1280921218227070672, guid: 0e333b36772710f498f143d75c15f6cc, type: 3}
+  m_PrefabInstance: {fileID: 363031160}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &347456189
 GameObject:
   m_ObjectHideFlags: 0
@@ -3863,7 +3868,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93c8b02ec8728a248ba9720b429c3af1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  muzzleFlashPoint: {fileID: 0}
+  muzzleFlashPoint: {fileID: 326721948}
   muzzleFlashEffect: {fileID: 415344327356856911, guid: 51e94592cd83c5b4fa930ad8f8c2e2fc, type: 3}
 --- !u!1 &2025405727
 GameObject:
