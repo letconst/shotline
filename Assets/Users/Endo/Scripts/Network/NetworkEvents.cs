@@ -20,6 +20,7 @@
     ShieldUpdate,
     RoundStart,
     RoundUpdate,
+    SuddenDeathStart,
     Disconnect,
     Refresh,
     Error

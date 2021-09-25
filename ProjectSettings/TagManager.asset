@@ -17,7 +17,8 @@ TagManager:
   - Rival
   - Joystick
   - RivalBullet
-  - ScrollView
+  - FollowCamera
+  - SotoWall
   layers:
   - Default
   - TransparentFX
