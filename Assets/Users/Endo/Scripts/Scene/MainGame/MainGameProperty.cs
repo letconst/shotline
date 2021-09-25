@@ -19,6 +19,12 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
     [SerializeField]
     private GameObject lineGaugeObject2;
 
+    [SerializeField]
+    private GameObject rivalDirection1P;
+
+    [SerializeField]
+    private GameObject rivalDirection2P;
+
     [SerializeField, Header("CM BlendListオブジェクト")]
     private GameObject cmBlendListObject;
 
@@ -38,7 +44,9 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
         private set => Instance._itemSpawnPoints = value;
     }
 
-    public static Image SuddenDeathImg => Instance.suddenDeathImg;
+    public static GameObject RivalDirection1P => Instance.rivalDirection1P;
+    public static GameObject RivalDirection2P => Instance.rivalDirection2P;
+    public static Image      SuddenDeathImg   => Instance.suddenDeathImg;
 
     protected override void Awake()
     {

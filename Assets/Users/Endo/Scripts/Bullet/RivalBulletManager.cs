@@ -34,94 +34,93 @@ public class RivalBulletManager : MonoBehaviour, IManagedMethod
     public void ManagedUpdate()
     {
         // 生成されたものがあれば管理下に追加
-                _rivalBullets.AddRange(_bulletInstantiateQueue);
-                _bulletInstantiateQueue.Clear();
+        _rivalBullets.AddRange(_bulletInstantiateQueue);
+        _bulletInstantiateQueue.Clear();
 
-                // 破棄されたものがあれば管理化から削除
-                foreach (int id in _bulletDestroyQueue)
-                {
-                    RivalBullet targetBullet = null;
+        // 破棄されたものがあれば管理化から削除
+        foreach (int id in _bulletDestroyQueue)
+        {
+            RivalBullet targetBullet = null;
 
-                    foreach (RivalBullet bullet in _rivalBullets)
-                    {
-                        if (bullet.InstanceId != id) continue;
+            foreach (RivalBullet bullet in _rivalBullets)
+            {
+                if (bullet.InstanceId != id) continue;
 
-                        targetBullet = bullet;
-                    }
+                targetBullet = bullet;
+            }
 
-                    if (targetBullet == null)
-                    {
-                        Debug.LogWarning($"{nameof(RivalBulletManager)}: 破棄対象の弾が見つかりません");
+            if (targetBullet == null)
+            {
+                Debug.LogWarning($"{nameof(RivalBulletManager)}: 破棄対象の弾が見つかりません");
 
-                        continue;
-                    }
+                continue;
+            }
 
-                    // 弾オブジェクトがあれば破棄
-                    if (targetBullet.BulletObject != null)
-                    {
-                        Destroy(targetBullet.BulletObject);
-                    }
+            // 弾オブジェクトがあれば破棄
+            if (targetBullet.BulletObject != null)
+            {
+                Destroy(targetBullet.BulletObject);
+            }
 
-                    _rivalBullets.Remove(targetBullet);
-                }
+            _rivalBullets.Remove(targetBullet);
+        }
 
-                _bulletDestroyQueue.Clear();
+        _bulletDestroyQueue.Clear();
 
-                // 弾のスタッキングを確認
-                foreach (RivalBullet bullet in _rivalBullets)
-                {
-                    // 弾オブジェクトがなければ破棄対象に
-                    if (bullet.BulletObject == null)
-                    {
-                        _bulletDestroyQueue.Enqueue(bullet.InstanceId);
+        // 弾のスタッキングを確認
+        foreach (RivalBullet bullet in _rivalBullets)
+        {
+            // 弾オブジェクトがなければ破棄対象に
+            if (bullet.BulletObject == null)
+            {
+                _bulletDestroyQueue.Enqueue(bullet.InstanceId);
 
-                        continue;
-                    }
+                continue;
+            }
 
-                    Vector3 bulletPos = bullet.BulletObject.transform.position;
+            Vector3 bulletPos = bullet.BulletObject.transform.position;
 
-                    // 1フレーム前と同じ位置ならカウント++
-                    if (bulletPos == bullet.PrevFramePos)
-                    {
-                        bullet.StuckFrames++;
-                    }
-                    // 更新されていればカウントリセット
-                    else
-                    {
-                        bullet.StuckFrames  = 0;
-                        bullet.PrevFramePos = bulletPos;
+            // 1フレーム前と同じ位置ならカウント++
+            if (bulletPos == bullet.PrevFramePos)
+            {
+                bullet.StuckFrames++;
+            }
+            // 更新されていればカウントリセット
+            else
+            {
+                bullet.StuckFrames  = 0;
+                bullet.PrevFramePos = bulletPos;
 
-                        continue;
-                    }
+                continue;
+            }
 
-                    // 0.5秒移動していなかったら自動的に破棄
-                    if (bullet.StuckFrames == Application.targetFrameRate / 2)
-                    {
-                        Debug.Log("0.5 dest");
-                        _bulletDestroyQueue.Enqueue(bullet.InstanceId);
-                    }
-                }
+            // 0.5秒移動していなかったら自動的に破棄
+            if (bullet.StuckFrames == Application.targetFrameRate / 2)
+            {
+                _bulletDestroyQueue.Enqueue(bullet.InstanceId);
+            }
+        }
 
-                // 各弾の座標更新
-                while (_bulletMoveQueue.Count > 0)
-                {
-                    BulletMoveRequest res = _bulletMoveQueue.Dequeue();
+        // 各弾の座標更新
+        while (_bulletMoveQueue.Count > 0)
+        {
+            BulletMoveRequest res = _bulletMoveQueue.Dequeue();
 
-                    foreach (RivalBullet bullet in _rivalBullets)
-                    {
-                        // 同じIDの弾のみ処理
-                        if (bullet.InstanceId != res.InstanceId) continue;
+            foreach (RivalBullet bullet in _rivalBullets)
+            {
+                // 同じIDの弾のみ処理
+                if (bullet.InstanceId != res.InstanceId) continue;
 
-                        // 破棄されてたら処理しない
-                        if (bullet.BulletObject == null) continue;
+                // 破棄されてたら処理しない
+                if (bullet.BulletObject == null) continue;
 
-                        Transform bulletTrf = bullet.BulletObject.transform;
-                        bulletTrf.SetPositionAndRotation(res.Position, res.Rotation);
-                        bulletTrf.localScale = res.Scale;
+                Transform bulletTrf = bullet.BulletObject.transform;
+                bulletTrf.SetPositionAndRotation(res.Position, res.Rotation);
+                bulletTrf.localScale = res.Scale;
 
-                        break;
-                    }
-                }
+                break;
+            }
+        }
     }
 
     private void OnReceived(object res)
