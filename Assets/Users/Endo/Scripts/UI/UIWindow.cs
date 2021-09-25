@@ -1,5 +1,4 @@
 ﻿using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -54,6 +53,7 @@ public class UIWindow : UIBase
         _windowAnimation = windowObject.GetComponent<Animation>();
 
         // OKボタンに閉じる処理を登録
+        _okButton.onClick.RemoveAllListeners();
         _okButton.onClick.AddListener(Close);
 
         // ウィンドウアニメーション読み込みおよびデータ登録
@@ -123,6 +123,8 @@ public class UIWindow : UIBase
 
             case WindowMode.Confirm:
             {
+                _cancelButton.gameObject.SetActive(true);
+
                 // 各ボタンに処理設定
                 _okButton.onClick.RemoveAllListeners();
                 _okButton.onClick.AddListener(() => OnConfirm(true));

@@ -135,7 +135,6 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
         LineGaugeController.Instance.HealingGauge = selectedWeapon.GaugeRecovery / 1000;
 
         var playerProp = _playerTrf.GetComponent<PlayerProperty>();
-        Debug.Log(playerProp);
 
         // 選択武器モデルを表示
         if (isLinearDraw)
