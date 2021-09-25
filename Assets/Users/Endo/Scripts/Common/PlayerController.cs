@@ -107,6 +107,7 @@ public class PlayerController : MonoBehaviour
         SystemUIManager.ShowStatusText(StatusText.NowWaiting);
     }
 
+    
     private void OnPositionChanged(Vector3 pos)
     {
         var playerMoveReq = new PlayerMoveRequest(pos, transform.rotation);
@@ -114,6 +115,7 @@ public class PlayerController : MonoBehaviour
         NetworkManager.Emit(playerMoveReq);
     }
 
+    /*
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.gameObject.tag == "Wall")
@@ -161,4 +163,5 @@ public class PlayerController : MonoBehaviour
             //Debug.Log(hit.point.normalized);
         }
     }
+    */
 }

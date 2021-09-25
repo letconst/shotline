@@ -81,7 +81,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         if (SuddenDeathFlag == true)
         {
             //サドンデス開始用テキスト表示
-            SuddenDeathStartText.SetActive(true);
+            //SuddenDeathStartText.SetActive(true);
 
             //外壁の縮小
             Transform sotoWallTransform = sotowall.transform;
@@ -92,22 +92,23 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
 
 
             // カウントダウン
-            CountDown -= Time.deltaTime;
+            CountDown += Time.deltaTime;
 
-            if (CountDown <= -3)
+            if (CountDown >= 3)
             {
-                SuddenDeathStartText.SetActive(false);
+                //SuddenDeathStartText.SetActive(false);
             }
-            /*
-            if (CountDown <= WallCount)
+            
+            if (CountDown >= WallCount)
             {
                 WallSpeed = WallSpeedReset;
 
                 SuddenDeathFlag = false;
 
                 CountDown = CountDownReset;
+
             }
-            */
+            Debug.Log(0.0f + Time.time);
         }
 	}
 
