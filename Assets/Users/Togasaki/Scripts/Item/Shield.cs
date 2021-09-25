@@ -42,7 +42,7 @@ public class Shield : ActiveItem
 
         if (NetworkManager.IsConnected)
         {
-            NetworkManager.Instantiate("Prefabs/Shield", pos + vec * 1, Player.transform.rotation);
+            NetworkManager.Instantiate("Prefabs/Models/Shield", pos + vec * 1, Player.transform.rotation);
         }
         else
         {
