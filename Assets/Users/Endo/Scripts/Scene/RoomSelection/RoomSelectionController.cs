@@ -14,14 +14,16 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
     [SerializeField, Header("ルーム更新ボタン")]
     private Button refreshBtn;
 
+    [SerializeField, Header("ルーム作成ボタン")]
+    private Button createRoomBtn;
+
     [SerializeField, Header("ルームボタンのプレハブ")]
     private GameObject roomBtnPrefab;
 
     [SerializeField]
     private Transform layoutParentTrf;
 
-    [SerializeField]
-    private Transform createRoomBtnTrf;
+    private Transform _createRoomBtnTrf;
 
     private List<RoomData> _roomButtons;
 
@@ -32,7 +34,9 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         // ボタンイベント登録
         backBtn.onClick.AddListener(OnClickBack);
         refreshBtn.onClick.AddListener(OnClickRefresh);
-        _roomButtons = new List<RoomData>();
+        createRoomBtn.onClick.AddListener(OnClickCreateRoom);
+        _createRoomBtnTrf = createRoomBtn.transform;
+        _roomButtons      = new List<RoomData>();
     }
 
     private void Start()
@@ -50,7 +54,7 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         return _roomButtons.FirstOrDefault(button => button.Instance == btn);
     }
 
-    private async void FetchAllRooms()
+    private static async void FetchAllRooms()
     {
         SystemUIManager.ShowConnectingStatus();
 
@@ -64,7 +68,10 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         NetworkManager.Emit(req);
     }
 
-    private void OnClickBack()
+    /// <summary>
+    /// 戻るボタン押下時の処理
+    /// </summary>
+    private static void OnClickBack()
     {
         NetworkManager.Disconnect();
         SystemUIManager.HideStatusText();
@@ -74,9 +81,22 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
     /// <summary>
     /// サーバーへ全部屋の情報取得をリクエストする
     /// </summary>
-    private void OnClickRefresh()
+    private static void OnClickRefresh()
     {
         FetchAllRooms();
+    }
+
+    /// <summary>
+    /// ルーム作成ボタン押下時の処理
+    /// </summary>
+    private static void OnClickCreateRoom()
+    {
+        if (!NetworkManager.IsConnected) return;
+
+        var req = new RequestBase(EventType.CreateRoom);
+
+        NetworkManager.Emit(req);
+        SystemUIManager.ShowConnectingStatus();
     }
 
     private async void OnReceived(object res)
@@ -95,7 +115,7 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                 UpdateButtons();
 
                 // ルーム作成ボタンを最下部へ
-                createRoomBtnTrf.SetAsLastSibling();
+                _createRoomBtnTrf.SetAsLastSibling();
 
                 // 受け取ったルーム情報のボタンを生成・更新する
                 void UpdateButtons()
@@ -136,8 +156,6 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
 
                     SystemUIManager.HideStatusText();
                     SystemSceneManager.LoadNextScene("WeaponSelection", SceneTransition.Fade);
-
-                    // TODO: 武器選択画面に遷移
                 }
                 else
                 {
