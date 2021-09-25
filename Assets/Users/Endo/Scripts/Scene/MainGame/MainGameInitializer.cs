@@ -19,6 +19,9 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
 
     private CinemachineTransposer _vcam2Transposer;
 
+    private Transform _playerTrf;
+    private Transform _rivalTrf;
+
     public void ManagedStart()
     {
         _vcam2Transposer = vcam2.GetCinemachineComponent<CinemachineTransposer>();
@@ -66,9 +69,12 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
 
             MainGameController.rivalTrf = rivalObject.transform;
 
+            _playerTrf = _playerObject.transform.Find("player_1");
+            _rivalTrf  = rivalObject.transform.Find("player_2");
+
             // 表示オブジェクト選択
-            _playerObject.transform.Find("player_2").gameObject.SetActive(false);
-            rivalObject.transform.Find("player_1").gameObject.SetActive(false);
+            _playerTrf.parent.Find("player_2").gameObject.SetActive(false);
+            _rivalTrf.parent.Find("player_1").gameObject.SetActive(false);
 
             MainGameController.linePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL1");
             MainGameController.bulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
@@ -97,9 +103,12 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
 
             MainGameController.rivalTrf = rivalObject.transform;
 
+            _playerTrf = _playerObject.transform.Find("player_2");
+            _rivalTrf  = rivalObject.transform.Find("player_1");
+
             // 表示オブジェクト選択
-            _playerObject.transform.Find("player_1").gameObject.SetActive(false);
-            rivalObject.transform.Find("player_2").gameObject.SetActive(false);
+            _playerTrf.parent.Find("player_1").gameObject.SetActive(false);
+            _rivalTrf.parent.Find("player_2").gameObject.SetActive(false);
 
             MainGameController.linePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL2");
             MainGameController.bulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
@@ -116,10 +125,26 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
 
         if (selectedWeapon == null) return;
 
+        bool isLinearDraw = selectedWeapon.ShotType == ShotType.Linear;
+
+        // 各種パラメーター設定
         Projectile.OriginSpeed                    = selectedWeapon.BulletSpeed / 10;
-        LinearDraw._linearDrawOn                  = selectedWeapon.ShotType == ShotType.Linear;
-        LinearDraw._isLinearDraw                  = selectedWeapon.ShotType == ShotType.Linear;
+        LinearDraw._linearDrawOn                  = isLinearDraw;
+        LinearDraw._isLinearDraw                  = isLinearDraw;
         LineGaugeController.Instance.MaxLinePower = selectedWeapon.GaugeMax;
         LineGaugeController.Instance.HealingGauge = selectedWeapon.GaugeRecovery / 1000;
+
+        var playerProp = _playerTrf.GetComponent<PlayerProperty>();
+        Debug.Log(playerProp);
+
+        // 選択武器モデルを表示
+        if (isLinearDraw)
+        {
+            playerProp.DrawLineGun.SetActive(true);
+        }
+        else
+        {
+            playerProp.LinearLineGun.SetActive(true);
+        }
     }
 }
