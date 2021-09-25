@@ -25,7 +25,24 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
         _playerObject    = GameObject.FindGameObjectWithTag("Player");
         _playerObject.SetActive(false);
 
-        // 1P設定
+        HostOrGuestInit();
+
+        _playerObject.SetActive(true);
+        SystemUIManager.SetInputBlockerVisibility(false);
+
+        ApplyWeaponData();
+    }
+
+    public void ManagedUpdate()
+    {
+    }
+
+    /// <summary>
+    /// 1P2Pの設定を行う
+    /// </summary>
+    private void HostOrGuestInit()
+    {
+        // 1P
         if (NetworkManager.IsOwner)
         {
             // プレイヤー追従用カメラを反転
@@ -54,7 +71,7 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
             MainGameController.bulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
             MainGameController.rivalBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
         }
-        // 2P設定
+        // 2P
         else
         {
             // 初期位置用カメラおよび追従用カメラのオフセット値を反転
@@ -82,12 +99,21 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
             MainGameController.bulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
             MainGameController.rivalBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
         }
-
-        _playerObject.SetActive(true);
-        SystemUIManager.SetInputBlockerVisibility(false);
     }
 
-    public void ManagedUpdate()
+    /// <summary>
+    /// 選択されている武器データに応じて動作切り替えを行う
+    /// </summary>
+    private void ApplyWeaponData()
     {
+        WeaponDatas selectedWeapon = WeaponManager.SelectWeapon;
+
+        if (selectedWeapon == null) return;
+
+        Projectile.OriginSpeed                    = selectedWeapon.BulletSpeed / 10;
+        LinearDraw._linearDrawOn                  = selectedWeapon.ShotType == ShotType.Linear;
+        LinearDraw._isLinearDraw                  = selectedWeapon.ShotType == ShotType.Linear;
+        LineGaugeController.Instance.MaxLinePower = selectedWeapon.GaugeMax;
+        LineGaugeController.Instance.HealingGauge = selectedWeapon.GaugeRecovery / 1000;
     }
 }

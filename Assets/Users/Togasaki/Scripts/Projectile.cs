@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class BulletInfo
@@ -28,8 +28,7 @@ public class BulletInfo
     }
 }
 
-
-public class Projectile : SingletonMonoBehaviour<Projectile>
+public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
 {
     /*
 
@@ -44,12 +43,12 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
     List<BulletInfo> BulletList = new List<BulletInfo>();
 
     //はやさ
-    private float ActSpeed;
-    private float OriginSpeed = 10;
-    private float BBSpeed = 8;
+    private       float ActSpeed;
+    public static float OriginSpeed = 10;
+    private       float BBSpeed     = 8;
 
     //弾のスケール
-    private float BaseScale = 1f;
+    private       float BaseScale  = 1f;
     public static float ScaleRatio = 1f;
 
     //射線の変数
@@ -72,19 +71,19 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
     //省略する距離
     float refTime = 0.05f;
 
-
-    private void Start()
+    public void ManagedStart()
     {
         PlayerCharacter = GameObject.FindGameObjectWithTag("Player");
         ItemManager.ShotBtn.onClick.AddListener(() => Fire());
         BulletList      = new List<BulletInfo>();
         ActSpeed        = OriginSpeed;
+        BBSpeed         = OriginSpeed / 100 * 80;
         ScaleRatio      = 1;
         currentLineData = null;
-        One = false;
+        One             = false;
     }
 
-    void Update()
+    public void ManagedUpdate()
     {
         // 全破棄がキューされてたらそれ実行
         if (_isQueuedDestroyAll)
@@ -98,7 +97,6 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
 
         LineAppear();
     }
-
 
     //射線に沿って弾丸を移動させる処理
     private void LineAppear()
@@ -246,7 +244,6 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
                 ShotLineDrawer._firstLinearDraw = true;
             }
         }
-
     }
 
     private void InnerDestroyAllBullets()

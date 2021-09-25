@@ -52,7 +52,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         CurrentPlayerLife = PlayerLife;
         CurrentRound      = 1;
 
-        SuddenDeathFlag = false;
+        SuddenDeathFlag = true;
 
         if (SuddenDeathStartText != null)
         {
@@ -75,7 +75,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     {
         SuddenDeathFlag = true;
     }
-	
+
 	private void Update()
 	{
         if (SuddenDeathFlag == true)
@@ -90,7 +90,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
             sotoWallScale.z -= WallSpeed * Time.deltaTime;
             sotoWallTransform.localScale = sotoWallScale;
 
-            
+
             // カウントダウン
             CountDown -= Time.deltaTime;
 

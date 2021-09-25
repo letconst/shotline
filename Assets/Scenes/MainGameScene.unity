@@ -3863,11 +3863,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedStartObjects.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedUpdateObjects.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedStartObjects.Array.data[0]
@@ -3894,6 +3894,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1893924712}
     - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
+      propertyPath: managedStartObjects.Array.data[6]
+      value: 
+      objectReference: {fileID: 2021358734}
+    - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: managedUpdateObjects.Array.data[0]
       value: 
       objectReference: {fileID: 407418982}
@@ -3917,6 +3921,10 @@ PrefabInstance:
       propertyPath: managedUpdateObjects.Array.data[5]
       value: 
       objectReference: {fileID: 1893924712}
+    - target: {fileID: 566441633433876812, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
+      propertyPath: managedUpdateObjects.Array.data[6]
+      value: 
+      objectReference: {fileID: 2021358734}
     - target: {fileID: 566441633433876813, guid: e29c064a34ced784ab40bdb19cfceab7, type: 3}
       propertyPath: m_Name
       value: ManagedEventCaller

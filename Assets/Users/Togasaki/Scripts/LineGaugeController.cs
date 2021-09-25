@@ -13,7 +13,7 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
     public float MaxLinePower = 100;
 
     [SerializeField, Header("回復スピード")]
-    private float HealingGauge = 0.001f;
+    public float HealingGauge = 0.001f;
 
     [SerializeField,Header("本ゲージの消費スピード"),Range(0.0001f,0.8f)]
     private float DealSliderSpeed = 0.0001f;
@@ -38,15 +38,13 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
 
     public void ManagedStart()
     {
-        preslider.fillAmount     = 1;
-        slider.fillAmount        = 1;
-        AbleDraw                 = true;
-        holdAmount               = 0;
-        _isHold                  = false;
-        LinearDraw._linearDrawOn = true;
-        LinearDraw._isLinearDraw = false;
-        _isHeal                  = true;
-        
+        preslider.fillAmount = 1;
+        slider.fillAmount    = 1;
+        AbleDraw             = true;
+        holdAmount           = 0;
+        _isHold              = false;
+        _isHeal              = true;
+
         _playerTrf = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
@@ -138,7 +136,7 @@ public class LineGaugeController : SingletonMonoBehaviour<LineGaugeController>, 
     {
         _isHold = true;
         holdAmount = 0;
-    
+
         _isHold = false;
         Instance.slider.fillAmount -= ShotLineDrawer.currentDis;
         Instance.preslider.fillAmount = Instance.slider.fillAmount;

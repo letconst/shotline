@@ -104,8 +104,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
                 {
                     Ray ray = _camera.ScreenPointToRay(touchPos);
 
-                    // 描画開始領域のクリックのみ反応させる
-                    if (!Physics.Raycast(ray, Mathf.Infinity, _lineGaugeLayerMask)) return;
+                    // 描画開始領域のクリックのみ反応させる。リニアガン時は無視
+                    if (!Physics.Raycast(ray, Mathf.Infinity, _lineGaugeLayerMask) && !LinearDraw._isLinearDraw) return;
 
                     // UIをクリックした際は反応させない
                     if (EventSystem.current.IsPointerOverGameObject(touch.fingerId)) return;
@@ -221,8 +221,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
         {
             Ray ray = _camera.ScreenPointToRay(mousePos);
 
-            // 描画開始領域のクリックのみ反応させる
-            if (!Physics.Raycast(ray, Mathf.Infinity, _lineGaugeLayerMask)) return;
+            // 描画開始領域のクリックのみ反応させる。リニアガン時は無視
+            if (!Physics.Raycast(ray, Mathf.Infinity, _lineGaugeLayerMask) && !LinearDraw._isLinearDraw) return;
 
             // UIをクリックした際は反応させない
             if (EventSystem.current.IsPointerOverGameObject()) return;
