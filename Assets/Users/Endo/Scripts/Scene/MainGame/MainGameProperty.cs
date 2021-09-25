@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
 {
@@ -21,17 +22,23 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
     [SerializeField, Header("CM BlendListオブジェクト")]
     private GameObject cmBlendListObject;
 
-    private List<ItemPositionData> _itemSpawnPoints;
+    [SerializeField]
+    private Image suddenDeathImg;
+
 
     public GameObject LineGaugeObject   => lineGaugeObject;
     public GameObject LineGaugeObject2  => lineGaugeObject2;
     public GameObject CmBlendListObject => cmBlendListObject;
+
+    private List<ItemPositionData> _itemSpawnPoints;
 
     public static List<ItemPositionData> ItemSpawnPoints
     {
         get => Instance._itemSpawnPoints;
         private set => Instance._itemSpawnPoints = value;
     }
+
+    public static Image SuddenDeathImg => Instance.suddenDeathImg;
 
     protected override void Awake()
     {
