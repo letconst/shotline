@@ -23,6 +23,9 @@ public class RoomEntryButton : MonoBehaviour
     private Text playerCountText;
 
     [SerializeField]
+    private Text roomIdText;
+
+    [SerializeField]
     private Button selfButton;
 
     private int _selfIndex;
@@ -55,7 +58,8 @@ public class RoomEntryButton : MonoBehaviour
     /// </summary>
     /// <param name="playerCount">ルーム内のプレイヤー数</param>
     /// <param name="isInBattle">対戦中か</param>
-    public void UpdateContent(int playerCount, bool isInBattle)
+    /// <param name="roomId">ルームID</param>
+    public void UpdateContent(int playerCount, bool isInBattle, string roomId)
     {
         var titleBuilder = new StringBuilder();
         titleBuilder.Append("ルーム");
@@ -65,5 +69,6 @@ public class RoomEntryButton : MonoBehaviour
         statusTextObj.SetActive(isInBattle);
 
         playerCountText.text = playerCount.ToString();
+        roomIdText.text      = $"ID: {roomId.Substring(roomId.Length - 4)}";
     }
 }

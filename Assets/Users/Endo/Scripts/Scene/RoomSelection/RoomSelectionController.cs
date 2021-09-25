@@ -127,7 +127,7 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                         {
                             if (button.RoomUuid != room.uuid) continue;
 
-                            button.Instance.UpdateContent(room.clients.Length, room.isInBattle);
+                            button.Instance.UpdateContent(room.clients.Length, room.isInBattle, room.uuid);
 
                             return;
                         }
@@ -190,7 +190,7 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         GameObject newBtnObj = Instantiate(roomBtnPrefab, layoutParentTrf);
         var        newBtn    = newBtnObj.GetComponent<RoomEntryButton>();
 
-        newBtn.UpdateContent(playerCount, isInBattle);
+        newBtn.UpdateContent(playerCount, isInBattle, roomUuid);
 
         _roomButtons.Add(new RoomData
         {
