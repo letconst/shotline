@@ -161,7 +161,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
 
                 // 乱数シードをセットし、アイテムをランダム生成
                 Random.InitState(innerRes.Seed);
-                ItemManager.GenerateRandomItem();
+                ItemManager.GenerateRandomItem(innerRes.Seed);
 
                 break;
             }
