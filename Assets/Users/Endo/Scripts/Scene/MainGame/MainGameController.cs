@@ -280,9 +280,12 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
 
             case EventType.Refresh:
             {
-                // TODO: UI表示 && 状況に応じてタイトルに戻る
-                SystemUIManager.ShowStatusText(StatusText.RivalDisconnected, false);
-                isChangeableSceneToTitle = true;
+                SystemUIManager.HideStatusText();
+                SystemUIManager.OpenAlertWindow("Information", "対戦相手が切断しました。タイトルに戻ります。",
+                                                () =>
+                                                {
+                                                    SystemSceneManager.LoadNextScene("Title", SceneTransition.Fade);
+                                                });
 
                 break;
             }
