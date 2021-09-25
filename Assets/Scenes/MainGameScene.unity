@@ -2346,6 +2346,11 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -656107368928481374, guid: a8149bece77fb80478d28ac9838acd71, type: 3}
+--- !u!1 &1132690729 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8108349684030903036, guid: f473e494dfc7498408aab0579278e508, type: 3}
+  m_PrefabInstance: {fileID: 1549907848}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1136994719
 GameObject:
   m_ObjectHideFlags: 0
@@ -2736,6 +2741,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1484256873 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2251432678980931732, guid: f473e494dfc7498408aab0579278e508, type: 3}
+  m_PrefabInstance: {fileID: 1549907848}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1549907848
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2831,7 +2841,27 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2251432678980931732, guid: f473e494dfc7498408aab0579278e508, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2251432678980931733, guid: f473e494dfc7498408aab0579278e508, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 250.48637
+      objectReference: {fileID: 0}
     - target: {fileID: 2251432678980931738, guid: f473e494dfc7498408aab0579278e508, type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 2139484237}
+    - target: {fileID: 6577539725079932181, guid: f473e494dfc7498408aab0579278e508, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 250.48637
+      objectReference: {fileID: 0}
+    - target: {fileID: 8108349684030903036, guid: f473e494dfc7498408aab0579278e508, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8768214967572809392, guid: f473e494dfc7498408aab0579278e508, type: 3}
       propertyPath: targetCamera
       value: 
       objectReference: {fileID: 2139484237}
@@ -4265,6 +4295,14 @@ PrefabInstance:
       propertyPath: lineGaugeObject2
       value: 
       objectReference: {fileID: 305886384}
+    - target: {fileID: 6881295056185150381, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
+      propertyPath: rivalDirection1P
+      value: 
+      objectReference: {fileID: 1484256873}
+    - target: {fileID: 6881295056185150381, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
+      propertyPath: rivalDirection2P
+      value: 
+      objectReference: {fileID: 1132690729}
     - target: {fileID: 6881295056185150381, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
       propertyPath: cmBlendListObject
       value: 

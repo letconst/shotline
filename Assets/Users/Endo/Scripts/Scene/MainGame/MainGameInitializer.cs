@@ -52,7 +52,10 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
             MainGameProperty.Instance.LineGaugeObject.transform.Rotate(Vector3.forward, 180);
 
             //1P用射線ゲージを表示
-            MainGameProperty.Instance.LineGaugeObject.gameObject.SetActive(true);
+            MainGameProperty.Instance.LineGaugeObject.SetActive(true);
+
+            // 2Pの方向矢印を表示
+            MainGameProperty.RivalDirection2P.SetActive(true);
 
             // 初期位置設定
             _playerObject.transform.position = MainGameProperty.Instance.startPos1P.position;
@@ -80,7 +83,10 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
             _vcam2Transposer.m_FollowOffset.z *= -1;
 
             //2P用射線ゲージを表示
-            MainGameProperty.Instance.LineGaugeObject2.gameObject.SetActive(true);
+            MainGameProperty.Instance.LineGaugeObject2.SetActive(true);
+
+            // 1Pの方向矢印を表示
+            MainGameProperty.RivalDirection1P.SetActive(true);
 
             // 初期位置設定
             _playerObject.transform.position = MainGameProperty.Instance.startPos2P.position;
