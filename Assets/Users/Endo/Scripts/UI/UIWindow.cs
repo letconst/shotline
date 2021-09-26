@@ -86,6 +86,7 @@ public class UIWindow : UIBase
     public void Close()
     {
         _windowAnimation.Play(CloseClipName);
+        _onClose?.Invoke();
     }
 
     /// <summary>
@@ -96,7 +97,25 @@ public class UIWindow : UIBase
         SystemProperty.WindowObject.SetActive(false);
         SystemUIManager.SetInputBlockerVisibility(false);
         SystemUIManager.ClearWindow();
-        _onClose?.Invoke();
+
+        // キューがあればそれを開く
+        if (SystemUIManager.WindowQueue.Count > 0)
+        {
+            WindowEntry entry = SystemUIManager.WindowQueue.Dequeue();
+
+            switch (entry.Mode)
+            {
+                case WindowMode.Alert:
+                    SystemUIManager.OpenAlertWindow(entry.Title, entry.Body, entry.OnClose);
+
+                    break;
+
+                case WindowMode.Confirm:
+                    SystemUIManager.OpenConfirmWindow(entry.Title, entry.Body, entry.OnConfirm, entry.OnClose);
+
+                    break;
+            }
+        }
     }
 
     /// <summary>

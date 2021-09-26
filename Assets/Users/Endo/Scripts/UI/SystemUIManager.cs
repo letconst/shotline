@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public enum StatusText
@@ -19,6 +20,8 @@ public static class SystemUIManager
 
     private static UIWindow _openedWindow;
 
+    public static readonly Queue<WindowEntry>        WindowQueue        = new Queue<WindowEntry>();
+
     /// <summary>
     /// アラートウィンドウを表示する
     /// </summary>
@@ -27,7 +30,12 @@ public static class SystemUIManager
     /// <param name="onClose">閉じた際の処理</param>
     public static void OpenAlertWindow(string title, string body, Action onClose = null)
     {
-        if (_openedWindow != null) return;
+        if (_openedWindow != null)
+        {
+            WindowQueue.Enqueue(new WindowEntry(WindowMode.Alert, title, body, null, onClose));
+
+            return;
+        }
 
         _openedWindow = new UIWindow();
         _openedWindow.Init(onClose);
@@ -45,7 +53,12 @@ public static class SystemUIManager
     /// <param name="onClose">閉じた際の処理</param>
     public static void OpenConfirmWindow(string title, string body, Action<bool> onConfirm, Action onClose = null)
     {
-        if (_openedWindow != null) return;
+        if (_openedWindow != null)
+        {
+            WindowQueue.Enqueue(new WindowEntry(WindowMode.Confirm, title, body, onConfirm, onClose));
+
+            return;
+        }
 
         _openedWindow = new UIWindow();
         _openedWindow.Init(onClose);
@@ -142,5 +155,23 @@ public static class SystemUIManager
             await FadeTransition.FadeIn(inputBlockerImage, .2f, inputBlockerImage.color.a);
             inputBlockerImage.gameObject.SetActive(false);
         }
+    }
+}
+
+public class WindowEntry
+{
+    public WindowMode   Mode;
+    public string       Title;
+    public string       Body;
+    public Action<bool> OnConfirm;
+    public Action       OnClose;
+
+    public WindowEntry(WindowMode mode, string title, string body, Action<bool> onConfirm, Action onClose)
+    {
+        Mode      = mode;
+        Title     = title;
+        Body      = body;
+        OnConfirm = onConfirm;
+        OnClose   = onClose;
     }
 }
