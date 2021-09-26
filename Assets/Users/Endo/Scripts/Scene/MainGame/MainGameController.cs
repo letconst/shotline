@@ -264,6 +264,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
                     }
 
                     RoundManager.Instance.SuddenDeathFlag = false;
+                    RoundManager.Instance.ResetCount();
 
                     _roundText.text = $"ROUND {RoundManager.CurrentRound.ToString()}";
                     SystemUIManager.ShowStatusText(StatusText.NowWaiting);

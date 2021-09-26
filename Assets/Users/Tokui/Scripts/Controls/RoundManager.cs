@@ -101,6 +101,11 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         }
     }
 
+    public void ResetCount()
+    {
+        CountDown = CountDownReset;
+    }
+
     private void OnReceived(object res)
     {
         var @base = (RequestBase) res;

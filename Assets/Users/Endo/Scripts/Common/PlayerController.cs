@@ -105,6 +105,7 @@ public class PlayerController : MonoBehaviour
         }
 
         RoundManager.Instance.SuddenDeathFlag = false;
+        RoundManager.Instance.ResetCount();
 
         _roundText.text = $"ROUND {RoundManager.CurrentRound.ToString()}";
 
