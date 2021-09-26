@@ -22,4 +22,9 @@ public class WeaponSelectionProperty : SingletonMonoBehaviour<WeaponSelectionPro
     private ScrollSnapSelector snapSelector;
 
     public static ScrollSnapSelector SnapSelector => Instance.snapSelector;
+
+    [SerializeField]
+    private Text roomIdText;
+
+    public static Text RoomIdText => Instance.roomIdText;
 }

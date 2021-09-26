@@ -8,11 +8,15 @@ public class WeaponSelectionController : SingletonMonoBehaviour<WeaponSelectionC
 
     private bool _isSelected;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         _timer        = WeaponSelectionProperty.Timer;
         _snapSelector = WeaponSelectionProperty.SnapSelector;
 
+        string roomId = SelfPlayerData.RoomUuid;
+        WeaponSelectionProperty.RoomIdText.text = $"RoomID: {roomId.Substring(roomId.Length - 4)}";
         WeaponSelectionProperty.ExitButton.onClick.AddListener(OnClickExit);
         WeaponSelectionProperty.ConfirmButton.onClick.AddListener(OnClickConfirm);
         _timer.gameObject.SetActive(false);

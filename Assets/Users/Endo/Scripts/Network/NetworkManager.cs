@@ -364,8 +364,6 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             {
                 await UniTask.SwitchToMainThread();
 
-                Debug.Log("removed");
-
                 SystemUIManager.OpenAlertWindow("Error", "切断されました。", () =>
                 {
                     SystemUIManager.HideStatusText();
