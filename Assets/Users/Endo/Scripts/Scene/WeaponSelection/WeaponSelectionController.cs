@@ -170,6 +170,23 @@ public class WeaponSelectionController : SingletonMonoBehaviour<WeaponSelectionC
 
                 break;
             }
+
+            case EventType.Error:
+            {
+                var innerRes = (ErrorRequest) res;
+
+                await UniTask.SwitchToMainThread();
+
+                SystemUIManager.HideStatusText();
+                SystemUIManager.OpenAlertWindow("Error", innerRes.Message,
+                                                () =>
+                                                {
+                                                    NetworkManager.Disconnect();
+                                                    SystemSceneManager.LoadNextScene("Title", SceneTransition.Fade);
+                                                });
+
+                break;
+            }
         }
     }
 }
