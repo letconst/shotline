@@ -5026,7 +5026,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.055268783, g: 0.12856242, b: 0.4339623, a: 0.78039217}
+      maxColor: {r: 0.3254717, g: 0.45759568, b: 1, a: 0.78039217}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -9830,7 +9830,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.24313724, g: 0.4291085, b: 0.5294118, a: 0.33333334}
+      maxColor: {r: 0, g: 0.64383554, b: 1, a: 0.33333334}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -14634,7 +14634,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.04819329, g: 0.5377358, b: 0.46211538, a: 1}
+      maxColor: {r: 0, g: 0.81621504, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -19228,7 +19228,7 @@ GameObject:
   - component: {fileID: 911916966929164449}
   - component: {fileID: 911916966929164448}
   m_Layer: 0
-  m_Name: eff_bullet 0917
+  m_Name: eff_bullet_PL1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24053,6 +24053,7 @@ Transform:
   - {fileID: 911916966847219005}
   - {fileID: 911916966716148244}
   - {fileID: 911916966142811409}
+  - {fileID: 911916965966522915}
   m_Father: {fileID: 911916966929164510}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
