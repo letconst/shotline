@@ -29,6 +29,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
     private int _drawLineLayerMask;
     private int _lineGaugeLayerMask;
 
+    public static bool IsLineCreated;
+
     private Transform _playerTrf;
 
     private List<LineData> _lineDataList;
@@ -51,6 +53,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
         DrawingData       = null;
         currentDis        = 0;
         _firstLinearDraw  = true;
+        IsLineCreated     = false;
 
         _drawLineLayerMask  = 1 << 8;
         _lineGaugeLayerMask = 1 << 10;
@@ -336,33 +339,42 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
 
         SoundManager.Instance.PlaySE(SELabel.Draw);
 
-        LineData targetData = null;
-
-        // 未使用の射線があるか確認
-        foreach (LineData data in _lineDataList)
+        // 射線が描かれていなければ未使用の射線があるか確認
+        if (!IsLineCreated)
         {
-            if (data.IsFixed) continue;
+            LineData targetData = null;
 
-            targetData = data;
-
-            break;
-        }
-
-        // なければ生成
-        if (targetData == null)
-        {
-            targetData  = InstantiateNewLineData();
-            DrawingData = targetData;
-        }
-        else
-        {
-            DrawingData = targetData;
-
-            if (!LinearDraw._isLinearDraw)
+            foreach (LineData data in _lineDataList)
             {
-                ShotLineUtil.ClearLineData(DrawingData);
+                if (data.IsFixed) continue;
+
+                targetData = data;
+
+                break;
+            }
+
+            // なければ生成
+            if (targetData == null)
+            {
+                targetData  = InstantiateNewLineData();
+                DrawingData = targetData;
+            }
+            else
+            {
+                DrawingData = targetData;
+
+                if (!LinearDraw._isLinearDraw)
+                {
+                    ShotLineUtil.ClearLineData(DrawingData);
+                }
             }
         }
+        else if (!LinearDraw._isLinearDraw)
+        {
+            ShotLineUtil.ClearLineData(DrawingData);
+        }
+
+        IsLineCreated = true;
 
         // タップ位置に起点を設定
         List<Vector3> targetDataFingerPositions = DrawingData.FingerPositions;
