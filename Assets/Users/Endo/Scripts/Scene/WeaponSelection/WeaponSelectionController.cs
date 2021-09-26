@@ -8,11 +8,15 @@ public class WeaponSelectionController : SingletonMonoBehaviour<WeaponSelectionC
 
     private bool _isSelected;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         _timer        = WeaponSelectionProperty.Timer;
         _snapSelector = WeaponSelectionProperty.SnapSelector;
 
+        string roomId = SelfPlayerData.RoomUuid;
+        WeaponSelectionProperty.RoomIdText.text = $"RoomID: {roomId.Substring(roomId.Length - 4)}";
         WeaponSelectionProperty.ExitButton.onClick.AddListener(OnClickExit);
         WeaponSelectionProperty.ConfirmButton.onClick.AddListener(OnClickConfirm);
         _timer.gameObject.SetActive(false);
@@ -167,6 +171,23 @@ public class WeaponSelectionController : SingletonMonoBehaviour<WeaponSelectionC
                 await UniTask.SwitchToMainThread();
 
                 _timer.gameObject.SetActive(false);
+
+                break;
+            }
+
+            case EventType.Error:
+            {
+                var innerRes = (ErrorRequest) res;
+
+                await UniTask.SwitchToMainThread();
+
+                SystemUIManager.HideStatusText();
+                SystemUIManager.OpenAlertWindow("Error", innerRes.Message,
+                                                () =>
+                                                {
+                                                    NetworkManager.Disconnect();
+                                                    SystemSceneManager.LoadNextScene("Title", SceneTransition.Fade);
+                                                });
 
                 break;
             }

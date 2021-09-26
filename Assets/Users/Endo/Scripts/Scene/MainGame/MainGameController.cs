@@ -255,6 +255,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
                     ShotLineUtil.FreeLineData(ShotLineDrawer.DrawingData);
                     ItemManager.ClearGeneratedItem();
                     Projectile.DestroyAllBullets();
+                    MainGameProperty.SuddenDeathImg.color = new Color(1, 1, 1, 0);
 
                     // 外壁サイズリセット
                     foreach (Transform wall in MainGameProperty.SotoWalls)
@@ -263,6 +264,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
                     }
 
                     RoundManager.Instance.SuddenDeathFlag = false;
+                    RoundManager.Instance.ResetCount();
 
                     _roundText.text = $"ROUND {RoundManager.CurrentRound.ToString()}";
                     SystemUIManager.ShowStatusText(StatusText.NowWaiting);

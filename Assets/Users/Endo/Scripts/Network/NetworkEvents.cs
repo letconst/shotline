@@ -1,4 +1,4 @@
-﻿public enum EventType
+public enum EventType
 {
     Init,
     GetAllRoom,
@@ -23,5 +23,6 @@
     SuddenDeathStart,
     Disconnect,
     Refresh,
+    RoomRemoved,
     Error
 }

@@ -216,6 +216,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             EventType.SuddenDeathStart => RequestBase.MakeJsonFrom<InRoomRequestBase>(msg),
             EventType.Disconnect       => RequestBase.MakeJsonFrom<DisconnectRequest>(msg),
             EventType.Refresh          => RequestBase.MakeJsonFrom<RefreshRequest>(msg),
+            EventType.RoomRemoved      => RequestBase.MakeJsonFrom<RequestBase>(msg),
             EventType.Error            => RequestBase.MakeJsonFrom<ErrorRequest>(msg),
             _                          => throw new ArgumentOutOfRangeException()
         };
@@ -334,7 +335,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// サーバーからのレスポンスのイベントに応じて処理を行う
     /// </summary>
     /// <param name="res">受信データ</param>
-    private static void EventHandler(object res)
+    private static async void EventHandler(object res)
     {
         var tmp  = (RequestBase) res;
         var type = (EventType) Enum.Parse(typeof(EventType), tmp.Type);
@@ -355,6 +356,19 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             {
                 var innerRes = (ErrorRequest) res;
                 Debug.LogError(innerRes.Message);
+
+                break;
+            }
+
+            case EventType.RoomRemoved:
+            {
+                await UniTask.SwitchToMainThread();
+
+                SystemUIManager.OpenAlertWindow("Error", "切断されました。", () =>
+                {
+                    SystemUIManager.HideStatusText();
+                    SystemSceneManager.LoadNextScene("Title", SceneTransition.Fade);
+                });
 
                 break;
             }

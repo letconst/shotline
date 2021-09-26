@@ -224,6 +224,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
         {
             //射線の固定
             ShotLineUtil.FixLine(currentLineData);
+            ShotLineDrawer.IsLineCreated = false;
 
             //一回だけ座標を取得用
             One = true;

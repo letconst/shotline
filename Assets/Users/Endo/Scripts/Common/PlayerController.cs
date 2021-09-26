@@ -96,6 +96,7 @@ public class PlayerController : MonoBehaviour
         ShotLineUtil.FreeLineData(ShotLineDrawer.DrawingData);
 
         Projectile.DestroyAllBullets();
+        MainGameProperty.SuddenDeathImg.color = new Color(1, 1, 1, 0);
 
         // 外壁サイズリセット
         foreach (Transform wall in MainGameProperty.SotoWalls)
@@ -104,6 +105,7 @@ public class PlayerController : MonoBehaviour
         }
 
         RoundManager.Instance.SuddenDeathFlag = false;
+        RoundManager.Instance.ResetCount();
 
         _roundText.text = $"ROUND {RoundManager.CurrentRound.ToString()}";
 
