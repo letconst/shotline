@@ -1,13 +1,9 @@
-using System;
-using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     private GameObject _rivalObject;
-    private Text       _roundText;
 
     public static bool isDamaged;
 
@@ -38,7 +34,6 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _rivalObject = GameObject.FindGameObjectWithTag("Rival");
-        _roundText   = RoundManager.RoundText;
     }
 
     private async void OnTriggerEnter(Collider other)
@@ -53,10 +48,7 @@ public class PlayerController : MonoBehaviour
         SoundManager.Instance.PlaySE(SELabel.Damage);
         RoundManager.HitVerification();
 
-        Time.timeScale                    = .1f;
-        MainGameController.isControllable = false;
-        isDamaged                         = true;
-        SystemUIManager.SetInputBlockerVisibility(true);
+        isDamaged = true;
 
         var roundUpdateReq = new RoundUpdateRequest();
 
@@ -64,27 +56,17 @@ public class PlayerController : MonoBehaviour
         if (RoundManager.CurrentPlayerLife == 0)
         {
             roundUpdateReq.IsLoseRival = true;
-            _roundText.text            = "LOSE!";
-            SystemUIManager.ShowStatusText(StatusText.TapToTitle);
 
-            MainGameController.isChangeableSceneToTitle = true;
             NetworkManager.Emit(roundUpdateReq);
-
-            await FadeTransition.FadeIn(_roundText, .1f);
+            await RoundManager.ShowBattleResult(ResultType.Lose);
 
             return;
         }
 
         // 通常被弾時
-        _roundText.text = "DAMAGED!";
         NetworkManager.Emit(roundUpdateReq);
 
-        await FadeTransition.FadeIn(_roundText, .1f);
-        await UniTask.Delay(TimeSpan.FromSeconds(1), true);
-        await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
-
-        _roundText.text = "";
-        Time.timeScale  = 1;
+        await RoundManager.RoundUpdateFadeOut(JudgeType.Damage);
 
         // 生成アイテムをリセット
         ItemManager.ClearGeneratedItem();
@@ -106,17 +88,11 @@ public class PlayerController : MonoBehaviour
 
         RoundManager.Instance.SuddenDeathFlag = false;
         RoundManager.Instance.ResetCount();
-
-        _roundText.text = $"ROUND {RoundManager.CurrentRound.ToString()}";
-
-        await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
-
-        RoundManager.RoundMove = false;
+        SystemUIManager.ShowConnectingStatus();
+        await RoundManager.RoundUpdateFadeIn();
 
         // 相手のラウンド進行が済んでから操作可能にさせるため、ここではそれをせず待機
-        SystemUIManager.ShowStatusText(StatusText.NowWaiting);
     }
-
 
     private void OnPositionChanged(Vector3 pos)
     {

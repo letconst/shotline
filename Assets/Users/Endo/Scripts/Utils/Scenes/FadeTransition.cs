@@ -14,7 +14,29 @@ public static class FadeTransition
     /// <param name="startAlpha">開始するアルファ値</param>
     /// <param name="endAlpha">終了するアルファ値</param>
     public static async UniTask FadeIn(CanvasGroup canvasGroup,    float fadeSpeed = DefaultFadeSpeed,
-                                       float       startAlpha = 1, float endAlpha  = 0)
+                                       float       startAlpha = 0, float endAlpha  = 1)
+    {
+        canvasGroup.alpha                      = startAlpha;
+        SystemProperty.FadeImage.raycastTarget = true;
+
+        while (canvasGroup.alpha < endAlpha)
+        {
+            canvasGroup.alpha += Time.unscaledDeltaTime * (1 / fadeSpeed);
+            canvasGroup.alpha =  Mathf.Clamp01(canvasGroup.alpha);
+
+            await UniTask.Yield(PlayerLoopTiming.Update);
+        }
+    }
+
+    /// <summary>
+    /// フェードアウト処理
+    /// </summary>
+    /// <param name="canvasGroup">対象のCanvasGroup</param>
+    /// <param name="fadeSpeed">フェードが終了するまでの時間（秒）</param>
+    /// <param name="startAlpha">開始するアルファ値</param>
+    /// <param name="endAlpha">終了するアルファ値</param>
+    public static async UniTask FadeOut(CanvasGroup canvasGroup,    float fadeSpeed = DefaultFadeSpeed,
+                                        float       startAlpha = 1, float endAlpha  = 0)
     {
         canvasGroup.alpha = startAlpha;
 
@@ -30,28 +52,6 @@ public static class FadeTransition
     }
 
     /// <summary>
-    /// フェードアウト処理
-    /// </summary>
-    /// <param name="canvasGroup">対象のCanvasGroup</param>
-    /// <param name="fadeSpeed">フェードが終了するまでの時間（秒）</param>
-    /// <param name="startAlpha">開始するアルファ値</param>
-    /// <param name="endAlpha">終了するアルファ値</param>
-    public static async UniTask FadeOut(CanvasGroup canvasGroup,    float fadeSpeed = DefaultFadeSpeed,
-                                        float       startAlpha = 0, float endAlpha  = 1)
-    {
-        canvasGroup.alpha                      = startAlpha;
-        SystemProperty.FadeImage.raycastTarget = true;
-
-        while (canvasGroup.alpha < endAlpha)
-        {
-            canvasGroup.alpha += Time.unscaledDeltaTime * (1 / fadeSpeed);
-            canvasGroup.alpha =  Mathf.Clamp01(canvasGroup.alpha);
-
-            await UniTask.Yield(PlayerLoopTiming.Update);
-        }
-    }
-
-    /// <summary>
     /// テキスト用フェードイン処理
     /// </summary>
     /// <param name="text">対象のText</param>
@@ -61,7 +61,7 @@ public static class FadeTransition
     public static async UniTask FadeOut(Text  text, float fadeSpeed = DefaultFadeSpeed, float startAlpha = 1,
                                         float endAlpha = 0)
     {
-        await FadeIn((Graphic) text, fadeSpeed, startAlpha, endAlpha);
+        await FadeOut((Graphic) text, fadeSpeed, startAlpha, endAlpha);
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public static class FadeTransition
     public static async UniTask FadeIn(Text  text, float fadeSpeed = DefaultFadeSpeed, float startAlpha = 0,
                                        float endAlpha = 1)
     {
-        await FadeOut((Graphic) text, fadeSpeed, startAlpha, endAlpha);
+        await FadeIn((Graphic) text, fadeSpeed, startAlpha, endAlpha);
     }
 
     /// <summary>
@@ -84,8 +84,32 @@ public static class FadeTransition
     /// <param name="fadeSpeed">フェードが終了するまでの時間（秒）</param>
     /// <param name="startAlpha">開始するアルファ値</param>
     /// <param name="endAlpha">終了するアルファ値</param>
-    public static async UniTask FadeIn(Graphic target, float fadeSpeed = DefaultFadeSpeed, float startAlpha = 1,
-                                       float   endAlpha = 0)
+    public static async UniTask FadeIn(Graphic target, float fadeSpeed = DefaultFadeSpeed, float startAlpha = 0,
+                                       float   endAlpha = 1)
+    {
+        var   color = new Color(target.color.r, target.color.g, target.color.b, startAlpha);
+        float speed = 1 / fadeSpeed * (endAlpha - startAlpha);
+        SystemProperty.FadeImage.raycastTarget = true;
+
+        while (color.a < endAlpha)
+        {
+            color.a      += Time.unscaledDeltaTime * speed;
+            color.a      =  Mathf.Clamp01(color.a);
+            target.color =  color;
+
+            await UniTask.Yield(PlayerLoopTiming.Update);
+        }
+    }
+
+    /// <summary>
+    /// Graphic用フェードアウト処理
+    /// </summary>
+    /// <param name="target">Graphicを継承する対象</param>
+    /// <param name="fadeSpeed">フェードが終了するまでの時間（秒）</param>
+    /// <param name="startAlpha">開始するアルファ値</param>
+    /// <param name="endAlpha">終了するアルファ値</param>
+    public static async UniTask FadeOut(Graphic target, float fadeSpeed = DefaultFadeSpeed, float startAlpha = 1,
+                                        float   endAlpha = 0)
     {
         var   color = new Color(target.color.r, target.color.g, target.color.b, startAlpha);
         float speed = 1 / fadeSpeed * (startAlpha - endAlpha);
@@ -100,29 +124,5 @@ public static class FadeTransition
         }
 
         SystemProperty.FadeImage.raycastTarget = false;
-    }
-
-    /// <summary>
-    /// Graphic用フェードアウト処理
-    /// </summary>
-    /// <param name="target">Graphicを継承する対象</param>
-    /// <param name="fadeSpeed">フェードが終了するまでの時間（秒）</param>
-    /// <param name="startAlpha">開始するアルファ値</param>
-    /// <param name="endAlpha">終了するアルファ値</param>
-    public static async UniTask FadeOut(Graphic target, float fadeSpeed = DefaultFadeSpeed, float startAlpha = 0,
-                                        float   endAlpha = 1)
-    {
-        var   color = new Color(target.color.r, target.color.g, target.color.b, startAlpha);
-        float speed = 1 / fadeSpeed * (endAlpha - startAlpha);
-        SystemProperty.FadeImage.raycastTarget = true;
-
-        while (color.a < endAlpha)
-        {
-            color.a      += Time.unscaledDeltaTime * speed;
-            color.a      =  Mathf.Clamp01(color.a);
-            target.color =  color;
-
-            await UniTask.Yield(PlayerLoopTiming.Update);
-        }
     }
 }

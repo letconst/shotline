@@ -29,6 +29,21 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
     private GameObject cmBlendListObject;
 
     [SerializeField]
+    private Image roundTitleImg;
+
+    [SerializeField]
+    private Image p1PointImg;
+
+    [SerializeField]
+    private Image p2PointImg;
+
+    [SerializeField]
+    private CanvasGroup playerPointsCanvasGroup;
+
+    [SerializeField]
+    private Image battleResultImg;
+
+    [SerializeField]
     private Image suddenDeathImg;
 
     [SerializeField]
@@ -46,10 +61,15 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
         private set => Instance._itemSpawnPoints = value;
     }
 
-    public static GameObject  RivalDirection1P => Instance.rivalDirection1P;
-    public static GameObject  RivalDirection2P => Instance.rivalDirection2P;
-    public static Image       SuddenDeathImg   => Instance.suddenDeathImg;
-    public static Transform[] SotoWalls        => Instance.sotoWalls;
+    public static GameObject  RivalDirection1P        => Instance.rivalDirection1P;
+    public static GameObject  RivalDirection2P        => Instance.rivalDirection2P;
+    public static Image       RoundTitleImg           => Instance.roundTitleImg;
+    public static Image       P1PointImg              => Instance.p1PointImg;
+    public static Image       P2PointImg              => Instance.p2PointImg;
+    public static CanvasGroup PlayerPointsCanvasGroup => Instance.playerPointsCanvasGroup;
+    public static Image       BattleResultImg         => Instance.battleResultImg;
+    public static Image       SuddenDeathImg          => Instance.suddenDeathImg;
+    public static Transform[] SotoWalls               => Instance.sotoWalls;
 
     protected override void Awake()
     {

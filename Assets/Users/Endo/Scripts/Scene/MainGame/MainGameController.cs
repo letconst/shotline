@@ -3,13 +3,11 @@ using Cinemachine;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class MainGameController : SingletonMonoBehaviour<MainGameController>, IManagedMethod
 {
     private GameObject _playerObject;
-    private Text       _roundText;
 
     private IDisposable _receiver;
     private bool        _isClicked;
@@ -29,7 +27,6 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
         SoundManager.Instance.PlayBGM(BGMLabel.MainGame);
 
         _playerObject            = GameObject.FindGameObjectWithTag("Player");
-        _roundText               = RoundManager.RoundText;
         _cmBlendListObject       = MainGameProperty.Instance.CmBlendListObject;
         _cmBlendList             = _cmBlendListObject.GetComponent<CinemachineBlendListCamera>();
         isChangeableSceneToTitle = false;
@@ -103,7 +100,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
 
     private async void OnReceived(object res)
     {
-        var @base = (RequestBase) res;
+        var @base = (InRoomRequestBase) res;
         var type  = (EventType) Enum.Parse(typeof(EventType), @base.Type);
 
         switch (type)
@@ -112,20 +109,21 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
             case EventType.Joined:
             {
                 SystemUIManager.HideStatusText();
-                _roundText.text = "GAME START";
+
                 _cmBlendListObject.SetActive(true);
 
                 // カメラ演出が始まるまで待機
                 await UniTask.WaitUntil(() => _cmBlendList.IsBlending);
 
-                UniTask fade           = FadeTransition.FadeIn(_roundText, .5f);
+                UniTask fade           = RoundManager.RoundInitFade();
                 UniTask cameraBlending = UniTask.WaitWhile(() => _cmBlendList.IsBlending);
 
                 // ラウンドテキスト表示とカメラ演出完了を待機
                 await UniTask.WhenAll(fade, cameraBlending);
 
                 // ラウンドテキストフェードアウトと同時に操作可能にするため、並列で
-                FadeTransition.FadeOut(_roundText, .5f);
+                FadeTransition.FadeOut(MainGameProperty.RoundTitleImg, .5f);
+                FadeTransition.FadeOut(MainGameProperty.PlayerPointsCanvasGroup, .5f);
 
                 isControllable = true;
                 SystemUIManager.SetInputBlockerVisibility(false);
@@ -204,30 +202,14 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
                 // 相手の敗北なら勝利表示
                 if (innerRes.IsLoseRival && innerRes.RivalUuid != SelfPlayerData.PlayerUuid)
                 {
-                    Time.timeScale  = .1f;
-                    isControllable  = false;
-                    _roundText.text = "WIN!";
-                    SystemUIManager.ShowStatusText(StatusText.TapToTitle, false);
-
-                    isChangeableSceneToTitle = true;
-                    SystemUIManager.SetInputBlockerVisibility(true);
-
-                    await FadeTransition.FadeIn(_roundText, .1f);
+                    await RoundManager.ShowBattleResult(ResultType.Win);
                 }
                 // 攻撃者のラウンド進行が終わり次第、操作可能に
                 // 攻撃者側も共通に処理
                 else if (innerRes.IsReadyAttackedRival)
                 {
                     SystemUIManager.HideStatusText();
-
-                    await FadeTransition.FadeOut(_roundText, .5f);
-
-                    Time.timeScale             = 1;
-                    isControllable             = true;
-                    PlayerController.isDamaged = false;
-                    RoundManager.RoundMove     = false;
-                    _roundText.text            = "";
-                    SystemUIManager.SetInputBlockerVisibility(false);
+                    await RoundManager.RoundStartFadeOut();
 
                     var roundStartReq = new RoundStartRequest();
 
@@ -236,19 +218,8 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
                 // 攻撃者のラウンド進行
                 else if (!PlayerController.isDamaged)
                 {
-                    // ゲーム速度を低速にし、被弾させた表示
-                    Time.timeScale  = .1f;
-                    _roundText.text = "HIT!";
-                    isControllable  = false;
-                    SystemUIManager.SetInputBlockerVisibility(true);
-
-                    // フェード処理
-                    await FadeTransition.FadeIn(_roundText, .1f);
-                    await UniTask.Delay(TimeSpan.FromSeconds(1), true);
-                    await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
-
-                    _roundText.text = "";
-                    Time.timeScale  = 1;
+                    RoundManager.Instance.playerPoint++;
+                    await RoundManager.RoundUpdateFadeOut(JudgeType.Hit);
 
                     // リセット処理
                     ResetPlayersPosition();
@@ -265,11 +236,8 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
 
                     RoundManager.Instance.SuddenDeathFlag = false;
                     RoundManager.Instance.ResetCount();
-
-                    _roundText.text = $"ROUND {RoundManager.CurrentRound.ToString()}";
-                    SystemUIManager.ShowStatusText(StatusText.NowWaiting);
-
-                    await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
+                    SystemUIManager.ShowConnectingStatus();
+                    await RoundManager.RoundUpdateFadeIn();
 
                     // 攻撃者準備完了を送信
                     var roundUpdateReq = new RoundUpdateRequest(true);

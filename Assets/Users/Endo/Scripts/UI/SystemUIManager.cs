@@ -20,7 +20,7 @@ public static class SystemUIManager
 
     private static UIWindow _openedWindow;
 
-    public static readonly Queue<WindowEntry>        WindowQueue        = new Queue<WindowEntry>();
+    public static readonly Queue<WindowEntry> WindowQueue = new Queue<WindowEntry>();
 
     /// <summary>
     /// アラートウィンドウを表示する
@@ -84,7 +84,7 @@ public static class SystemUIManager
         "サーバーに接続できませんでした", "タップでタイトルに戻る", "参加中", "ロード中", "マッチング中", "待機中", "他のプレイヤーを待っています", "対戦相手が切断しました"
     };
 
-    private const string ConnectingText = "接続中";
+    private const string ConnectingText = "通信中";
 
     /// <summary>
     /// 画面右下にステータステキストを表示する
@@ -148,11 +148,11 @@ public static class SystemUIManager
         if (isVisible)
         {
             inputBlockerImage.gameObject.SetActive(true);
-            await FadeTransition.FadeOut(inputBlockerImage, .2f, inputBlockerImage.color.a, alpha);
+            await FadeTransition.FadeIn(inputBlockerImage, .2f, inputBlockerImage.color.a, alpha);
         }
         else
         {
-            await FadeTransition.FadeIn(inputBlockerImage, .2f, inputBlockerImage.color.a);
+            await FadeTransition.FadeOut(inputBlockerImage, .2f, inputBlockerImage.color.a);
             inputBlockerImage.gameObject.SetActive(false);
         }
     }
