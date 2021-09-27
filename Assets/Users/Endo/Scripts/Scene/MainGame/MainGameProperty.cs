@@ -29,6 +29,12 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
     private GameObject cmBlendListObject;
 
     [SerializeField]
+    private Image roundTitleImg;
+
+    [SerializeField]
+    private Image battleResultImg;
+
+    [SerializeField]
     private Image suddenDeathImg;
 
     [SerializeField]
@@ -48,6 +54,8 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
 
     public static GameObject  RivalDirection1P => Instance.rivalDirection1P;
     public static GameObject  RivalDirection2P => Instance.rivalDirection2P;
+    public static Image       RoundTitleImg    => Instance.roundTitleImg;
+    public static Image       BattleResultImg  => Instance.battleResultImg;
     public static Image       SuddenDeathImg   => Instance.suddenDeathImg;
     public static Transform[] SotoWalls        => Instance.sotoWalls;
 

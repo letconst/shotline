@@ -1,6 +1,20 @@
-﻿using UniRx;
+﻿using System;
+using Cysharp.Threading.Tasks;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+
+public enum JudgeType
+{
+    Damage,
+    Hit,
+}
+
+public enum ResultType
+{
+    Lose,
+    Win,
+}
 
 public class RoundManager : SingletonMonoBehaviour<RoundManager>
 {
@@ -34,9 +48,15 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     private int  _rivalLife;
     private bool _isFadeInSuddenDeathImg;
 
+    private        Sprite[] _roundTitleSprites;
+    private static Sprite[] _battleResultSprites;
+    private static Sprite[] _judgeSprites;
+
     public static int  CurrentPlayerLife { get; private set; }
     public static int  CurrentRound      { get; private set; }
     public static Text RoundText         => Instance.roundText;
+
+    private const string RoundUIBasePath = "Sprites/UI/ROUND";
 
     protected void Start()
     {
@@ -44,6 +64,10 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         CurrentPlayerLife = PlayerLife;
         _rivalLife        = PlayerLife;
         CurrentRound      = 1;
+
+        _roundTitleSprites   = Resources.LoadAll<Sprite>($"{RoundUIBasePath}/Title");
+        _battleResultSprites = Resources.LoadAll<Sprite>($"{RoundUIBasePath}/Result");
+        _judgeSprites        = Resources.LoadAll<Sprite>($"{RoundUIBasePath}/Judge");
 
         // ラウンド進行を受信時にラウンド数更新
         NetworkManager.OnReceived
@@ -90,7 +114,6 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         // プレイヤーのライフを1減らす
         CurrentPlayerLife--;
 
-        RoundMove                = true;
         Instance.SuddenDeathFlag = false;
 
         // プレイヤーのライフが0になったらリザルトへ
@@ -99,6 +122,75 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
             //リザルトへ
             Debug.Log("Result");
         }
+    }
+
+    /// <summary>
+    /// ラウンド開始時のフェードアウト処理
+    /// </summary>
+    public static async UniTask RoundStartFadeOut()
+    {
+        await FadeTransition.FadeIn(MainGameProperty.RoundTitleImg, .5f);
+
+        Time.timeScale                    = 1;
+        MainGameController.isControllable = true;
+        PlayerController.isDamaged        = false;
+        RoundMove                         = false;
+        SystemUIManager.SetInputBlockerVisibility(false);
+    }
+
+    /// <summary>
+    /// 決着時のフェードアウト処理
+    /// </summary>
+    /// <param name="judgeType">表示する判定結果</param>
+    public static async UniTask RoundUpdateFadeOut(JudgeType judgeType)
+    {
+        if (RoundMove) return;
+
+        RoundMove                               = true;
+        Time.timeScale                          = .1f;
+        MainGameController.isControllable       = false;
+        MainGameProperty.BattleResultImg.sprite = _judgeSprites[(int) judgeType];
+        SystemUIManager.SetInputBlockerVisibility(true);
+
+        await FadeTransition.FadeOut(MainGameProperty.BattleResultImg, .1f);
+        await UniTask.Delay(TimeSpan.FromSeconds(1), true);
+        await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
+
+        MainGameProperty.BattleResultImg.color = new Color(1, 1, 1, 0);
+    }
+
+    /// <summary>
+    /// 決着後（ラウンド移行後）のフェードイン処理
+    /// </summary>
+    public static async UniTask RoundUpdateFadeIn()
+    {
+        if (!RoundMove) return;
+
+        Time.timeScale                         = 1;
+        MainGameProperty.BattleResultImg.color = new Color(1, 1, 1, 0);
+        MainGameProperty.RoundTitleImg.sprite  = Instance._roundTitleSprites[CurrentRound - 1];
+        MainGameProperty.RoundTitleImg.color   = Color.white;
+
+        await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
+    }
+
+    /// <summary>
+    /// バトル結果を表示する
+    /// </summary>
+    /// <param name="resultType">表示する結果</param>
+    public static async UniTask ShowBattleResult(ResultType resultType)
+    {
+        Time.timeScale                          = .1f;
+        MainGameController.isControllable       = false;
+        MainGameProperty.BattleResultImg.sprite = _battleResultSprites[(int) resultType];
+
+        SystemUIManager.SetInputBlockerVisibility(true);
+
+        // タップでタイトルに戻れる旨を表示
+        SystemUIManager.ShowStatusText(StatusText.TapToTitle, false);
+        MainGameController.isChangeableSceneToTitle = true;
+
+        await FadeTransition.FadeOut(MainGameProperty.BattleResultImg, .1f);
     }
 
     public void ResetCount()
