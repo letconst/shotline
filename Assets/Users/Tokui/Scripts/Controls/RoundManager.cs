@@ -41,15 +41,18 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     // 現在ラウンドが切り替わっている最中かどうか判別
     public static bool RoundMove = false;
 
-    private int  _rivalLife;
+    public  int  playerPoint;
+    private int  _rivalPoint;
     private bool _isFadeInSuddenDeathImg;
 
     private static Sprite[] _roundTitleSprites;
     private static Sprite[] _battleResultSprites;
     private static Sprite[] _judgeSprites;
+    private static Sprite[] _p1PointSprites;
+    private static Sprite[] _p2PointSprites;
 
-    public static int  CurrentPlayerLife { get; private set; }
-    public static int  CurrentRound      { get; private set; }
+    public static int CurrentPlayerLife { get; private set; }
+    public static int CurrentRound      { get; private set; }
 
     private const string RoundUIBasePath = "Sprites/UI/ROUND";
 
@@ -57,12 +60,14 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     {
         RoundMove         = false;
         CurrentPlayerLife = PlayerLife;
-        _rivalLife        = PlayerLife;
         CurrentRound      = 1;
 
+        // 各種UI画像読み込み
         _roundTitleSprites   = Resources.LoadAll<Sprite>($"{RoundUIBasePath}/Title");
         _battleResultSprites = Resources.LoadAll<Sprite>($"{RoundUIBasePath}/Result");
         _judgeSprites        = Resources.LoadAll<Sprite>($"{RoundUIBasePath}/Judge");
+        _p1PointSprites      = Resources.LoadAll<Sprite>($"{RoundUIBasePath}/P1Point");
+        _p2PointSprites      = Resources.LoadAll<Sprite>($"{RoundUIBasePath}/P2Point");
 
         // ラウンド進行を受信時にラウンド数更新
         NetworkManager.OnReceived
@@ -108,6 +113,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     {
         // プレイヤーのライフを1減らす
         CurrentPlayerLife--;
+        Instance._rivalPoint++;
 
         Instance.SuddenDeathFlag = false;
 
@@ -126,7 +132,10 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     {
         MainGameProperty.RoundTitleImg.sprite = _roundTitleSprites[CurrentRound - 1];
 
-        await FadeTransition.FadeOut(MainGameProperty.RoundTitleImg, .5f);
+        UniTask titleFade = FadeTransition.FadeOut(MainGameProperty.RoundTitleImg, .5f);
+        UniTask pointFade = FadeTransition.FadeOut(MainGameProperty.PlayerPointsCanvasGroup, .5f);
+
+        await UniTask.WhenAll(titleFade, pointFade);
     }
 
     /// <summary>
@@ -134,7 +143,12 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     /// </summary>
     public static async UniTask RoundStartFadeOut()
     {
-        await FadeTransition.FadeIn(MainGameProperty.RoundTitleImg, .5f);
+        await UniTask.Delay(TimeSpan.FromSeconds(1));
+
+        UniTask titleFade = FadeTransition.FadeIn(MainGameProperty.RoundTitleImg, .5f);
+        UniTask pointFade = FadeTransition.FadeIn(MainGameProperty.PlayerPointsCanvasGroup, .5f);
+
+        await UniTask.WhenAll(titleFade, pointFade);
 
         Time.timeScale                    = 1;
         MainGameController.isControllable = true;
@@ -161,7 +175,19 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         await UniTask.Delay(TimeSpan.FromSeconds(1), true);
         await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
 
-        MainGameProperty.BattleResultImg.color = new Color(1, 1, 1, 0);
+        if (NetworkManager.IsOwner)
+        {
+            MainGameProperty.P1PointImg.sprite = _p1PointSprites[Instance.playerPoint];
+            MainGameProperty.P2PointImg.sprite = _p2PointSprites[Instance._rivalPoint];
+        }
+        else
+        {
+            MainGameProperty.P1PointImg.sprite = _p1PointSprites[Instance._rivalPoint];
+            MainGameProperty.P2PointImg.sprite = _p2PointSprites[Instance.playerPoint];
+        }
+
+        MainGameProperty.BattleResultImg.color         = new Color(1, 1, 1, 0);
+        MainGameProperty.PlayerPointsCanvasGroup.alpha = 1;
     }
 
     /// <summary>

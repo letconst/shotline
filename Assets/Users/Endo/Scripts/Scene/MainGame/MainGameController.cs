@@ -123,6 +123,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
 
                 // ラウンドテキストフェードアウトと同時に操作可能にするため、並列で
                 FadeTransition.FadeIn(MainGameProperty.RoundTitleImg, .5f);
+                FadeTransition.FadeIn(MainGameProperty.PlayerPointsCanvasGroup, .5f);
 
                 isControllable = true;
                 SystemUIManager.SetInputBlockerVisibility(false);
@@ -217,6 +218,7 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
                 // 攻撃者のラウンド進行
                 else if (!PlayerController.isDamaged)
                 {
+                    RoundManager.Instance.playerPoint++;
                     await RoundManager.RoundUpdateFadeOut(JudgeType.Hit);
 
                     // リセット処理
@@ -243,12 +245,6 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
                     NetworkManager.Emit(roundUpdateReq);
                 }
 
-                break;
-            }
-
-            // 相手の外壁接触による死亡時
-            case EventType.HitToWall:
-            {
                 break;
             }
 
