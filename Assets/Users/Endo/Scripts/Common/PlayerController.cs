@@ -1,13 +1,9 @@
-using System;
-using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     private GameObject _rivalObject;
-    private Text       _roundText;
 
     public static bool isDamaged;
 
@@ -38,7 +34,6 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _rivalObject = GameObject.FindGameObjectWithTag("Rival");
-        _roundText   = RoundManager.RoundText;
     }
 
     private async void OnTriggerEnter(Collider other)

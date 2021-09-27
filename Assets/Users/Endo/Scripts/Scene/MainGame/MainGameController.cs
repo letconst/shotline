@@ -3,13 +3,11 @@ using Cinemachine;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class MainGameController : SingletonMonoBehaviour<MainGameController>, IManagedMethod
 {
     private GameObject _playerObject;
-    private Text       _roundText;
 
     private IDisposable _receiver;
     private bool        _isClicked;
@@ -29,7 +27,6 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
         SoundManager.Instance.PlayBGM(BGMLabel.MainGame);
 
         _playerObject            = GameObject.FindGameObjectWithTag("Player");
-        _roundText               = RoundManager.RoundText;
         _cmBlendListObject       = MainGameProperty.Instance.CmBlendListObject;
         _cmBlendList             = _cmBlendListObject.GetComponent<CinemachineBlendListCamera>();
         isChangeableSceneToTitle = false;
@@ -112,20 +109,20 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
             case EventType.Joined:
             {
                 SystemUIManager.HideStatusText();
-                _roundText.text = "GAME START";
+
                 _cmBlendListObject.SetActive(true);
 
                 // カメラ演出が始まるまで待機
                 await UniTask.WaitUntil(() => _cmBlendList.IsBlending);
 
-                UniTask fade           = FadeTransition.FadeIn(_roundText, .5f);
+                UniTask fade           = RoundManager.RoundInitFade();
                 UniTask cameraBlending = UniTask.WaitWhile(() => _cmBlendList.IsBlending);
 
                 // ラウンドテキスト表示とカメラ演出完了を待機
                 await UniTask.WhenAll(fade, cameraBlending);
 
                 // ラウンドテキストフェードアウトと同時に操作可能にするため、並列で
-                FadeTransition.FadeOut(_roundText, .5f);
+                FadeTransition.FadeIn(MainGameProperty.RoundTitleImg, .5f);
 
                 isControllable = true;
                 SystemUIManager.SetInputBlockerVisibility(false);
@@ -246,6 +243,12 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
                     NetworkManager.Emit(roundUpdateReq);
                 }
 
+                break;
+            }
+
+            // 相手の外壁接触による死亡時
+            case EventType.HitToWall:
+            {
                 break;
             }
 

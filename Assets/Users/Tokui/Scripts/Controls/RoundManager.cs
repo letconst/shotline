@@ -2,7 +2,6 @@
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum JudgeType
 {
@@ -33,9 +32,6 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     [SerializeField]
     private float WallSpeedReset;
 
-    [SerializeField]
-    private Text roundText;
-
     private float CountDown;
 
     public bool SuddenDeathFlag;
@@ -48,13 +44,12 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     private int  _rivalLife;
     private bool _isFadeInSuddenDeathImg;
 
-    private        Sprite[] _roundTitleSprites;
+    private static Sprite[] _roundTitleSprites;
     private static Sprite[] _battleResultSprites;
     private static Sprite[] _judgeSprites;
 
     public static int  CurrentPlayerLife { get; private set; }
     public static int  CurrentRound      { get; private set; }
-    public static Text RoundText         => Instance.roundText;
 
     private const string RoundUIBasePath = "Sprites/UI/ROUND";
 
@@ -125,6 +120,16 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     }
 
     /// <summary>
+    /// ステージ参加後のフェード処理
+    /// </summary>
+    public static async UniTask RoundInitFade()
+    {
+        MainGameProperty.RoundTitleImg.sprite = _roundTitleSprites[CurrentRound - 1];
+
+        await FadeTransition.FadeOut(MainGameProperty.RoundTitleImg, .5f);
+    }
+
+    /// <summary>
     /// ラウンド開始時のフェードアウト処理
     /// </summary>
     public static async UniTask RoundStartFadeOut()
@@ -168,7 +173,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
 
         Time.timeScale                         = 1;
         MainGameProperty.BattleResultImg.color = new Color(1, 1, 1, 0);
-        MainGameProperty.RoundTitleImg.sprite  = Instance._roundTitleSprites[CurrentRound - 1];
+        MainGameProperty.RoundTitleImg.sprite  = _roundTitleSprites[CurrentRound - 1];
         MainGameProperty.RoundTitleImg.color   = Color.white;
 
         await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
@@ -200,7 +205,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
 
     private void OnReceived(object res)
     {
-        var @base = (RequestBase) res;
+        var @base = (InRoomRequestBase) res;
         var type  = (EventType) System.Enum.Parse(typeof(EventType), @base.Type);
 
         switch (type)
