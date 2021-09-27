@@ -95,7 +95,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
             if (CountDown >= 3 && !_isFadeInSuddenDeathImg)
             {
                 _isFadeInSuddenDeathImg = true;
-                FadeTransition.FadeIn(MainGameProperty.SuddenDeathImg, .5f);
+                FadeTransition.FadeOut(MainGameProperty.SuddenDeathImg, .5f);
             }
 
             if (CountDown >= WallCount)
@@ -132,8 +132,8 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     {
         MainGameProperty.RoundTitleImg.sprite = _roundTitleSprites[CurrentRound - 1];
 
-        UniTask titleFade = FadeTransition.FadeOut(MainGameProperty.RoundTitleImg, .5f);
-        UniTask pointFade = FadeTransition.FadeOut(MainGameProperty.PlayerPointsCanvasGroup, .5f);
+        UniTask titleFade = FadeTransition.FadeIn(MainGameProperty.RoundTitleImg, .5f);
+        UniTask pointFade = FadeTransition.FadeIn(MainGameProperty.PlayerPointsCanvasGroup, .5f);
 
         await UniTask.WhenAll(titleFade, pointFade);
     }
@@ -145,8 +145,8 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     {
         await UniTask.Delay(TimeSpan.FromSeconds(1));
 
-        UniTask titleFade = FadeTransition.FadeIn(MainGameProperty.RoundTitleImg, .5f);
-        UniTask pointFade = FadeTransition.FadeIn(MainGameProperty.PlayerPointsCanvasGroup, .5f);
+        UniTask titleFade = FadeTransition.FadeOut(MainGameProperty.RoundTitleImg, .5f);
+        UniTask pointFade = FadeTransition.FadeOut(MainGameProperty.PlayerPointsCanvasGroup, .5f);
 
         await UniTask.WhenAll(titleFade, pointFade);
 
@@ -171,9 +171,9 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         MainGameProperty.BattleResultImg.sprite = _judgeSprites[(int) judgeType];
         SystemUIManager.SetInputBlockerVisibility(true);
 
-        await FadeTransition.FadeOut(MainGameProperty.BattleResultImg, .1f);
+        await FadeTransition.FadeIn(MainGameProperty.BattleResultImg, .1f);
         await UniTask.Delay(TimeSpan.FromSeconds(1), true);
-        await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
+        await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
 
         if (NetworkManager.IsOwner)
         {
@@ -202,7 +202,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         MainGameProperty.RoundTitleImg.sprite  = _roundTitleSprites[CurrentRound - 1];
         MainGameProperty.RoundTitleImg.color   = Color.white;
 
-        await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
+        await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
     }
 
     /// <summary>
@@ -221,7 +221,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
         SystemUIManager.ShowStatusText(StatusText.TapToTitle, false);
         MainGameController.isChangeableSceneToTitle = true;
 
-        await FadeTransition.FadeOut(MainGameProperty.BattleResultImg, .1f);
+        await FadeTransition.FadeIn(MainGameProperty.BattleResultImg, .1f);
     }
 
     public void ResetCount()
@@ -251,7 +251,7 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
             {
                 SuddenDeathFlag         = true;
                 _isFadeInSuddenDeathImg = false;
-                FadeTransition.FadeOut(MainGameProperty.SuddenDeathImg, .5f);
+                FadeTransition.FadeIn(MainGameProperty.SuddenDeathImg, .5f);
 
                 break;
             }

@@ -148,11 +148,11 @@ public static class SystemUIManager
         if (isVisible)
         {
             inputBlockerImage.gameObject.SetActive(true);
-            await FadeTransition.FadeOut(inputBlockerImage, .2f, inputBlockerImage.color.a, alpha);
+            await FadeTransition.FadeIn(inputBlockerImage, .2f, inputBlockerImage.color.a, alpha);
         }
         else
         {
-            await FadeTransition.FadeIn(inputBlockerImage, .2f, inputBlockerImage.color.a);
+            await FadeTransition.FadeOut(inputBlockerImage, .2f, inputBlockerImage.color.a);
             inputBlockerImage.gameObject.SetActive(false);
         }
     }

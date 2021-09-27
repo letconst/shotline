@@ -33,7 +33,7 @@ public class SystemSceneManager : MonoBehaviour
         {
             case SceneTransition.Fade:
             {
-                await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, fadeSpeed);
+                await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, fadeSpeed);
 
                 if (isShowStatus) SystemUIManager.ShowStatusText(StatusText.NowLoading);
 
@@ -41,7 +41,7 @@ public class SystemSceneManager : MonoBehaviour
 
                 if (isShowStatus) SystemUIManager.HideStatusText();
 
-                await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, fadeSpeed);
+                await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, fadeSpeed);
 
                 break;
             }

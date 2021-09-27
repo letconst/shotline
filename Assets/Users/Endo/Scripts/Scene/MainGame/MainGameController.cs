@@ -122,8 +122,8 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
                 await UniTask.WhenAll(fade, cameraBlending);
 
                 // ラウンドテキストフェードアウトと同時に操作可能にするため、並列で
-                FadeTransition.FadeIn(MainGameProperty.RoundTitleImg, .5f);
-                FadeTransition.FadeIn(MainGameProperty.PlayerPointsCanvasGroup, .5f);
+                FadeTransition.FadeOut(MainGameProperty.RoundTitleImg, .5f);
+                FadeTransition.FadeOut(MainGameProperty.PlayerPointsCanvasGroup, .5f);
 
                 isControllable = true;
                 SystemUIManager.SetInputBlockerVisibility(false);
