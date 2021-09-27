@@ -108,7 +108,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
                     Ray ray = _camera.ScreenPointToRay(touchPos);
 
                     // 描画開始領域のクリックのみ反応させる。リニアガン時は無視
-                    if (!Physics.Raycast(ray, Mathf.Infinity, _lineGaugeLayerMask) && !LinearDraw._isLinearDraw) return;
+                    if (!LinearDraw._isLinearDraw && !Physics.Raycast(ray, Mathf.Infinity, _lineGaugeLayerMask)) return;
 
                     // UIをクリックした際は反応させない
                     if (EventSystem.current.IsPointerOverGameObject(touch.fingerId)) return;
@@ -123,7 +123,12 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
 
                         if (!_firstLinearDraw)
                         {
-                            UpdateLine(hit.point);
+                            // 移動中は、移動開始時のプレイヤー位置との差分を引いた位置に描画する
+                            Vector3 hitPos         = hit.point;
+                            Vector3 deltaPlayerPos = _touchedPlayerPos - _playerTrf.position;
+                            hitPos += deltaPlayerPos;
+
+                            UpdateLine(hitPos);
                         }
                     }
                     else
@@ -147,7 +152,10 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
                         LineGaugeController.AbleDraw = true;
                     }
 
-                    _touchedPlayerPos = _playerTrf.position;
+                    if (!LinearDraw._isLinearDraw || (LinearDraw._isLinearDraw && _firstLinearDraw))
+                    {
+                        _touchedPlayerPos = _playerTrf.position;
+                    }
 
                     CreateLine(hit.point);
 
@@ -314,14 +322,6 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
         // 射線の全ポイントの座標を更新
         for (int i = 0; i < fingerPositionsCount; i++)
         {
-            if (i == 0 && LinearDraw._isLinearDraw)
-            {
-                //0でリニアドローだったら
-                DrawingData.Renderer.SetPosition(0, _playerTrf.position);
-
-                continue;
-            }
-
             Vector3 newPos = drawingFingerPos[i] + deltaPosToPlayer;
             DrawingData.Renderer.SetPosition(i, newPos);
         }
@@ -332,7 +332,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
     /// <summary>
     /// 射線を作成する
     /// </summary>
-    private void CreateLine(Vector3 newFingerPosition)
+    private void CreateLine(Vector3 newFingerPos)
     {
         // 射線ゲージが空のときは処理しない
         if (!LineGaugeController.AbleDraw) return;
@@ -344,7 +344,7 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
         {
             DrawingData = GetFreeLine();
         }
-        
+
         if (!LinearDraw._isLinearDraw)
         {
             ShotLineUtil.ClearLineData(DrawingData);
@@ -358,8 +358,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
         if (!LinearDraw._isLinearDraw || _firstLinearDraw)
         {
             targetDataFingerPositions.Clear();
-            targetDataFingerPositions.Add(newFingerPosition);
-            targetDataFingerPositions.Add(newFingerPosition);
+            targetDataFingerPositions.Add(newFingerPos);
+            targetDataFingerPositions.Add(newFingerPos);
         }
 
         // リニアドローの場合
@@ -367,27 +367,29 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
         {
             if (_firstLinearDraw)
             {
-                DrawingData.FingerPositions[0] = _playerTrf.position;
-                targetDataFingerPositions[0]   = _playerTrf.position;
+                Vector3 curPlayerPos = _playerTrf.position;
+                targetDataFingerPositions[0] = curPlayerPos;
+                targetDataFingerPositions[1] = curPlayerPos;
 
                 float rdis   = 0;
-                float dis    = Vector3.Distance(targetDataFingerPositions[0], targetDataFingerPositions[1]);
+                float dis    = Vector3.Distance(targetDataFingerPositions[0], newFingerPos);
                 bool  isDraw = LineGaugeController.LineGauge(dis, ref rdis);
                 currentDis                     += dis / LineGaugeController.Instance.MaxLinePower;
                 LineGaugeController.holdAmount =  LineGaugeController.Instance.preslider.fillAmount;
 
                 if (!isDraw)
                 {
-                    targetDataFingerPositions[1] = Vector3.Lerp(targetDataFingerPositions[0],
-                                                                targetDataFingerPositions[1], rdis / dis);
+                    targetDataFingerPositions.Add(Vector3.Lerp(targetDataFingerPositions[0], newFingerPos, rdis / dis));
                 }
                 else
                 {
-                    targetDataFingerPositions[1] = newFingerPosition;
+                    targetDataFingerPositions.Add(newFingerPos);
                 }
 
+                DrawingData.Renderer.positionCount++;
                 DrawingData.Renderer.SetPosition(0, targetDataFingerPositions[0]);
                 DrawingData.Renderer.SetPosition(1, targetDataFingerPositions[1]);
+                DrawingData.Renderer.SetPosition(2, targetDataFingerPositions[2]);
                 DrawingData.Renderer.enabled = true;
                 DrawingData.IsFixed          = false;
                 _firstLinearDraw             = false;
@@ -396,8 +398,8 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
         // 通常描画
         else
         {
-            DrawingData.Renderer.SetPosition(0, newFingerPosition);
-            DrawingData.Renderer.SetPosition(1, newFingerPosition);
+            DrawingData.Renderer.SetPosition(0, newFingerPos);
+            DrawingData.Renderer.SetPosition(1, newFingerPos);
             DrawingData.Renderer.enabled = true;
             DrawingData.IsFixed          = false;
         }
