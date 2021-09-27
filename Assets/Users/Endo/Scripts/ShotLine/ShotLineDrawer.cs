@@ -342,34 +342,10 @@ public class ShotLineDrawer : SingletonMonoBehaviour<ShotLineDrawer>, IManagedMe
         // 射線が描かれていなければ未使用の射線があるか確認
         if (!IsLineCreated)
         {
-            LineData targetData = null;
-
-            foreach (LineData data in _lineDataList)
-            {
-                if (data.IsFixed) continue;
-
-                targetData = data;
-
-                break;
-            }
-
-            // なければ生成
-            if (targetData == null)
-            {
-                targetData  = InstantiateNewLineData();
-                DrawingData = targetData;
-            }
-            else
-            {
-                DrawingData = targetData;
-
-                if (!LinearDraw._isLinearDraw)
-                {
-                    ShotLineUtil.ClearLineData(DrawingData);
-                }
-            }
+            DrawingData = GetFreeLine();
         }
-        else if (!LinearDraw._isLinearDraw)
+        
+        if (!LinearDraw._isLinearDraw)
         {
             ShotLineUtil.ClearLineData(DrawingData);
         }
