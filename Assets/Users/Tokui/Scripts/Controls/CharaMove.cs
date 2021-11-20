@@ -20,6 +20,8 @@ public class CharaMove : MonoBehaviour, IManagedMethod
 
     CharacterController controller; //CharacterControllerの読み込み
 
+    private Rigidbody _rig;
+
     public        float CurrentSpeed => _speed * speedRatio;
     public static bool  IsMoving     { get; private set; }
 
@@ -27,12 +29,13 @@ public class CharaMove : MonoBehaviour, IManagedMethod
     {
         speedRatio = 1;
         _joystick  = GameObject.FindGameObjectWithTag("Joystick").GetComponent<Joystick>();
-        controller = GetComponent<CharacterController>(); //CharacterControllerの取得
+        // controller = GetComponent<CharacterController>(); //CharacterControllerの取得
+        _rig       = GetComponent<Rigidbody>();
     }
 
     public void ManagedUpdate()
     {
-        IsMoving = false;
+        // IsMoving = false;
 
         //無敵フラグが立っているとき
         //移動処理を行わない
@@ -46,16 +49,6 @@ public class CharaMove : MonoBehaviour, IManagedMethod
             return; //RoundMoveがtrueになると操作不能に
         }
 
-        _moveX = _joystick.Position.x * _speed; //JoystickのPositionに_speedをかけて、_moveXに代入
-        _moveZ = _joystick.Position.y * _speed; //JoystickのPositionに_speedをかけて、_moveYに代入
-
-        if (!MainGameController.isControllable)
-        {
-            controller.SimpleMove(Vector3.zero);
-
-            return;
-        }
-
         _moveX = _joystick.Position.x * CurrentSpeed; //JoystickのPositionに_speedをかけて、_moveXに代入
         _moveZ = _joystick.Position.y * CurrentSpeed; //JoystickのPositionに_speedをかけて、_moveYに代入
 
@@ -65,9 +58,14 @@ public class CharaMove : MonoBehaviour, IManagedMethod
             _moveX = -_moveX;
             _moveZ = -_moveZ;
         }
+    }
 
-        // 移動方向にキャラクターが向くようにする
-
+    private void FixedUpdate()
+    {
+        if (!MainGameController.isControllable) return;
+        
+        IsMoving = false;
+        
         if (_joystick.Position.y > 0.01f || _joystick.Position.y < -0.01f)
         {
             if (_joystick.Position.x > 0.01f || _joystick.Position.x < -0.01f)
@@ -75,8 +73,14 @@ public class CharaMove : MonoBehaviour, IManagedMethod
                 IsMoving = true;
 
                 Vector3 direction = new Vector3(_moveX, 0, _moveZ);
-                transform.localRotation = Quaternion.LookRotation(direction);
-                controller.SimpleMove(direction);
+
+                // 移動方向にキャラクターが向くようにする
+                if (direction != Vector3.zero)
+                {
+                    transform.localRotation = Quaternion.LookRotation(direction);
+                }
+                
+                _rig.velocity = direction;
             }
         }
     }
