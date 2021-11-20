@@ -1,14 +1,9 @@
-using System;
-using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     private GameObject _rivalObject;
-    private Text       _roundText;
-    private Text       _statusText;
 
     public static bool isDamaged;
 
@@ -39,8 +34,6 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _rivalObject = GameObject.FindGameObjectWithTag("Rival");
-        _roundText   = RoundManager.RoundText;
-        _statusText  = SystemProperty.StatusText;
     }
 
     private async void OnTriggerEnter(Collider other)
@@ -55,10 +48,7 @@ public class PlayerController : MonoBehaviour
         SoundManager.Instance.PlaySE(SELabel.Damage);
         RoundManager.HitVerification();
 
-        Time.timeScale                    = .1f;
-        MainGameController.isControllable = false;
-        isDamaged                         = true;
-        MainGameProperty.InputBlocker.SetActive(true);
+        isDamaged = true;
 
         var roundUpdateReq = new RoundUpdateRequest();
 
@@ -66,27 +56,17 @@ public class PlayerController : MonoBehaviour
         if (RoundManager.CurrentPlayerLife == 0)
         {
             roundUpdateReq.IsLoseRival = true;
-            _roundText.text            = "LOSE!";
-            _statusText.text           = "タップでタイトルに戻る";
 
-            MainGameController.isChangeableSceneToTitle = true;
             NetworkManager.Emit(roundUpdateReq);
-
-            await FadeTransition.FadeIn(_roundText, .1f);
+            await RoundManager.ShowBattleResult(ResultType.Lose);
 
             return;
         }
 
         // 通常被弾時
-        _roundText.text = "DAMAGED!";
         NetworkManager.Emit(roundUpdateReq);
 
-        await FadeTransition.FadeIn(_roundText, .1f);
-        await UniTask.Delay(TimeSpan.FromSeconds(1), true);
-        await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup, .5f);
-
-        _roundText.text = "";
-        Time.timeScale  = 1;
+        await RoundManager.RoundUpdateFadeOut(JudgeType.Damage);
 
         // 生成アイテムをリセット
         ItemManager.ClearGeneratedItem();
@@ -98,15 +78,20 @@ public class PlayerController : MonoBehaviour
         ShotLineUtil.FreeLineData(ShotLineDrawer.DrawingData);
 
         Projectile.DestroyAllBullets();
+        MainGameProperty.SuddenDeathImg.color = new Color(1, 1, 1, 0);
 
-        _roundText.text = $"ROUND {RoundManager.CurrentRound.ToString()}";
+        // 外壁サイズリセット
+        foreach (Transform wall in MainGameProperty.SotoWalls)
+        {
+            wall.localScale = Vector3.one;
+        }
 
-        await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup, .5f);
-
-        RoundManager.RoundMove = false;
+        RoundManager.Instance.SuddenDeathFlag = false;
+        RoundManager.Instance.ResetCount();
+        SystemUIManager.ShowConnectingStatus();
+        await RoundManager.RoundUpdateFadeIn();
 
         // 相手のラウンド進行が済んでから操作可能にさせるため、ここではそれをせず待機
-        _statusText.text = "待機中…";
     }
 
     private void OnPositionChanged(Vector3 pos)
@@ -116,10 +101,9 @@ public class PlayerController : MonoBehaviour
         NetworkManager.Emit(playerMoveReq);
     }
 
+    /*
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-
-
         if (hit.gameObject.tag == "Wall")
         {
             // どちらに当たったかの方向を取得
@@ -133,14 +117,12 @@ public class PlayerController : MonoBehaviour
             // Z方向の絶対値
             float AbsZ = Mathf.Abs(hit.point.normalized.z);
 
-
             // XとZを比較
 
             // Xが大きい場合
             bool Xpoint = AbsX > AbsZ;
             // Zが大きい場合
             bool Zpoint = AbsZ > AbsX;
-
 
             if (hit.point.normalized.x >= 0.1 & Xpoint)
             {
@@ -167,4 +149,5 @@ public class PlayerController : MonoBehaviour
             //Debug.Log(hit.point.normalized);
         }
     }
+    */
 }

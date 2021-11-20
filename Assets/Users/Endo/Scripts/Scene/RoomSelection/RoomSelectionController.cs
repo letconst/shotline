@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -14,18 +14,18 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
     [SerializeField, Header("ルーム更新ボタン")]
     private Button refreshBtn;
 
+    [SerializeField, Header("ルーム作成ボタン")]
+    private Button createRoomBtn;
+
     [SerializeField, Header("ルームボタンのプレハブ")]
     private GameObject roomBtnPrefab;
 
     [SerializeField]
     private Transform layoutParentTrf;
 
-    [SerializeField]
-    private Transform createRoomBtnTrf;
+    private Transform _createRoomBtnTrf;
 
     private List<RoomData> _roomButtons;
-
-    private Text _statusText;
 
     protected override void Awake()
     {
@@ -34,8 +34,9 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         // ボタンイベント登録
         backBtn.onClick.AddListener(OnClickBack);
         refreshBtn.onClick.AddListener(OnClickRefresh);
-        _roomButtons = new List<RoomData>();
-        _statusText  = SystemProperty.StatusText;
+        createRoomBtn.onClick.AddListener(OnClickCreateRoom);
+        _createRoomBtnTrf = createRoomBtn.transform;
+        _roomButtons      = new List<RoomData>();
     }
 
     private void Start()
@@ -53,8 +54,10 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         return _roomButtons.FirstOrDefault(button => button.Instance == btn);
     }
 
-    private async void FetchAllRooms()
+    private static async void FetchAllRooms()
     {
+        SystemUIManager.ShowConnectingStatus();
+
         var req = new GetAllRoomRequest();
 
         if (!NetworkManager.IsConnected)
@@ -63,21 +66,37 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         }
 
         NetworkManager.Emit(req);
-
-        // TODO: 通信中UI表示 && 操作不能
     }
 
-    private void OnClickBack()
+    /// <summary>
+    /// 戻るボタン押下時の処理
+    /// </summary>
+    private static void OnClickBack()
     {
+        NetworkManager.Disconnect();
+        SystemUIManager.HideStatusText();
         SystemSceneManager.LoadNextScene("Title", SceneTransition.Fade);
     }
 
     /// <summary>
     /// サーバーへ全部屋の情報取得をリクエストする
     /// </summary>
-    private void OnClickRefresh()
+    private static void OnClickRefresh()
     {
         FetchAllRooms();
+    }
+
+    /// <summary>
+    /// ルーム作成ボタン押下時の処理
+    /// </summary>
+    private static void OnClickCreateRoom()
+    {
+        if (!NetworkManager.IsConnected) return;
+
+        var req = new RequestBase(EventType.CreateRoom);
+
+        NetworkManager.Emit(req);
+        SystemUIManager.ShowConnectingStatus();
     }
 
     private async void OnReceived(object res)
@@ -96,9 +115,7 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                 UpdateButtons();
 
                 // ルーム作成ボタンを最下部へ
-                createRoomBtnTrf.SetAsLastSibling();
-
-                // TODO: 通信中UI非表示 && 操作可能
+                _createRoomBtnTrf.SetAsLastSibling();
 
                 // 受け取ったルーム情報のボタンを生成・更新する
                 void UpdateButtons()
@@ -110,7 +127,7 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                         {
                             if (button.RoomUuid != room.uuid) continue;
 
-                            button.Instance.UpdateContent(room.clients.Length, room.isInBattle);
+                            button.Instance.UpdateContent(room.clients.Length, room.isInBattle, room.uuid);
 
                             return;
                         }
@@ -120,9 +137,12 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                     }
                 }
 
+                SystemUIManager.HideStatusText();
+
                 break;
             }
 
+            // ルーム参加レスポンス
             case EventType.JoinRoom:
             {
                 var innerRes = (JoinRoomRequest) res;
@@ -134,14 +154,13 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
                     SelfPlayerData.PlayerUuid = innerRes.Client.uuid;
                     SelfPlayerData.RoomUuid   = innerRes.RoomUuid;
 
-                    _statusText.text = "マッチング中…";
-
-                    // TODO: 武器選択画面に遷移
+                    SystemUIManager.HideStatusText();
+                    SystemSceneManager.LoadNextScene("WeaponSelection", SceneTransition.Fade);
                 }
                 else
                 {
-                    // TODO: innerRes.Messageをウィンドウ表示 && 閉じた際にリフレッシュ
-                    Debug.Log($"入れなかったよ: {innerRes.Message}");
+                    SystemUIManager.HideStatusText();
+                    SystemUIManager.OpenAlertWindow("エラー", innerRes.Message, FetchAllRooms);
                 }
 
                 break;
@@ -151,7 +170,7 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
             {
                 await UniTask.SwitchToMainThread();
 
-                _statusText.text = "ロード中…";
+                SystemUIManager.ShowStatusText(StatusText.NowLoading);
 
                 SystemSceneManager.LoadNextScene("MainGameScene", SceneTransition.Fade);
 
@@ -171,7 +190,7 @@ public class RoomSelectionController : SingletonMonoBehaviour<RoomSelectionContr
         GameObject newBtnObj = Instantiate(roomBtnPrefab, layoutParentTrf);
         var        newBtn    = newBtnObj.GetComponent<RoomEntryButton>();
 
-        newBtn.UpdateContent(playerCount, isInBattle);
+        newBtn.UpdateContent(playerCount, isInBattle, roomUuid);
 
         _roomButtons.Add(new RoomData
         {

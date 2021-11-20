@@ -51,7 +51,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         OnReceived.Subscribe(EventHandler);
     }
 
-    #if UNITY_ANDROID
+#if UNITY_ANDROID
     private void OnApplicationPause(bool pauseStatus)
     {
         // Android限定
@@ -61,7 +61,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             Application.Quit();
         }
     }
-    #endif
+#endif
 
     private void OnApplicationQuit()
     {
@@ -149,22 +149,36 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
         {
             IsConnected = false;
 
-            // 接続できなかったらデバッグサーバーも試みる
-            if (SelfPlayerData.Port == Instance.port)
-            {
-                SelfPlayerData.Port = Instance.secondaryPort;
-
-                await Connect();
-
-                return;
-            }
-
             // UIを書き換えるためメインスレッドに戻す（暫定）
             await UniTask.SwitchToMainThread();
 
+            bool isClickOk = false;
+
+            SystemUIManager.OpenConfirmWindow("Error", "サーバーに接続できませんでした。再接続しますか？", result =>
+            {
+                isClickOk = result;
+
+                if (!result) return;
+
+                SelfPlayerData.Port = Instance.port;
+
+                Connect();
+            }, () =>
+            {
+                if (isClickOk) return;
+
+                SystemUIManager.OpenConfirmWindow("Information", "デバッグサーバーに接続しますか？", result =>
+                {
+                    if (!result) return;
+
+                    SelfPlayerData.Port = Instance.secondaryPort;
+
+                    Connect();
+                });
+            });
+
             Debug.LogError(e.Message);
-            SystemProperty.StatusText.text = "サーバーに接続できませんでした";
-            IsConnected                    = false;
+            IsConnected = false;
         }
     }
 
@@ -181,25 +195,30 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
 
         return type switch
         {
-            EventType.GetAllRoom    => RequestBase.MakeJsonFrom<GetAllRoomRequest>(msg),
-            EventType.JoinRoom      => RequestBase.MakeJsonFrom<JoinRoomRequest>(msg),
-            EventType.MatchComplete => RequestBase.MakeJsonFrom<MatchCompleteRequest>(msg),
-            EventType.Match         => RequestBase.MakeJsonFrom<MatchRequest>(msg),
-            EventType.Joined        => RequestBase.MakeJsonFrom<JoinedRequest>(msg),
-            EventType.PlayerMove    => RequestBase.MakeJsonFrom<PlayerMoveRequest>(msg),
-            EventType.BulletMove    => RequestBase.MakeJsonFrom<BulletMoveRequest>(msg),
-            EventType.ItemInit      => RequestBase.MakeJsonFrom<ItemInitRequest>(msg),
-            EventType.ItemGenerate  => RequestBase.MakeJsonFrom<ItemGenerateRequest>(msg),
-            EventType.ItemGet       => RequestBase.MakeJsonFrom<ItemGetRequest>(msg),
-            EventType.Instantiate   => RequestBase.MakeJsonFrom<InstantiateRequest>(msg),
-            EventType.Destroy       => RequestBase.MakeJsonFrom<DestroyRequest>(msg),
-            EventType.ShieldUpdate  => RequestBase.MakeJsonFrom<ShieldUpdateRequest>(msg),
-            EventType.RoundStart    => RequestBase.MakeJsonFrom<RoundStartRequest>(msg),
-            EventType.RoundUpdate   => RequestBase.MakeJsonFrom<RoundUpdateRequest>(msg),
-            EventType.Disconnect    => RequestBase.MakeJsonFrom<DisconnectRequest>(msg),
-            EventType.Refresh       => RequestBase.MakeJsonFrom<RefreshRequest>(msg),
-            EventType.Error         => RequestBase.MakeJsonFrom<ErrorRequest>(msg),
-            _                       => throw new ArgumentOutOfRangeException()
+            EventType.GetAllRoom       => RequestBase.MakeJsonFrom<GetAllRoomRequest>(msg),
+            EventType.JoinRoom         => RequestBase.MakeJsonFrom<JoinRoomRequest>(msg),
+            EventType.EnterRoom        => RequestBase.MakeJsonFrom<InRoomRequestBase>(msg),
+            EventType.ExitRoom         => RequestBase.MakeJsonFrom<ExitRoomRequest>(msg),
+            EventType.WeaponSelected   => RequestBase.MakeJsonFrom<InRoomRequestBase>(msg),
+            EventType.MatchComplete    => RequestBase.MakeJsonFrom<MatchCompleteRequest>(msg),
+            EventType.Match            => RequestBase.MakeJsonFrom<MatchRequest>(msg),
+            EventType.Joined           => RequestBase.MakeJsonFrom<JoinedRequest>(msg),
+            EventType.PlayerMove       => RequestBase.MakeJsonFrom<PlayerMoveRequest>(msg),
+            EventType.BulletMove       => RequestBase.MakeJsonFrom<BulletMoveRequest>(msg),
+            EventType.ItemInit         => RequestBase.MakeJsonFrom<ItemInitRequest>(msg),
+            EventType.ItemGenerate     => RequestBase.MakeJsonFrom<ItemGenerateRequest>(msg),
+            EventType.ItemGet          => RequestBase.MakeJsonFrom<ItemGetRequest>(msg),
+            EventType.Instantiate      => RequestBase.MakeJsonFrom<InstantiateRequest>(msg),
+            EventType.Destroy          => RequestBase.MakeJsonFrom<DestroyRequest>(msg),
+            EventType.ShieldUpdate     => RequestBase.MakeJsonFrom<ShieldUpdateRequest>(msg),
+            EventType.RoundStart       => RequestBase.MakeJsonFrom<RoundStartRequest>(msg),
+            EventType.RoundUpdate      => RequestBase.MakeJsonFrom<RoundUpdateRequest>(msg),
+            EventType.SuddenDeathStart => RequestBase.MakeJsonFrom<InRoomRequestBase>(msg),
+            EventType.Disconnect       => RequestBase.MakeJsonFrom<DisconnectRequest>(msg),
+            EventType.Refresh          => RequestBase.MakeJsonFrom<RefreshRequest>(msg),
+            EventType.RoomRemoved      => RequestBase.MakeJsonFrom<RequestBase>(msg),
+            EventType.Error            => RequestBase.MakeJsonFrom<ErrorRequest>(msg),
+            _                          => throw new ArgumentOutOfRangeException()
         };
     }
 
@@ -316,7 +335,7 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
     /// サーバーからのレスポンスのイベントに応じて処理を行う
     /// </summary>
     /// <param name="res">受信データ</param>
-    private static void EventHandler(object res)
+    private static async void EventHandler(object res)
     {
         var tmp  = (RequestBase) res;
         var type = (EventType) Enum.Parse(typeof(EventType), tmp.Type);
@@ -337,6 +356,19 @@ public class NetworkManager : SingletonMonoBehaviour<NetworkManager>
             {
                 var innerRes = (ErrorRequest) res;
                 Debug.LogError(innerRes.Message);
+
+                break;
+            }
+
+            case EventType.RoomRemoved:
+            {
+                await UniTask.SwitchToMainThread();
+
+                SystemUIManager.OpenAlertWindow("Error", "切断されました。", () =>
+                {
+                    SystemUIManager.HideStatusText();
+                    SystemSceneManager.LoadNextScene("Title", SceneTransition.Fade);
+                });
 
                 break;
             }

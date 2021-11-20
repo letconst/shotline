@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6881295056185150383}
+  - component: {fileID: 5531694532840533005}
   - component: {fileID: 6881295056185150380}
   - component: {fileID: 6881295056185150381}
   m_Layer: 0
@@ -32,6 +33,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5531694532840533005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6881295056185150370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f4e79f49478454c9242a7d964820b84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rivalPrefab: {fileID: 9222306879767961865, guid: 47a45b504b1ca9245ad477d0903effe9, type: 3}
+  vcam1Trf: {fileID: 0}
+  vcam2Trf: {fileID: 0}
+  vcam2: {fileID: 0}
 --- !u!114 &6881295056185150380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48,7 +65,6 @@ MonoBehaviour:
   vcam1Trf: {fileID: 0}
   vcam2Trf: {fileID: 0}
   vcam2: {fileID: 0}
-  cmBlendListObject: {fileID: 0}
 --- !u!114 &6881295056185150381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,8 +77,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c207cf08ee5643b1a86f3ea4a377df46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputBlocker: {fileID: 0}
-  statusText: {fileID: 0}
   startPos1P: {fileID: 0}
   startPos2P: {fileID: 0}
   itemSpawnPoints:
@@ -72,3 +86,5 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   lineGaugeObject: {fileID: 0}
+  lineGaugeObject2: {fileID: 0}
+  cmBlendListObject: {fileID: 0}

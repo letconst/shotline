@@ -28,7 +28,7 @@ public class BigBullet : ActiveItem
     {
         BBOff = false;
         BBOn = false;
-        base.ClearItemIcon();
+        ClearItemIcon();
 
         base.Terminate();
 

@@ -18,6 +18,7 @@ TagManager:
   - Joystick
   - RivalBullet
   - FollowCamera
+  - SotoWall
   layers:
   - Default
   - TransparentFX
@@ -29,8 +30,8 @@ TagManager:
   - ch
   - DrawLine
   - ch2
-  - 
-  - 
+  - LineStartArea
+  - 3DUIModel
   - 
   - 
   - 

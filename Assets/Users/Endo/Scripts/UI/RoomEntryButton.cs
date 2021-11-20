@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,16 +23,17 @@ public class RoomEntryButton : MonoBehaviour
     private Text playerCountText;
 
     [SerializeField]
+    private Text roomIdText;
+
+    [SerializeField]
     private Button selfButton;
 
-    private int  _selfIndex;
-    private Text _statusText;
+    private int _selfIndex;
 
     private void Awake()
     {
         selfButton.onClick.AddListener(OnClick);
-        _selfIndex  = transform.GetSiblingIndex();
-        _statusText = SystemProperty.StatusText;
+        _selfIndex = transform.GetSiblingIndex();
     }
 
     private void OnClick()
@@ -40,8 +42,7 @@ public class RoomEntryButton : MonoBehaviour
 
         if (roomData == null) return;
 
-        _statusText.text = "参加中…";
-        RoomSelectionProperty.StatusBgImage.SetActive(true);
+        SystemUIManager.ShowConnectingStatus();
 
         var req = new JoinRoomRequest
         {
@@ -57,7 +58,8 @@ public class RoomEntryButton : MonoBehaviour
     /// </summary>
     /// <param name="playerCount">ルーム内のプレイヤー数</param>
     /// <param name="isInBattle">対戦中か</param>
-    public void UpdateContent(int playerCount, bool isInBattle)
+    /// <param name="roomId">ルームID</param>
+    public void UpdateContent(int playerCount, bool isInBattle, string roomId)
     {
         var titleBuilder = new StringBuilder();
         titleBuilder.Append("ルーム");
@@ -67,5 +69,6 @@ public class RoomEntryButton : MonoBehaviour
         statusTextObj.SetActive(isInBattle);
 
         playerCountText.text = playerCount.ToString();
+        roomIdText.text      = $"ID: {roomId.Substring(roomId.Length - 4)}";
     }
 }

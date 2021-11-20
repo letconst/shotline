@@ -52,5 +52,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2af2a060d22f7c43ad76cdefed06fdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BGM_VOLUME: 0.5
+  BGM_VOLUME: 0.2
   SE_VOLUME: 0.3

@@ -1,27 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ShotLineAnimation : MonoBehaviour
 {
-    //AnimatorƒRƒ“ƒ|[ƒlƒ“ƒg
+    //Animatorã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
     private Animator animator;
 
     void Start()
     {
-        //ƒLƒƒƒ‰ƒNƒ^[‚ÌƒqƒGƒ‰ƒ‹ƒL[‚É‘¶İ‚·‚éƒAƒjƒ[ƒ^[‚ğQÆ
+        //ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ãƒ’ã‚¨ãƒ©ãƒ«ã‚­ãƒ¼ã«å­˜åœ¨ã™ã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚¿ãƒ¼ã‚’å‚ç…§
         this.animator = GetComponent<Animator>();
     }
 
     void Update()
     {
-        //ËŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“
+        //å°„æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
         if (Projectile.One)
         {
             animator.SetTrigger("Shot");
         }
 
-        //•àsƒAƒjƒ[ƒVƒ‡ƒ“
+        //æ­©è¡Œã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
         if(CharaMove.IsMoving)
         {
             animator.SetBool("Walk", true);
@@ -31,7 +29,7 @@ public class ShotLineAnimation : MonoBehaviour
             animator.SetBool("Walk", false);
         }
 
-        //ƒXƒ‰ƒXƒ^[ƒAƒjƒ[ƒVƒ‡ƒ“
+        //ã‚¹ãƒ©ã‚¹ã‚¿ãƒ¼ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
         if (Thruster.ClickButton)
         {
             animator.SetTrigger("Dash");

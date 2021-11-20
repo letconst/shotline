@@ -2,7 +2,7 @@
 using UniRx;
 using UnityEngine;
 
-public class RivalBulletManager : MonoBehaviour
+public class RivalBulletManager : MonoBehaviour, IManagedMethod
 {
     private GameObject _rivalBulletPrefab;
 
@@ -26,12 +26,12 @@ public class RivalBulletManager : MonoBehaviour
                       .AddTo(this);
     }
 
-    private void Start()
+    public void ManagedStart()
     {
         _rivalBulletPrefab = MainGameController.rivalBulletPrefab;
     }
 
-    private void Update()
+    public void ManagedUpdate()
     {
         // 生成されたものがあれば管理下に追加
         _rivalBullets.AddRange(_bulletInstantiateQueue);
@@ -52,12 +52,17 @@ public class RivalBulletManager : MonoBehaviour
             if (targetBullet == null)
             {
                 Debug.LogWarning($"{nameof(RivalBulletManager)}: 破棄対象の弾が見つかりません");
+
+                continue;
             }
-            else
+
+            // 弾オブジェクトがあれば破棄
+            if (targetBullet.BulletObject != null)
             {
                 Destroy(targetBullet.BulletObject);
-                _rivalBullets.Remove(targetBullet);
             }
+
+            _rivalBullets.Remove(targetBullet);
         }
 
         _bulletDestroyQueue.Clear();
@@ -65,6 +70,14 @@ public class RivalBulletManager : MonoBehaviour
         // 弾のスタッキングを確認
         foreach (RivalBullet bullet in _rivalBullets)
         {
+            // 弾オブジェクトがなければ破棄対象に
+            if (bullet.BulletObject == null)
+            {
+                _bulletDestroyQueue.Enqueue(bullet.InstanceId);
+
+                continue;
+            }
+
             Vector3 bulletPos = bullet.BulletObject.transform.position;
 
             // 1フレーム前と同じ位置ならカウント++
@@ -95,7 +108,11 @@ public class RivalBulletManager : MonoBehaviour
 
             foreach (RivalBullet bullet in _rivalBullets)
             {
+                // 同じIDの弾のみ処理
                 if (bullet.InstanceId != res.InstanceId) continue;
+
+                // 破棄されてたら処理しない
+                if (bullet.BulletObject == null) continue;
 
                 Transform bulletTrf = bullet.BulletObject.transform;
                 bulletTrf.SetPositionAndRotation(res.Position, res.Rotation);
@@ -103,8 +120,6 @@ public class RivalBulletManager : MonoBehaviour
 
                 break;
             }
-
-            Debug.LogWarning($"{nameof(RivalBulletManager)}: 移動対象の弾が見つかりません");
         }
     }
 

@@ -4,26 +4,32 @@ using UnityEngine;
 
 public class ShieldMovement : MonoBehaviour
 {
-    private int ShieldLimit = 10;
+    [SerializeField]
+    private int ShieldLimit;
 
     private string _guid;
 
+    [SerializeField]
+    private ShieldAnimation shieldAnim;
+
     private void Start()
     {
-        ShieldLimit = 10;
         ItemManager.currentShieldCount++;
 
         if (NetworkManager.IsConnected)
         {
             _guid = NetworkManager.GetGuid(gameObject);
 
-            NetworkManager.OnReceived.Subscribe(OnReceived).AddTo(this);
+            NetworkManager.OnReceived
+                          ?.ObserveOnMainThread()
+                          .Subscribe(OnReceived)
+                          .AddTo(this);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Bullet") || other.CompareTag("RivalBullet"))
+        if (other.CompareTag("Bullet"))
         {
             if (NetworkManager.IsConnected)
             {
@@ -59,12 +65,14 @@ public class ShieldMovement : MonoBehaviour
         DecreaseLimit();
     }
 
-    private void DecreaseLimit()
+    private async void DecreaseLimit()
     {
         ShieldLimit--;
 
         if (ShieldLimit <= 0)
         {
+            await shieldAnim.PlayBreakAnimation();
+
             Destroy(gameObject);
         }
     }

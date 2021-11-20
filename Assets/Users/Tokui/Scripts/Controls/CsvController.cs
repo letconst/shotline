@@ -1,39 +1,48 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class CsvController : MonoBehaviour ,IManagedMethod
 {
     [SerializeField]
-    Transform CanvasTransform = null;
+    public Transform CanvasTransform = null;
 
     [SerializeField]
-    Text WeaponNameText = null;
-
-    [SerializeField]
-    Text WeaponStatusText = null;
-
-    [SerializeField]
-    GameObject ButtonPrefab = null;
+    public GameObject WeaponPanel = null;
 
     public void ManagedStart()
     {
         foreach (WeaponDatas datas in WeaponManager.weaponDatas)
         {
-            GameObject ButtonObj = Instantiate(ButtonPrefab, CanvasTransform);
-            Button button = ButtonObj.GetComponent<Button>();
-            button.onClick.AddListener(() =>
+            GameObject panelObject = Instantiate(WeaponPanel, CanvasTransform);
+            var        panelProp   = panelObject.GetComponent<WeaponPanelProperty>();
+
+            panelProp.WeaponNameText.text =
+                "武器名\n" + datas.WeaponName+
+                "\n\n　　　　弾速: " +datas.BulletSpeed +
+                "\nゲージ最大値: " + datas.GaugeMax +
+                "\nゲージ回復量: " + datas.GaugeRecovery;
+
+            panelProp.WeaponInfoText.text =
+                "説明\n" + datas.Weaponinfo;
+
+            // モデル生成
+            var modelPrefab = Resources.Load<GameObject>(datas.PrefabsName);
+
+            if (modelPrefab == null)
             {
-                WeaponNameText.text = "WeaponName\n" + datas.WeaponName;
-                WeaponStatusText.text =
-                    "BulletSpeed:" + datas.BulletSpeed +
-                    "\nGaugeMax:" + datas.GaugeMax +
-                    "\nGaugeRecovery" + datas.GaugeRecovery;
-            });
+                Debug.LogError($"武器「{datas.WeaponName}」のプレハブが見つかりません: {datas.PrefabsName}");
+
+                continue;
+            }
+
+            GameObject modelObject = Instantiate(modelPrefab, panelProp.ModelParentTrf);
+
+            WeaponManager.weaponModels.Add(modelObject.transform);
         }
     }
 
     public void ManagedUpdate()
     {
-        
+
     }
 }

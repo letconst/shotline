@@ -1,9 +1,12 @@
-﻿public enum EventType
+public enum EventType
 {
     Init,
     GetAllRoom,
-    RoomRefresh,
+    CreateRoom,
     JoinRoom,
+    ExitRoom,
+    EnterRoom,
+    WeaponSelected,
     MatchComplete,
     Match,
     Joined,
@@ -17,7 +20,9 @@
     ShieldUpdate,
     RoundStart,
     RoundUpdate,
+    SuddenDeathStart,
     Disconnect,
     Refresh,
+    RoomRemoved,
     Error
 }

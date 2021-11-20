@@ -7,6 +7,9 @@ public static class Initializer
     {
         Application.targetFrameRate = 60;
 
+        // 表示中ウィンドウの情報がstaticなためクリアしておく
+        SystemUIManager.ClearWindow();
+
         // サウンドマネージャー生成
         var        soundPrefab = Resources.Load<GameObject>("Prefabs/SoundManager");
         GameObject soundObject = Object.Instantiate(soundPrefab);

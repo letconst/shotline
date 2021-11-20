@@ -16,7 +16,7 @@ public class SystemLoader : MonoBehaviour
 
         // ゲーム開始直後のシーンではフェードインする
         await UniTask.Yield(PlayerLoopTiming.Update);
-        await FadeTransition.FadeIn(SystemProperty.FadeCanvasGroup);
+        await FadeTransition.FadeOut(SystemProperty.FadeCanvasGroup);
 
         _isFirstScene = true;
         IsFirstFading = false;
