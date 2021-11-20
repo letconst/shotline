@@ -39,7 +39,7 @@ public class TitleScript : MonoBehaviour
         {
             _isNowLoading = true;
 
-            SoundManager.Instance.PlaySE(SELabel.Start);
+            SoundManager.Instance.PlaySE(SELabel.Start,0.5f);
             await SystemSceneManager.LoadNextScene("RoomSelection", SceneTransition.Fade);
         }
     }

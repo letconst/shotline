@@ -144,6 +144,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
 
                 //現在の座標から次の座標の方向を向く
                 Vector3 diff = BulletList[i].FP[BulletList[i].index + 1] - BulletList[i].Bullet.transform.position;
+
                 if (diff != new Vector3(0, 0, 0))
                 {
                     BulletList[i].Bullet.transform.rotation = Quaternion.LookRotation(diff);
@@ -197,7 +198,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
                 {
                     ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     BM.BBOn = false;
-                    SoundManager.Instance.PlaySE(SELabel.electric_chain);
+                    SoundManager.Instance.PlaySE(SELabel.electric_chain,0.5f);
                     Instantiate(disappearanceBullet, BulletList[i].Bullet.transform.position, Quaternion.identity);
                     Destroy(BulletList[i].Bullet);
                     //BulletList.RemoveAt(i);
