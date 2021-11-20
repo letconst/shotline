@@ -32,6 +32,8 @@ public class ShieldMovement : MonoBehaviour
                 NetworkManager.Emit(shieldUpdateReq);
             }
 
+            SoundManager.Instance.PlaySE(SELabel.varia);
+
             DecreaseLimit();
         }
     }

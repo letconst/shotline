@@ -66,8 +66,11 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
     [SerializeField, Header("マズル位置")]
     private Transform muzzleFlashPoint;
 
-    [SerializeField, Header("エフェクト")]
+    [SerializeField, Header("弾丸発射エフェクト")]
     private GameObject muzzleFlashEffect;
+
+    [SerializeField, Header("弾丸消滅エフェクト")]
+    private GameObject disappearanceBullet;
 
     //省略する距離
     float refTime = 0.05f;
@@ -196,6 +199,8 @@ public class Projectile : SingletonMonoBehaviour<Projectile>
                 {
                     ShotLineUtil.FreeLineData(BulletList[i].LineData);
                     BM.BBOn = false;
+                    SoundManager.Instance.PlaySE(SELabel.electric_chain);
+                    Instantiate(disappearanceBullet, BulletList[i].Bullet.transform.position, Quaternion.identity);
                     Destroy(BulletList[i].Bullet);
                     //BulletList.RemoveAt(i);
                 }

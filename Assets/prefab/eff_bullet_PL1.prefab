@@ -19228,7 +19228,7 @@ GameObject:
   - component: {fileID: 911916966929164449}
   - component: {fileID: 911916966929164448}
   m_Layer: 0
-  m_Name: eff_bullet 0917
+  m_Name: eff_bullet_PL1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19259,7 +19259,7 @@ ParticleSystem:
   serializedVersion: 7
   lengthInSec: 60
   simulationSpeed: 1
-  stopAction: 0
+  stopAction: 2
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
@@ -24053,6 +24053,7 @@ Transform:
   - {fileID: 911916966847219005}
   - {fileID: 911916966716148244}
   - {fileID: 911916966142811409}
+  - {fileID: 911916965966522915}
   m_Father: {fileID: 911916966929164510}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}

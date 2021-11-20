@@ -118,5 +118,8 @@ public enum SELabel
     Start,
     Get,
     Use,
-    Set
+    Set,
+    varia,
+    electric_chain,
+    ボタン音29
 }
