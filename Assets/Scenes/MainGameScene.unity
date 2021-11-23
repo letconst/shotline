@@ -4752,6 +4752,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1176597202}
     - target: {fileID: 6881295056185150381, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
+      propertyPath: disappearanceBullet
+      value: 
+      objectReference: {fileID: 3302442364004722511, guid: 10434d6bf3af98b46a88ab696f543ee3, type: 3}
+    - target: {fileID: 6881295056185150381, guid: c5a4d482766451943af0ffdfce03cb26, type: 3}
       propertyPath: sotoWalls.Array.size
       value: 2
       objectReference: {fileID: 0}

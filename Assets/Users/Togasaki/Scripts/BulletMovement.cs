@@ -28,6 +28,10 @@ public class BulletMovement : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Wall") || other.gameObject.CompareTag("Shield"))
         {
+            // エフェクトおよびSE再生
+            SoundManager.Instance.PlaySE(SELabel.electric_chain, .5f);
+            Instantiate(MainGameProperty.DisappearanceBullet, transform.position, Quaternion.identity);
+
             BBOn = true;
         }
     }
