@@ -67,18 +67,20 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
 
 
     //BGM再生
-    public void PlayBGM(BGMLabel bgmLabel, bool isLoop = true)
+    public void PlayBGM(BGMLabel bgmLabel, bool isLoop = true,float vol = 0.2f)
     {
         bgmSource.loop = isLoop;
         bgmSource.clip = bgmClipDic[bgmLabel.ToString()];
+        bgmSource.volume = vol;
         bgmSource.Play();
     }
 
 
     //SE再生
-    public void PlaySE(SELabel seLabel)
+    public void PlaySE(SELabel seLabel,float vol = 1)
     {
         seSource.clip = seClipDic[seLabel.ToString()];
+        seSource.volume = vol;
         seSource.PlayOneShot(seSource.clip);
     }
 
@@ -119,5 +121,8 @@ public enum SELabel
     Start,
     Get,
     Use,
-    Set
+    Set,
+    varia,
+    electric_chain,
+    ボタン音29
 }

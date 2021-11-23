@@ -49,6 +49,9 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
     [SerializeField]
     private Transform[] sotoWalls;
 
+    [SerializeField, Header("弾丸消滅エフェクト")]
+    private GameObject disappearanceBullet;
+
     public GameObject LineGaugeObject   => lineGaugeObject;
     public GameObject LineGaugeObject2  => lineGaugeObject2;
     public GameObject CmBlendListObject => cmBlendListObject;
@@ -70,6 +73,7 @@ public class MainGameProperty : SingletonMonoBehaviour<MainGameProperty>
     public static Image       BattleResultImg         => Instance.battleResultImg;
     public static Image       SuddenDeathImg          => Instance.suddenDeathImg;
     public static Transform[] SotoWalls               => Instance.sotoWalls;
+    public static GameObject  DisappearanceBullet     => Instance.disappearanceBullet;
 
     protected override void Awake()
     {

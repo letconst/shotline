@@ -65,7 +65,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
     [SerializeField, Header("マズル位置")]
     private Transform muzzleFlashPoint;
 
-    [SerializeField, Header("エフェクト")]
+    [SerializeField, Header("弾丸発射エフェクト")]
     private GameObject muzzleFlashEffect;
 
     //省略する距離
@@ -141,6 +141,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
 
                 //現在の座標から次の座標の方向を向く
                 Vector3 diff = BulletList[i].FP[BulletList[i].index + 1] - BulletList[i].Bullet.transform.position;
+
                 if (diff != new Vector3(0, 0, 0))
                 {
                     BulletList[i].Bullet.transform.rotation = Quaternion.LookRotation(diff);

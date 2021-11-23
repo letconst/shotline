@@ -40,14 +40,7 @@ public class RivalBulletManager : MonoBehaviour, IManagedMethod
         // 破棄されたものがあれば管理化から削除
         foreach (int id in _bulletDestroyQueue)
         {
-            RivalBullet targetBullet = null;
-
-            foreach (RivalBullet bullet in _rivalBullets)
-            {
-                if (bullet.InstanceId != id) continue;
-
-                targetBullet = bullet;
-            }
+            RivalBullet targetBullet = GetRivalBullet(id);
 
             if (targetBullet == null)
             {
@@ -59,6 +52,15 @@ public class RivalBulletManager : MonoBehaviour, IManagedMethod
             // 弾オブジェクトがあれば破棄
             if (targetBullet.BulletObject != null)
             {
+                // 衝突された弾ならエフェクトとSEを再生
+                if (targetBullet.DestroyParticleEnabled)
+                {
+                    SoundManager.Instance.PlaySE(SELabel.electric_chain, .25f);
+                    Instantiate(MainGameProperty.DisappearanceBullet,
+                                targetBullet.BulletObject.transform.position,
+                                Quaternion.identity);
+                }
+
                 Destroy(targetBullet.BulletObject);
             }
 
@@ -152,10 +154,35 @@ public class RivalBulletManager : MonoBehaviour, IManagedMethod
         {
             _bulletDestroyQueue.Enqueue(innerRes.InstanceId);
 
+            RivalBullet targetBullet = GetRivalBullet(innerRes.InstanceId);
+
+            // 衝突したかを設定
+            if (targetBullet != null)
+            {
+                targetBullet.DestroyParticleEnabled = innerRes.DestroyParticleEnabled;
+            }
+
             return;
         }
 
         // 通常移動した弾なら対象の座標を更新
         _bulletMoveQueue.Enqueue(innerRes);
+    }
+
+    /// <summary>
+    /// 管理下から指定のInstanceIDの弾を取得する。なければnullが帰る
+    /// </summary>
+    /// <param name="instanceId"></param>
+    /// <returns>RivalBullet | null</returns>
+    private RivalBullet GetRivalBullet(int instanceId)
+    {
+        foreach (RivalBullet bullet in _rivalBullets)
+        {
+            if (bullet.InstanceId != instanceId) continue;
+
+            return bullet;
+        }
+
+        return null;
     }
 }

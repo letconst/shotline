@@ -465,6 +465,7 @@ GameObject:
   - component: {fileID: 7548394144629559010}
   - component: {fileID: 1141807709103550229}
   - component: {fileID: 4415148876968132434}
+  - component: {fileID: -6241686193244851631}
   m_Layer: 5
   m_Name: BtnRoomEntry
   m_TagString: Untagged
@@ -578,7 +579,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1443116029342991082}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -6241686193244851631}
+        m_TargetAssemblyTypeName: ButtonSE, Assembly-CSharp
+        m_MethodName: ClickButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1141807709103550229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -616,6 +629,18 @@ MonoBehaviour:
   playerCountText: {fileID: 7548394145013204493}
   roomIdText: {fileID: 7242339091290039082}
   selfButton: {fileID: 7548394144629559010}
+--- !u!114 &-6241686193244851631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7548394144629559008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cac9c0850d6cde64c928ff3dc5363768, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7548394145013204528
 GameObject:
   m_ObjectHideFlags: 0

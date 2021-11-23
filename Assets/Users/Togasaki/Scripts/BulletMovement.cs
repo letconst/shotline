@@ -5,7 +5,8 @@ public class BulletMovement : MonoBehaviour
 {
     public bool BBOn = false;
 
-    private int _selfInstanceId;
+    private int  _selfInstanceId;
+    private bool _destroyParticleEnabled;
 
     private void Awake()
     {
@@ -28,7 +29,12 @@ public class BulletMovement : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Wall") || other.gameObject.CompareTag("Shield"))
         {
-            BBOn = true;
+            // エフェクトおよびSE再生
+            SoundManager.Instance.PlaySE(SELabel.electric_chain, .5f);
+            Instantiate(MainGameProperty.DisappearanceBullet, transform.position, Quaternion.identity);
+
+            BBOn                    = true;
+            _destroyParticleEnabled = true;
         }
     }
 
@@ -38,7 +44,8 @@ public class BulletMovement : MonoBehaviour
 
         // 破棄されたことを相手に通知
         BulletMoveRequest req = MakeSendData();
-        req.IsDestroyed = true;
+        req.IsDestroyed            = true;
+        req.DestroyParticleEnabled = _destroyParticleEnabled;
 
         NetworkManager.Emit(req);
     }
