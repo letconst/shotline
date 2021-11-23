@@ -4,6 +4,6 @@ public class ButtonSE : MonoBehaviour
 {
     public void ClickButton()
     {
-        SoundManager.Instance.PlaySE(SELabel.ƒ{ƒ^ƒ“‰¹29);
+        SoundManager.Instance.PlaySE(SELabel.ãƒœã‚¿ãƒ³éŸ³29);
     }
 }
