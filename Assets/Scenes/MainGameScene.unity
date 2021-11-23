@@ -1465,6 +1465,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 9222306879767961864, guid: 0e333b36772710f498f143d75c15f6cc, type: 3}
+      propertyPath: _speed
+      value: 5.5
+      objectReference: {fileID: 0}
     - target: {fileID: 9222306879767961865, guid: 0e333b36772710f498f143d75c15f6cc, type: 3}
       propertyPath: m_Name
       value: Player
@@ -4137,7 +4141,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   muzzleFlashPoint: {fileID: 326721948}
   muzzleFlashEffect: {fileID: 415344327356856911, guid: 51e94592cd83c5b4fa930ad8f8c2e2fc, type: 3}
-  disappearanceBullet: {fileID: 3302442364004722511, guid: 10434d6bf3af98b46a88ab696f543ee3, type: 3}
 --- !u!1 &2025405727
 GameObject:
   m_ObjectHideFlags: 0
