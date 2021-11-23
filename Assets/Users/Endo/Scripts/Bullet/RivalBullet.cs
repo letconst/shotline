@@ -6,6 +6,7 @@ public class RivalBullet
     public GameObject BulletObject;
     public Vector3    PrevFramePos;
     public int        StuckFrames;
+    public bool       DestroyParticleEnabled;
 
     public RivalBullet(int id, GameObject obj)
     {

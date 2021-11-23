@@ -5,6 +5,7 @@ public class BulletMoveRequest : InRoomRequestBase
     public int  InstanceId;
     public bool IsGenerated;
     public bool IsDestroyed;
+    public bool DestroyParticleEnabled;
 
     public Vector3    Position;
     public Quaternion Rotation;

@@ -1736,6 +1736,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   muzzleFlashPoint: {fileID: 0}
   muzzleFlashEffect: {fileID: 0}
+  disappearanceBullet: {fileID: 0}
 --- !u!114 &730796519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4167,6 +4168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   muzzleFlashPoint: {fileID: 495723667}
   muzzleFlashEffect: {fileID: 415344327356856911, guid: 51e94592cd83c5b4fa930ad8f8c2e2fc, type: 3}
+  disappearanceBullet: {fileID: 3302442364004722511, guid: 10434d6bf3af98b46a88ab696f543ee3, type: 3}
 --- !u!1 &2025405727
 GameObject:
   m_ObjectHideFlags: 0
