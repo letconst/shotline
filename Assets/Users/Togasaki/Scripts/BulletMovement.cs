@@ -31,7 +31,7 @@ public class BulletMovement : MonoBehaviour
         {
             // エフェクトおよびSE再生
             SoundManager.Instance.PlaySE(SELabel.electric_chain, .5f);
-            Instantiate(MainGameProperty.DisappearanceBullet, transform.position, Quaternion.identity);
+            Instantiate(MainGameController.bulletCollideParticle, transform.position, Quaternion.identity);
 
             BBOn                    = true;
             _destroyParticleEnabled = true;

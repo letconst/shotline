@@ -76,9 +76,11 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
             _playerTrf.parent.Find("player_2").gameObject.SetActive(false);
             _rivalTrf.parent.Find("player_1").gameObject.SetActive(false);
 
-            MainGameController.linePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL1");
-            MainGameController.bulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
-            MainGameController.rivalBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
+            MainGameController.linePrefab                 = Resources.Load<GameObject>("Prefabs/Line_PL1");
+            MainGameController.bulletPrefab               = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
+            MainGameController.rivalBulletPrefab          = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
+            MainGameController.bulletCollideParticle      = Resources.Load<GameObject>("Prefabs/ArcadeSpark_PL1");
+            MainGameController.rivalBulletCollideParticle = Resources.Load<GameObject>("Prefabs/ArcadeSpark_PL2");
         }
         // 2P
         else
@@ -110,9 +112,11 @@ public class MainGameInitializer : MonoBehaviour, IManagedMethod
             _playerTrf.parent.Find("player_1").gameObject.SetActive(false);
             _rivalTrf.parent.Find("player_2").gameObject.SetActive(false);
 
-            MainGameController.linePrefab        = Resources.Load<GameObject>("Prefabs/Line_PL2");
-            MainGameController.bulletPrefab      = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
-            MainGameController.rivalBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
+            MainGameController.linePrefab                 = Resources.Load<GameObject>("Prefabs/Line_PL2");
+            MainGameController.bulletPrefab               = Resources.Load<GameObject>("Prefabs/Bullet_PL2");
+            MainGameController.rivalBulletPrefab          = Resources.Load<GameObject>("Prefabs/Bullet_PL1");
+            MainGameController.bulletCollideParticle      = Resources.Load<GameObject>("Prefabs/ArcadeSpark_PL2");
+            MainGameController.rivalBulletCollideParticle = Resources.Load<GameObject>("Prefabs/ArcadeSpark_PL1");
         }
     }
 
