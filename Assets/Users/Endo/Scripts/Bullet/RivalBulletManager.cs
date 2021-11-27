@@ -5,6 +5,7 @@ using UnityEngine;
 public class RivalBulletManager : MonoBehaviour, IManagedMethod
 {
     private GameObject _rivalBulletPrefab;
+    private GameObject _rivalBulletCollideParticle;
 
     private List<RivalBullet>        _rivalBullets;
     private Queue<RivalBullet>       _bulletInstantiateQueue;
@@ -28,7 +29,8 @@ public class RivalBulletManager : MonoBehaviour, IManagedMethod
 
     public void ManagedStart()
     {
-        _rivalBulletPrefab = MainGameController.rivalBulletPrefab;
+        _rivalBulletPrefab          = MainGameController.rivalBulletPrefab;
+        _rivalBulletCollideParticle = MainGameController.rivalBulletCollideParticle;
     }
 
     public void ManagedUpdate()
@@ -56,7 +58,7 @@ public class RivalBulletManager : MonoBehaviour, IManagedMethod
                 if (targetBullet.DestroyParticleEnabled)
                 {
                     SoundManager.Instance.PlaySE(SELabel.electric_chain, .25f);
-                    Instantiate(MainGameProperty.DisappearanceBullet,
+                    Instantiate(_rivalBulletCollideParticle,
                                 targetBullet.BulletObject.transform.position,
                                 Quaternion.identity);
                 }

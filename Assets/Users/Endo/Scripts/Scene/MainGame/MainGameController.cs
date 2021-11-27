@@ -18,6 +18,8 @@ public class MainGameController : SingletonMonoBehaviour<MainGameController>, IM
     public static GameObject bulletPrefab;             // 弾プレハブ（同上）
     public static GameObject rivalBulletPrefab;
     public static Transform  rivalTrf;
+    public static GameObject bulletCollideParticle;
+    public static GameObject rivalBulletCollideParticle;
 
     private GameObject                 _cmBlendListObject;
     private CinemachineBlendListCamera _cmBlendList;
