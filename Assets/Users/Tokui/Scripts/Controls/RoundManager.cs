@@ -29,9 +29,6 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
     [SerializeField]
     private float WallSpeed;
 
-    [SerializeField]
-    private float WallSpeedReset;
-
     private float CountDown;
 
     public bool SuddenDeathFlag;
@@ -100,8 +97,6 @@ public class RoundManager : SingletonMonoBehaviour<RoundManager>
 
             if (CountDown >= WallCount)
             {
-                WallSpeed = WallSpeedReset;
-
                 SuddenDeathFlag = false;
 
                 CountDown = CountDownReset;
