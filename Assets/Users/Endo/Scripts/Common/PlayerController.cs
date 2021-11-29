@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private GameObject _rivalObject;
-
     public static bool isDamaged;
 
     private void Awake()
@@ -26,14 +24,10 @@ public class PlayerController : MonoBehaviour
         {
             // 座標が更新されたらサーバーに座標更新通信
             transform.ObserveEveryValueChanged(x => x.position)
+                     .ThrottleFirstFrame(1)
                      .Subscribe(OnPositionChanged)
                      .AddTo(this);
         }
-    }
-
-    private void Start()
-    {
-        _rivalObject = GameObject.FindGameObjectWithTag("Rival");
     }
 
     private async void OnTriggerEnter(Collider other)
