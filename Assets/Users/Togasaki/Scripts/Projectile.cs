@@ -6,6 +6,8 @@ public class BulletInfo
     //弾丸のprefab
     public GameObject Bullet;
 
+    public BulletMovement BM;
+
     //射線の座標をいれる配列
     public Vector3[] FP;
 
@@ -18,9 +20,10 @@ public class BulletInfo
     //ラインデータ
     public readonly LineData LineData;
 
-    public BulletInfo(GameObject bullet, Vector3[] fp, int ind, float spd, LineData lineData)
+    public BulletInfo(GameObject bullet, BulletMovement bm, Vector3[] fp, int ind, float spd, LineData lineData)
     {
         Bullet   = bullet;
+        BM       = bm;
         FP       = fp;
         index    = ind;
         Speed    = spd;
@@ -69,7 +72,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
     private GameObject muzzleFlashEffect;
 
     //省略する距離
-    float refTime = 0.05f;
+    private const float refTime = 0.05f * 0.05f;
 
     public void ManagedStart()
     {
@@ -110,7 +113,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
 
             //弾生成
             GameObject BI = Instantiate(MainGameController.bulletPrefab, FingerPositions[0], Quaternion.identity);
-            BI.AddComponent<BulletMovement>();
+            var        BM = BI.AddComponent<BulletMovement>();
 
             //射撃SEを鳴らしている
             SoundManager.Instance.PlaySE(SELabel.Shot);
@@ -119,7 +122,7 @@ public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
 
 
             //配列に射線の全座標とそれに対応する弾丸をいれる
-            BulletList.Add(new BulletInfo(BI, ShotLineUtil.GetFingerPositions(currentLineData), 0, ActSpeed, currentLineData));
+            BulletList.Add(new BulletInfo(BI, BM, ShotLineUtil.GetFingerPositions(currentLineData), 0, ActSpeed, currentLineData));
 
             One = false;
             BigBullet.ClickBB = false;
@@ -133,31 +136,46 @@ public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
             {
                 if (BulletList[i].Bullet == null)
                 {
+                    BulletList.RemoveAt(i);
+
                     continue;
                 }
 
-                //BulletMovement取得
-                BulletMovement BM = BulletList[i].Bullet.GetComponent<BulletMovement>();
+                int FPIndex = BulletList[i].index + 1;
+
+                // 移動先の位置インデックスが範囲外なら弾を破棄
+                if (FPIndex >= BulletList[i].FP.Length)
+                {
+                    DestroyBullet(i);
+
+                    return;
+                }
 
                 //現在の座標から次の座標の方向を向く
-                Vector3 diff = BulletList[i].FP[BulletList[i].index + 1] - BulletList[i].Bullet.transform.position;
+                Vector3 diff = BulletList[i].FP[FPIndex] - BulletList[i].Bullet.transform.position;
 
-                if (diff != new Vector3(0, 0, 0))
+                if (diff != Vector3.zero)
                 {
                     BulletList[i].Bullet.transform.rotation = Quaternion.LookRotation(diff);
                 }
 
                 //次の座標が指定の距離以下なら省略
-                if (diff.magnitude < refTime && BulletList[i].index < BulletList[i].FP.Length - 5)
+                if (diff.sqrMagnitude < refTime && BulletList[i].index < BulletList[i].FP.Length - 5)
                 {
                     while(true)
                     {
-                        Vector3 diffp2 = BulletList[i].FP[BulletList[i].index + 1] - BulletList[i].Bullet.transform.position;
-                        if (diffp2.magnitude < refTime)
+                        FPIndex = BulletList[i].index + 1;
+
+                        // 次の位置インデックスが範囲外なら終了
+                        if (FPIndex >= BulletList[i].FP.Length) break;
+
+                        Vector3 diffp2 = BulletList[i].FP[FPIndex] - BulletList[i].Bullet.transform.position;
+
+                        if (diffp2.sqrMagnitude < refTime)
                         {
-                            BulletList[i].Bullet.transform.position = BulletList[i].FP[BulletList[i].index + 1];
+                            BulletList[i].Bullet.transform.position = BulletList[i].FP[FPIndex];
                             //もし弾が次の位置まで到達したら、その次の位置を読み込む
-                            if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
+                            if (BulletList[i].Bullet.transform.position == BulletList[i].FP[FPIndex])
                             {
                                 BulletList[i].index++;
                             }
@@ -166,10 +184,10 @@ public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
                         {
                             //現在の射線の位置から次の射線の位置まで移動
                             float ratio = BulletList[i].Speed * Time.deltaTime;
-                            BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], ratio);
+                            BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[FPIndex], ratio);
 
                             //もし弾が次の位置まで到達したら、その次の位置を読み込む
-                            if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
+                            if (BulletList[i].Bullet.transform.position == BulletList[i].FP[FPIndex])
                             {
                                 BulletList[i].index++;
                             }
@@ -181,25 +199,33 @@ public class Projectile : SingletonMonoBehaviour<Projectile>, IManagedMethod
                 {
                     //現在の射線の位置から次の射線の位置まで移動
                     float ratio = BulletList[i].Speed * Time.deltaTime;
-                    BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[BulletList[i].index + 1], ratio);
+                    BulletList[i].Bullet.transform.position = Vector3.MoveTowards(BulletList[i].Bullet.transform.position, BulletList[i].FP[FPIndex], ratio);
 
                     //もし弾が次の位置まで到達したら、その次の位置を読み込む
-                    if (BulletList[i].Bullet.transform.position == BulletList[i].FP[BulletList[i].index + 1])
+                    if (BulletList[i].Bullet.transform.position == BulletList[i].FP[FPIndex])
                     {
                         BulletList[i].index++;
                     }
                 }
 
                 //弾が動き終わったら、もしくは壁かシールドに当たったら
-                if (BulletList[i].index == BulletList[i].FP.Length - 1 || BM.BBOn)
+                if (BulletList[i].index >= BulletList[i].FP.Length - 1 || BulletList[i].BM.BBOn)
                 {
-                    ShotLineUtil.FreeLineData(BulletList[i].LineData);
-                    BM.BBOn = false;
-                    Destroy(BulletList[i].Bullet);
-                    //BulletList.RemoveAt(i);
+                    DestroyBullet(i);
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// 弾リストから指定したインデックスのを破棄する
+    /// </summary>
+    /// <param name="index"></param>
+    private void DestroyBullet(int index)
+    {
+        ShotLineUtil.FreeLineData(BulletList[index].LineData);
+        Destroy(BulletList[index].Bullet);
+        BulletList.RemoveAt(index);
     }
 
     //射撃ボタンを押したとき
