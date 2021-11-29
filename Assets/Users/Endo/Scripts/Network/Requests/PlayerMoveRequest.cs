@@ -1,11 +1,9 @@
-﻿using UnityEngine;
-
-public class PlayerMoveRequest : InRoomRequestBase
+﻿public class PlayerMoveRequest : InRoomRequestBase
 {
-    public Vector3    Position;
-    public Quaternion Rotation;
+    public UnityEngine.Vector3    Position;
+    public UnityEngine.Quaternion Rotation;
 
-    public PlayerMoveRequest(Vector3 position, Quaternion rotation) : base(EventType.PlayerMove)
+    public PlayerMoveRequest(UnityEngine.Vector3 position, UnityEngine.Quaternion rotation) : base(EventType.PlayerMove)
     {
         Position = position;
         Rotation = rotation;

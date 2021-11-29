@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class CharaMove : MonoBehaviour, IManagedMethod
@@ -63,23 +63,25 @@ public class CharaMove : MonoBehaviour, IManagedMethod
     private void FixedUpdate()
     {
         if (!MainGameController.isControllable) return;
-        
+
         IsMoving = false;
-        
+
         if (_joystick.Position.y > 0.01f || _joystick.Position.y < -0.01f)
         {
             if (_joystick.Position.x > 0.01f || _joystick.Position.x < -0.01f)
             {
                 IsMoving = true;
 
-                Vector3 direction = new Vector3(_moveX, 0, _moveZ);
+                Vector3 direction = Vector3.zero;
+                direction.x = _moveX;
+                direction.z = _moveZ;
 
                 // 移動方向にキャラクターが向くようにする
                 if (direction != Vector3.zero)
                 {
                     transform.localRotation = Quaternion.LookRotation(direction);
                 }
-                
+
                 _rig.velocity = direction;
             }
         }
