@@ -31,6 +31,9 @@ public class CharaMove : MonoBehaviour, IManagedMethod
         _joystick  = GameObject.FindGameObjectWithTag("Joystick").GetComponent<Joystick>();
         // controller = GetComponent<CharacterController>(); //CharacterControllerの取得
         _rig       = GetComponent<Rigidbody>();
+
+        // 移動してないときに、サドンデスの壁に押されなくなるためスリープにしない
+        _rig.sleepThreshold = 0;
     }
 
     public void ManagedUpdate()
