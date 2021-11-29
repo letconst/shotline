@@ -4,6 +4,7 @@ public class Thruster : ActiveItem
 {
     GameObject Player;
     CharaMove Chara;
+    Rigidbody Rig;
 
     CharacterController BoostSpeed;
     Vector3 Direction;
@@ -23,7 +24,8 @@ public class Thruster : ActiveItem
 
         //スラスターの所持確認
         Player = GameObject.FindGameObjectWithTag("Player");
-        Chara = Player.GetComponent<CharaMove>();
+        Chara  = Player.GetComponent<CharaMove>();
+        Rig    = Player.GetComponent<Rigidbody>();
 
         //CharacterControllerを取得
         BoostSpeed = Player.GetComponent<CharacterController>();
@@ -64,7 +66,7 @@ public class Thruster : ActiveItem
             FlagCountDown -= Time.deltaTime;
 
             //true の時、向いている方向に移動
-            BoostSpeed.SimpleMove(Direction);
+            Rig.velocity = Direction;
         }
 
         //移動速度を元に戻す
